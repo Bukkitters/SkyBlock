@@ -1,0 +1,5 @@
+name: SkyBlock
+main: org.Bukkitters.SkyBlock.Main
+version: 1.0
+description: SkyBlock plugin.
+author: [NukerFall, Soyer]
