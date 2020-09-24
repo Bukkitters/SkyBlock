@@ -4,3 +4,6 @@
 *.prefs
 .settings/org.eclipse.jdt.core.prefs
 .project
+.classpath
+.project
+pom.xml
