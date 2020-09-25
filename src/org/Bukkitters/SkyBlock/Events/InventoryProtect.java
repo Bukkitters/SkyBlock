@@ -1,7 +1,6 @@
 package org.Bukkitters.SkyBlock.Events;
 
 import org.Bukkitters.SkyBlock.Main;
-import org.Bukkitters.SkyBlock.Utils.ChatColors;
 import org.Bukkitters.SkyBlock.Utils.PlayerDataClass;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
