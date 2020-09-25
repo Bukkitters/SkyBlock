@@ -1,2 +1,4 @@
-msg1: '&aTeleported to SkyBlock.'
-msg2: '&bTeleported to normal World.'
+spawned: '&aTeleported to SkyBlock.'
+left: '&bTeleported to normal World.'
+first-set: '&aFirst position set!'
+second-set: '&aSecond position set!'
