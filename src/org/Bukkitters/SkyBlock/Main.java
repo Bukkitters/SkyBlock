@@ -2,6 +2,7 @@ package org.Bukkitters.SkyBlock;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +29,7 @@ public class Main extends JavaPlugin {
 	private File msgf = new File(getDataFolder(), "messages.yml");
 	private FileConfiguration msg;
 	private List<UUID> translators = new ArrayList<UUID>();
+	private HashMap<UUID, Location[]> lrhands = new HashMap<UUID, Location[]>();
 	private static Main instance;
 	
 	public void onEnable() {
@@ -88,6 +91,10 @@ public class Main extends JavaPlugin {
 
 	public List<UUID> getTranslators() {
 		return translators;
+	}
+
+	public HashMap<UUID, Location[]> getLrhands() {
+		return lrhands;
 	}
 
 }

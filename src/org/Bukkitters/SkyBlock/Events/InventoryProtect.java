@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class InventoryProtect implements Listener {
 
-	private ChatColors colors = new ChatColors();
 	private PlayerDataClass data = new PlayerDataClass();
 	private Main main;
 
@@ -26,7 +25,6 @@ public class InventoryProtect implements Listener {
 		main.getTranslators().add(e.getEntity().getUniqueId());
 		if(!e.getEntity().getWorld().getName().equalsIgnoreCase("skyblock")) {
 			data.setWorldInventory(e.getEntity().getUniqueId(), null);
-			e.getEntity().sendMessage("Ты погиб в мире " + e.getEntity().getWorld().getName());
 		} else {
 			data.setSkyBlockInventory(e.getEntity().getUniqueId(), null);
 		}
