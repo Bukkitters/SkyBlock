@@ -105,7 +105,7 @@ public class Main extends JavaPlugin {
 		return translators;
 	}
 
-	public HashMap<UUID, Location[]> getLrhands() {
+	public HashMap<UUID, Location[]> getLRhands() {
 		return lrhands;
 	}
 

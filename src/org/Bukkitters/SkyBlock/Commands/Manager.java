@@ -73,10 +73,10 @@ public class Manager implements CommandExecutor {
 				switch (args[0]) {
 				case "scheme":
 					if (args[1].equalsIgnoreCase("create")) {
-						if (main.getLrhands().containsKey(p.getUniqueId())) {
-							if (main.getLrhands().get(p.getUniqueId())[0] != null && main.getLrhands().get(p.getUniqueId())[1] != null) {
+						if (main.getLRhands().containsKey(p.getUniqueId())) {
+							if (main.getLRhands().get(p.getUniqueId())[0] != null && main.getLRhands().get(p.getUniqueId())[1] != null) {
 								if (!sc.exists(args[2])) {
-									sc.createScheme(args[2], main.getLrhands().get(p.getUniqueId()), p.getUniqueId(), p.getWorld());
+									sc.createScheme(args[2], main.getLRhands().get(p.getUniqueId()), p.getUniqueId(), p.getWorld());
 									p.sendMessage(colors.color(main.getMessages().getString("scheme-created")));
 								} else {
 									p.sendMessage(colors.color(main.getMessages().getString("scheme-exists")));

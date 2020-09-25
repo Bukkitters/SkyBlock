@@ -28,19 +28,19 @@ public class Selector implements Listener {
 					Player p = e.getPlayer();
 					if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 						Location[] ll = new Location[2];
-						if (main.getLrhands().containsKey(p.getUniqueId())) {
-							ll = main.getLrhands().get(p.getUniqueId());
+						if (main.getLRhands().containsKey(p.getUniqueId())) {
+							ll = main.getLRhands().get(p.getUniqueId());
 						}
 						ll[1] = e.getClickedBlock().getLocation();
-						main.getLrhands().put(p.getUniqueId(), ll);
+						main.getLRhands().put(p.getUniqueId(), ll);
 						p.sendMessage(colors.color(main.getMessages().getString("second-set")));
 					} else if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 						Location[] ll = new Location[2];
-						if (main.getLrhands().containsKey(p.getUniqueId())) {
-							ll = main.getLrhands().get(p.getUniqueId());
+						if (main.getLRhands().containsKey(p.getUniqueId())) {
+							ll = main.getLRhands().get(p.getUniqueId());
 						}
 						ll[0] = e.getClickedBlock().getLocation();
-						main.getLrhands().put(p.getUniqueId(), ll);
+						main.getLRhands().put(p.getUniqueId(), ll);
 						p.sendMessage(colors.color(main.getMessages().getString("first-set")));
 					}
 				}
