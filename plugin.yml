@@ -7,3 +7,4 @@ api-version: 1.16
 commands:
   skyblock:
     description: SkyBlock main command.
+    aliases: [sb, sblock, скайблок, blocksky]

@@ -21,6 +21,7 @@ import java.util.UUID;
 import org.Bukkitters.SkyBlock.Commands.Manager;
 import org.Bukkitters.SkyBlock.Events.InventoryProtect;
 import org.Bukkitters.SkyBlock.Events.JoinEvent;
+import org.Bukkitters.SkyBlock.Events.Selector;
 import org.Bukkitters.SkyBlock.Utils.IChunkGenerator;
 
 public class Main extends JavaPlugin {
@@ -34,14 +35,25 @@ public class Main extends JavaPlugin {
 	
 	public void onEnable() {
 		instance = this;
+		new Selector(this);
 		new Manager(this);
 		new JoinEvent(this);
 		new InventoryProtect(this);
 		saveDefaultMessages();
 		msg = YamlConfiguration.loadConfiguration(msgf);
 		generateWorld();
+		generateFolders();
 		saveDefaultConfig();
 		send("&aPlugin enabled!");
+	}
+
+	private void generateFolders() {
+		if (!new File(this.getDataFolder(), "schemes").exists()) {
+			new File(this.getDataFolder(), "schemes").mkdir();
+		}
+		if (!new File(this.getDataFolder(), "kits").exists()) {
+			new File(this.getDataFolder(), "kits").mkdir();
+		}
 	}
 
 	private void saveDefaultMessages() {
