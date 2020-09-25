@@ -1,0 +1,70 @@
+permission: advancedskyblock.kit.farmer
+items:
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: IRON_HOE
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: TORCH
+    amount: 4
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: OAK_FENCE
+    amount: 16
+  '3':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: OAK_FENCE_GATE
+    amount: 2
+  '4':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: FLOWER_POT
+    amount: 4
+  '5':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: WHEAT_SEEDS
+    amount: 8
+  '6':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: MELON_SEEDS
+    amount: 2
+  '7':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: BEETROOT_SEEDS
+    amount: 2
+  '8':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: PUMPKIN_SEEDS
+    amount: 2
+  '9':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: LEATHER_BOOTS
+    meta:
+      ==: ItemMeta
+      meta-type: LEATHER_ARMOR
+      color:
+        ==: Color
+        RED: 29
+        BLUE: 33
+        GREEN: 29
+  '10':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: LEATHER_HELMET
+    meta:
+      ==: ItemMeta
+      meta-type: LEATHER_ARMOR
+      color:
+        ==: Color
+        RED: 29
+        BLUE: 33
+        GREEN: 29

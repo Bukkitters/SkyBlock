@@ -1,0 +1,10 @@
+permission: advancedskyblock.kit.defaultKit
+items:
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: LAVA_BUCKET
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2567
+    type: WATER_BUCKET
