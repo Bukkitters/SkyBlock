@@ -90,6 +90,7 @@ public class Manager implements CommandExecutor {
 					sc.sendSchemes(p);
 					break;
 				default:
+					sender.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
 					break;
 				}
 				break;
@@ -170,6 +171,8 @@ public class Manager implements CommandExecutor {
 					break;
 				case "kits":
 					kits.sendKits(sender);
+				case "schemes":
+					sc.sendSchemes(sender);
 				case "reload":
 					main.reloadConfig();
 					main.reloadMessages();
@@ -181,7 +184,31 @@ public class Manager implements CommandExecutor {
 				// TODO
 				break;
 			case 3:
-				// TODO
+				if (args[0].equalsIgnoreCase("kit")) {
+					if (args[1].equalsIgnoreCase("delete")) {
+						if (kits.exists(args[2])) {
+							kits.deleteKit(args[2]);
+							sender.sendMessage(colors.color(main.getMessages().getString("kit-deleted")));
+						} else {
+							sender.sendMessage(colors.color(main.getMessages().getString("kit-not-exist")));
+						}
+					} else {
+						main.send(main.getConfig().getString("wrong-command"));
+					}
+				} else if (args[0].equalsIgnoreCase("scheme")) {
+					if (args[1].equalsIgnoreCase("delete")) {
+						if (sc.exists(args[2])) {
+							sc.delScheme(args[2]);
+							sender.sendMessage(colors.color(main.getMessages().getString("scheme-deleted")));
+						} else {
+							sender.sendMessage(colors.color(main.getMessages().getString("scheme-not-exist")));
+						}
+					} else {
+						main.send(main.getConfig().getString("wrong-command"));
+					}
+				} else {
+					sender.sendMessage(colors.color(main.getConfig().getString("wrong-command")));
+				}
 				break;
 			default:
 				sender.sendMessage(colors.color(main.getConfig().getString("wrong-command")));

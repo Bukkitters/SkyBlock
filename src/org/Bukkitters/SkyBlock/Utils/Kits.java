@@ -88,7 +88,7 @@ public class Kits {
 
 	private String getAvailableKit(String st, UUID id) {
 		Player p = Bukkit.getPlayer(id);
-		if (p.hasPermission("advancedskyblock.admin")) {
+		if (p.hasPermission("skyblock.admin")) {
 			return colors.color(main.getMessages().getString("available"));
 		} else {
 			if (main.getConfig().getStringList("free-kits").contains(st)) {

@@ -1,10 +1,10 @@
 wand-material: 'WOODEN_AXE'
-spawn-point: 'CUSTOM_SPAWNPOINT'
+spawn-point: 'WORLD_SPAWNPOINT'
 spawn-location:
-  world:
-  x:
-  y:
-  z:
+  world: world
+  x: 0
+  y: 60
+  z: 0
 kits:
   show-only-available: true
   show-limits: true
