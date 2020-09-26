@@ -30,11 +30,9 @@ public class Manager implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			switch (args.length) {
-			case 0:
+			if (args.length == 0) {
 				throwInfo(sender, true);
-				break;
-			case 1:
+			} else if (args.length == 1) {
 				switch (args[0]) {
 				case "reload":
 					main.reloadConfig();
@@ -93,11 +91,9 @@ public class Manager implements CommandExecutor {
 					sender.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
 					break;
 				}
-				break;
-			case 2:
-				// TODO
-				break;
-			case 3:
+			} else if (args.length == 2) {
+
+			} else if (args.length == 3) {
 				switch (args[0]) {
 				case "scheme":
 					if (args[1].equalsIgnoreCase("create")) {
@@ -153,10 +149,8 @@ public class Manager implements CommandExecutor {
 				default:
 					break;
 				}
-				break;
-			default:
-				sender.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
-				break;
+			} else {
+				p.sendMessage(colors.color(main.getConfig().getString("wrong-command")));
 			}
 		} else {
 			switch (args.length) {
@@ -240,7 +234,7 @@ public class Manager implements CommandExecutor {
 	}
 
 	private void throwInfo(CommandSender sender, boolean b) {
-		if(b) {
+		if (b) {
 			sender.sendMessage(colors.color("&bSkyBlock"));
 			sender.sendMessage(colors.color("&eVersion: &b" + main.getDescription().getVersion()));
 			sender.sendMessage(colors.color("&eAuthors: &b" + main.getDescription().getAuthors()));
@@ -278,5 +272,5 @@ public class Manager implements CommandExecutor {
 		}
 		return loc;
 	}
-	
+
 }
