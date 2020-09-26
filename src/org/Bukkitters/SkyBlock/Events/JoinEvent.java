@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class JoinEvent implements Listener {
 	
 	private PlayerDataClass data = new PlayerDataClass();
+	
 	public JoinEvent(Main main) {
 		main.getServer().getPluginManager().registerEvents(this, main);
 	}

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import org.Bukkitters.SkyBlock.Main;
 import org.bukkit.Location;
 import org.bukkit.Material;

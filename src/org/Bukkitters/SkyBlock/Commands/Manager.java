@@ -2,6 +2,7 @@ package org.Bukkitters.SkyBlock.Commands;
 
 import org.Bukkitters.SkyBlock.Main;
 import org.Bukkitters.SkyBlock.Utils.ChatColors;
+import org.Bukkitters.SkyBlock.Utils.Kits;
 import org.Bukkitters.SkyBlock.Utils.PlayerDataClass;
 import org.Bukkitters.SkyBlock.Utils.Schemes;
 import org.bukkit.Bukkit;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 public class Manager implements CommandExecutor {
 
 	private Schemes sc = new Schemes();
+	private Kits kits = new Kits();
 	private PlayerDataClass data = new PlayerDataClass();
 	private ChatColors colors = new ChatColors();
 	private Main main;
@@ -68,15 +70,18 @@ public class Manager implements CommandExecutor {
 				}
 				break;
 			case 2:
+				// todo
 				break;
 			case 3:
 				switch (args[0]) {
 				case "scheme":
 					if (args[1].equalsIgnoreCase("create")) {
 						if (main.getLRhands().containsKey(p.getUniqueId())) {
-							if (main.getLRhands().get(p.getUniqueId())[0] != null && main.getLRhands().get(p.getUniqueId())[1] != null) {
+							if (main.getLRhands().get(p.getUniqueId())[0] != null
+									&& main.getLRhands().get(p.getUniqueId())[1] != null) {
 								if (!sc.exists(args[2])) {
-									sc.createScheme(args[2], main.getLRhands().get(p.getUniqueId()), p.getUniqueId(), p.getWorld());
+									sc.createScheme(args[2], main.getLRhands().get(p.getUniqueId()), p.getUniqueId(),
+											p.getWorld());
 									p.sendMessage(colors.color(main.getMessages().getString("scheme-created")));
 								} else {
 									p.sendMessage(colors.color(main.getMessages().getString("scheme-exists")));
@@ -88,10 +93,26 @@ public class Manager implements CommandExecutor {
 							p.sendMessage(colors.color(main.getMessages().getString("not-selected")));
 						}
 					} else if (args[1].equalsIgnoreCase("delete")) {
-						//TODO
+						// TODO
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
 					}
+					break;
+				case "kit":
+					if (args[1].equalsIgnoreCase("create")) {
+						if (kits.exists(args[2])) {
+							kits.createKit(args[2], p.getInventory(), p.getUniqueId());
+							p.sendMessage(colors.color(main.getMessages().getString("kit-created")));
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("kit-exists")));
+						}
+					} else if (args[1].equalsIgnoreCase("delete")) {
+						// todo KIT CREATE
+					} else {
+						p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
+					}
+					break;
+				default:
 					break;
 				}
 			default:
@@ -104,7 +125,7 @@ public class Manager implements CommandExecutor {
 				throwInfo(sender);
 				break;
 			case 1:
-				switch(args[0]) {
+				switch (args[0]) {
 				case "help":
 					throwHelp(sender, false);
 					break;
@@ -113,8 +134,10 @@ public class Manager implements CommandExecutor {
 					break;
 				}
 			case 2:
+				// todo
 				break;
 			case 3:
+				// todo
 				break;
 			default:
 				sender.sendMessage(colors.color(main.getConfig().getString("wrong-command")));
@@ -126,13 +149,13 @@ public class Manager implements CommandExecutor {
 
 	private void throwHelp(CommandSender sender, boolean b) {
 		if (b) {
-			
+
 		} else {
-			
+
 		}
 	}
 
 	private void throwInfo(CommandSender sender) {
-		
+
 	}
 }

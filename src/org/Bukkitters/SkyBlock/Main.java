@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
 import org.Bukkitters.SkyBlock.Commands.Manager;
 import org.Bukkitters.SkyBlock.Events.InventoryProtect;
 import org.Bukkitters.SkyBlock.Events.JoinEvent;
@@ -40,7 +39,6 @@ public class Main extends JavaPlugin {
 		new JoinEvent(this);
 		new InventoryProtect(this);
 		saveDefaultMessages();
-		msg = YamlConfiguration.loadConfiguration(msgf);
 		generateWorld();
 		generateFolders();
 		saveDefaultConfig();
@@ -60,6 +58,7 @@ public class Main extends JavaPlugin {
 		if (!msgf.exists()) {
 			saveResource("messages.yml", false);
 		}
+		msg = YamlConfiguration.loadConfiguration(msgf);
 	}
 	
 	public static Main getInstance() {
