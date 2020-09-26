@@ -175,11 +175,13 @@ public class Manager implements CommandExecutor {
 				case "reload":
 					main.reloadConfig();
 					main.reloadMessages();
-					main.send(colors.color(main.getMessages().getString("reloaded")));
+					main.send(main.getMessages().getString("reloaded"));
 					break;
 				default:
+					main.send(main.getMessages().getString("wrong-command"));
 					break;
 				}
+				break;
 			case 2:
 				// TODO
 				break;
@@ -188,9 +190,9 @@ public class Manager implements CommandExecutor {
 					if (args[1].equalsIgnoreCase("delete")) {
 						if (kits.exists(args[2])) {
 							kits.deleteKit(args[2]);
-							sender.sendMessage(colors.color(main.getMessages().getString("kit-deleted")));
+							main.send(main.getMessages().getString("kit-deleted"));
 						} else {
-							sender.sendMessage(colors.color(main.getMessages().getString("kit-not-exist")));
+							main.send(main.getMessages().getString("kit-not-exist"));
 						}
 					} else {
 						main.send(main.getConfig().getString("wrong-command"));
@@ -199,37 +201,31 @@ public class Manager implements CommandExecutor {
 					if (args[1].equalsIgnoreCase("delete")) {
 						if (sc.exists(args[2])) {
 							sc.delScheme(args[2]);
-							sender.sendMessage(colors.color(main.getMessages().getString("scheme-deleted")));
+							main.send(main.getMessages().getString("scheme-deleted"));
 						} else {
-							sender.sendMessage(colors.color(main.getMessages().getString("scheme-not-exist")));
+							main.send(main.getMessages().getString("scheme-not-exist"));
 						}
 					} else {
 						main.send(main.getConfig().getString("wrong-command"));
 					}
 				} else {
-					sender.sendMessage(colors.color(main.getConfig().getString("wrong-command")));
+					main.send(main.getConfig().getString("wrong-command"));
 				}
 				break;
 			default:
-				sender.sendMessage(colors.color(main.getConfig().getString("wrong-command")));
+				main.send(main.getConfig().getString("wrong-command"));
 				break;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	private void throwHelp(CommandSender sender, boolean b) {
 		if (b) {
-			sender.sendMessage(colors.color("&e"));
+			sender.sendMessage(colors.color("&bSkyBlock &ehelp page:"));
+			main.send("");
 		} else {
-			main.send("");
-			main.send("");
-			main.send("");
-			main.send("");
-			main.send("");
-			main.send("");
-			main.send("");
-			main.send("");
+			main.send("&bSkyBlock &ehelp page:");
 			main.send("");
 		}
 	}
