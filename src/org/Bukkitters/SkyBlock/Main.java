@@ -38,11 +38,11 @@ public class Main extends JavaPlugin {
 
 	public void onEnable() {
 		instance = this;
+		saveDefaultConfig();
 		saveDefaultMessages();
 		msg = YamlConfiguration.loadConfiguration(msgf);
 		generateWorld();
-		generateFolders();
-		saveDefaultConfig();
+		generateFoldersAndFiles();
 		saveProfiles();
 		new Selector(this);
 		new Manager(this);
@@ -59,12 +59,26 @@ public class Main extends JavaPlugin {
 		}
 	}
 
-	private void generateFolders() {
+	private void generateFoldersAndFiles() {
 		if (!new File(this.getDataFolder(), "schemes").exists()) {
 			new File(this.getDataFolder(), "schemes").mkdir();
 		}
 		if (!new File(this.getDataFolder(), "kits").exists()) {
 			new File(this.getDataFolder(), "kits").mkdir();
+		}
+		if (getConfig().getBoolean("create-default-files")) {
+			File dk = new File(this.getDataFolder() + "/kits", "defaultKit.yml");
+			File f = new File(this.getDataFolder() + "/kits", "farmer.yml");
+			File ds = new File(this.getDataFolder() + "/schemes", "defaultScheme");
+			if (!dk.exists()) {
+				saveResource("kits/defaultKit.yml", false);
+			}
+			if (!f.exists()) {
+				saveResource("kits/farmer.yml", false);
+			}
+			if (!ds.exists()) {
+				saveResource("schemes/defaultScheme.yml", false);
+			}
 		}
 	}
 
