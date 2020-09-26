@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 public class PlayerDataClass {
 
 	public boolean hasData(UUID id) {
-		if (new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id + ".yml")
+		if (new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id.toString() + ".yml")
 				.exists()) {
 			return true;
 		}
@@ -37,7 +37,7 @@ public class PlayerDataClass {
 
 	public void createData(UUID id) {
 		try {
-			File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id + ".yml");
+			File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id.toString() + ".yml");
 			f.createNewFile();
 			FileConfiguration data = YamlConfiguration.loadConfiguration(f);
 			data.set("WorldInventory", new ArrayList<ItemStack>());
@@ -48,7 +48,7 @@ public class PlayerDataClass {
 	}
 
 	public void setWorldInventory(UUID id, Inventory inv) {
-		File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id + ".yml");
+		File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id.toString() + ".yml");
 		FileConfiguration data = YamlConfiguration.loadConfiguration(f);
 		List<ItemStack> list = new ArrayList<ItemStack>();
 		if (inv != null) {
@@ -65,7 +65,7 @@ public class PlayerDataClass {
 	}
 
 	public void setSkyBlockInventory(UUID id, Inventory inv) {
-		File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id + ".yml");
+		File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id.toString() + ".yml");
 		FileConfiguration data = YamlConfiguration.loadConfiguration(f);
 		List<ItemStack> list = new ArrayList<ItemStack>();
 		if (inv != null) {
@@ -83,14 +83,14 @@ public class PlayerDataClass {
 
 	@SuppressWarnings("unchecked")
 	public List<ItemStack> getWorldInventory(UUID id) {
-		File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id + ".yml");
+		File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id.toString() + ".yml");
 		FileConfiguration data = YamlConfiguration.loadConfiguration(f);
 		return (List<ItemStack>) data.getList("WorldInventory");
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<ItemStack> getSkyBlockInventory(UUID id) {
-		File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id + ".yml");
+		File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata", id.toString() + ".yml");
 		FileConfiguration data = YamlConfiguration.loadConfiguration(f);
 		return (List<ItemStack>) data.getList("SkyBlockInventory");
 	}

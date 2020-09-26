@@ -7,7 +7,6 @@ import org.Bukkitters.SkyBlock.Utils.PlayerDataClass;
 import org.Bukkitters.SkyBlock.Utils.Schemes;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,6 +35,18 @@ public class Manager implements CommandExecutor {
 				break;
 			case 1:
 				switch (args[0]) {
+				case "reload":
+					main.reloadConfig();
+					main.reloadMessages();
+					p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
+					break;
+				case "create":
+					Location location = new Location(Bukkit.getWorld("skyblock"), 0, 70, 0);
+					data.setWorldInventory(p.getUniqueId(), p.getInventory());
+					p.teleport(location);
+					data.swapInventory(p);
+					sc.buildScheme(p.getUniqueId(), location, sc.randomScheme());
+					break;
 				case "help":
 					throwHelp(sender, true);
 					break;
@@ -47,12 +58,13 @@ public class Manager implements CommandExecutor {
 						main.getTranslators().add(p.getUniqueId());
 						data.setWorldInventory(p.getUniqueId(), p.getInventory());
 						p.teleport(new Location(Bukkit.getWorld("skyblock"), 0, 70, 0));
-						p.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.COBBLESTONE);
 						data.swapInventory(p);
 						main.getTranslators().remove(p.getUniqueId());
 						p.sendMessage(colors.color(main.getMessages().getString("spawned")));
 					} else {
-						p.sendMessage(colors.color("&cВы уже в мире Скайблока!"));
+						main.getTranslators().add(p.getUniqueId());
+						p.teleport(new Location(Bukkit.getWorld("skyblock"), 0, 70, 0));
+						main.getTranslators().remove(p.getUniqueId());
 					}
 					break;
 				case "leave":
@@ -66,6 +78,8 @@ public class Manager implements CommandExecutor {
 					} else {
 						p.sendMessage(colors.color("&cВы уже в мире Скайблока!"));
 					}
+					break;
+				default:
 					break;
 				}
 				break;
@@ -100,7 +114,7 @@ public class Manager implements CommandExecutor {
 					break;
 				case "kit":
 					if (args[1].equalsIgnoreCase("create")) {
-						if (kits.exists(args[2])) {
+						if (!kits.exists(args[2])) {
 							kits.createKit(args[2], p.getInventory(), p.getUniqueId());
 							p.sendMessage(colors.color(main.getMessages().getString("kit-created")));
 						} else {
@@ -116,7 +130,7 @@ public class Manager implements CommandExecutor {
 					break;
 				}
 			default:
-				sender.sendMessage(colors.color(main.getConfig().getString("wrong-command")));
+				sender.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
 				break;
 			}
 		} else {

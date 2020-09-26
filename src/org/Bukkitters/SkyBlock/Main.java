@@ -7,6 +7,7 @@ import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.World.Environment;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.google.common.base.Charsets;
@@ -22,27 +23,39 @@ import org.Bukkitters.SkyBlock.Events.InventoryProtect;
 import org.Bukkitters.SkyBlock.Events.JoinEvent;
 import org.Bukkitters.SkyBlock.Events.Selector;
 import org.Bukkitters.SkyBlock.Utils.IChunkGenerator;
+import org.Bukkitters.SkyBlock.Utils.PlayerDataClass;
 
 public class Main extends JavaPlugin {
 
 	private IChunkGenerator cg = new IChunkGenerator();
+	private PlayerDataClass data = new PlayerDataClass();
 	private File msgf = new File(getDataFolder(), "messages.yml");
 	private FileConfiguration msg;
 	private List<UUID> translators = new ArrayList<UUID>();
 	private HashMap<UUID, Location[]> lrhands = new HashMap<UUID, Location[]>();
 	private static Main instance;
-	
+
 	public void onEnable() {
 		instance = this;
+		saveDefaultMessages();
+		msg = YamlConfiguration.loadConfiguration(msgf);
+		generateWorld();
+		generateFolders();
+		saveDefaultConfig();
+		saveProfiles();
 		new Selector(this);
 		new Manager(this);
 		new JoinEvent(this);
 		new InventoryProtect(this);
-		saveDefaultMessages();
-		generateWorld();
-		generateFolders();
-		saveDefaultConfig();
 		send("&aPlugin enabled!");
+	}
+
+	private void saveProfiles() {
+		for (Player p : getServer().getOnlinePlayers()) {
+			if (!data.hasData(p.getUniqueId())) {
+				data.createData(p.getUniqueId());
+			}
+		}
 	}
 
 	private void generateFolders() {
@@ -58,13 +71,12 @@ public class Main extends JavaPlugin {
 		if (!msgf.exists()) {
 			saveResource("messages.yml", false);
 		}
-		msg = YamlConfiguration.loadConfiguration(msgf);
 	}
-	
+
 	public static Main getInstance() {
 		return instance;
 	}
-	
+
 	public FileConfiguration getMessages() {
 		return msg;
 	}

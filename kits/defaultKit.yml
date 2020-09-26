@@ -1,10 +1,9 @@
-permission: advancedskyblock.kit.defaultKit
+owner: 53725187-b3cd-3748-b3f8-a79ba597bbc4
+permission: skyblock.kit.defaultKit
 items:
-  '0':
-    ==: org.bukkit.inventory.ItemStack
-    v: 2567
-    type: LAVA_BUCKET
-  '1':
-    ==: org.bukkit.inventory.ItemStack
-    v: 2567
-    type: WATER_BUCKET
+- ==: org.bukkit.inventory.ItemStack
+  v: 2580
+  type: WATER_BUCKET
+- ==: org.bukkit.inventory.ItemStack
+  v: 2580
+  type: LAVA_BUCKET

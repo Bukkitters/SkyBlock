@@ -22,7 +22,7 @@ public class InventoryProtect implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
 		main.getTranslators().add(e.getEntity().getUniqueId());
-		if(!e.getEntity().getWorld().getName().equalsIgnoreCase("skyblock")) {
+		if (!e.getEntity().getWorld().getName().equalsIgnoreCase("skyblock")) {
 			data.setWorldInventory(e.getEntity().getUniqueId(), null);
 		} else {
 			data.setSkyBlockInventory(e.getEntity().getUniqueId(), null);
@@ -32,7 +32,7 @@ public class InventoryProtect implements Listener {
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
 		main.getTranslators().remove(e.getPlayer().getUniqueId());
-		for(ItemStack i : data.getWorldInventory(e.getPlayer().getUniqueId())) {
+		for (ItemStack i : data.getWorldInventory(e.getPlayer().getUniqueId())) {
 			e.getPlayer().getInventory().addItem(i);
 		}
 	}
@@ -40,7 +40,9 @@ public class InventoryProtect implements Listener {
 	@EventHandler
 	public void onTeleport(PlayerTeleportEvent e) {
 		if (!main.getTranslators().contains(e.getPlayer().getUniqueId())) {
-			data.swapInventory(e.getPlayer());
+			if (e.getTo().getWorld() != e.getFrom().getWorld()) {
+				data.swapInventory(e.getPlayer());
+			}
 		}
 	}
 
