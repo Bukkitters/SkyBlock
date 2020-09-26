@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public class Manager implements CommandExecutor {
@@ -46,6 +47,9 @@ public class Manager implements CommandExecutor {
 					p.teleport(location);
 					data.swapInventory(p);
 					sc.buildScheme(p.getUniqueId(), location, sc.randomScheme());
+					p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
+					break;
+				case "delete":
 					break;
 				case "help":
 					throwHelp(sender, true);
@@ -71,20 +75,26 @@ public class Manager implements CommandExecutor {
 					if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
 						main.getTranslators().add(p.getUniqueId());
 						data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
-						p.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+						p.teleport(getBackLocation());
 						data.swapInventory(p);
 						main.getTranslators().remove(p.getUniqueId());
 						p.sendMessage(colors.color(main.getMessages().getString("left")));
 					} else {
-						p.sendMessage(colors.color("&cВы уже в мире Скайблока!"));
+						p.sendMessage(colors.color(main.getMessages().getString("already-in-skyblock-world")));
 					}
+					break;
+				case "kits":
+					kits.sendKits(p);
+					break;
+				case "schemes":
+					sc.sendSchemes(p);
 					break;
 				default:
 					break;
 				}
 				break;
 			case 2:
-				// todo
+				// TODO
 				break;
 			case 3:
 				switch (args[0]) {
@@ -121,7 +131,12 @@ public class Manager implements CommandExecutor {
 							p.sendMessage(colors.color(main.getMessages().getString("kit-exists")));
 						}
 					} else if (args[1].equalsIgnoreCase("delete")) {
-						// todo KIT CREATE
+						if (kits.exists(args[2])) {
+							kits.deleteKit(args[2]);
+							p.sendMessage(colors.color(main.getMessages().getString("kit-deleted")));
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("kit-not-exist")));
+						}
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
 					}
@@ -146,12 +161,20 @@ public class Manager implements CommandExecutor {
 				case "info":
 					throwInfo(sender);
 					break;
+				case "kits":
+					kits.sendKits(sender);
+				case "reload":
+					main.reloadConfig();
+					main.reloadMessages();
+					main.send(colors.color(main.getMessages().getString("reloaded")));
+				default:
+					break;
 				}
 			case 2:
-				// todo
+				// TODO
 				break;
 			case 3:
-				// todo
+				// TODO
 				break;
 			default:
 				sender.sendMessage(colors.color(main.getConfig().getString("wrong-command")));
@@ -172,4 +195,29 @@ public class Manager implements CommandExecutor {
 	private void throwInfo(CommandSender sender) {
 
 	}
+
+	public Location getBackLocation() {
+		Location loc = Bukkit.getWorlds().get(0).getSpawnLocation();
+		if (main.getConfig().getString("spawn-point").equalsIgnoreCase("CUSTOM_SPAWNPOINT")) {
+			if (main.getConfig().getConfigurationSection("spawn-location") != null) {
+				ConfigurationSection s = main.getConfig().getConfigurationSection("spawn-location");
+				loc = new Location(Bukkit.getWorld(s.getString("world")), s.getDouble("x"), s.getDouble("y"),
+						s.getDouble("z"));
+			} else {
+				main.getConfig().set("spawn-point", "WORLD_SPAWNPOINT");
+				main.send(
+						"&cError! Can not teleport player while &f'spawn-location' &cis &fundefined&c. Set &f'spawn-point' &cto &f'WORLD_SPAWNPOINT'&c.");
+				main.saveConfig();
+			}
+		} else {
+			if (!main.getConfig().getString("spawn-point").equalsIgnoreCase("WORLD_SPAWNPOINT")) {
+				main.getConfig().set("spawn-point", "WORLD_SPAWNPOINT");
+				main.send(
+						"&cError! Can not teleport player while &f'spawn-point' &cis &funknown&c. Set to &f'WORLD_SPAWNPOINT'&c.");
+				main.saveConfig();
+			}
+		}
+		return loc;
+	}
+	
 }

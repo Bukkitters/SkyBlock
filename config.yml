@@ -1,1 +1,18 @@
 wand-material: 'WOODEN_AXE'
+spawn-point: 'CUSTOM_SPAWNPOINT'
+spawn-location:
+  world:
+  x:
+  y:
+  z:
+kits:
+  show-only-available: true
+  show-limits: true
+schemes:
+  show-only-available: true
+  show-limits: true
+free-kits:
+- defaultKit
+- farmer
+free-schemes:
+- defaultScheme
