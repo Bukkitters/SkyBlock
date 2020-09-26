@@ -1,15 +1,11 @@
+#TODO
 wand-material: 'WOODEN_AXE'
 spawn-point: 'WORLD_SPAWNPOINT'
-spawn-location:
-  world: world
-  x: 0
-  y: 60
-  z: 0
 kits:
-  show-only-available: true
+  show-only-available: false
   show-limits: true
 schemes:
-  show-only-available: true
+  show-only-available: false
   show-limits: true
 free-kits:
 - defaultKit
