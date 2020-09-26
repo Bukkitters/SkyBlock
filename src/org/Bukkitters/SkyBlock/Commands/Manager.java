@@ -84,10 +84,10 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "kits":
-					kits.sendKits(p);
+					kits.sendKits(sender);
 					break;
 				case "schemes":
-					sc.sendSchemes(p);
+					sc.sendSchemes(sender);
 					break;
 				default:
 					sender.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
@@ -104,6 +104,7 @@ public class Manager implements CommandExecutor {
 						if (main.getLRhands().containsKey(p.getUniqueId())) {
 							if (main.getLRhands().get(p.getUniqueId())[0] != null
 									&& main.getLRhands().get(p.getUniqueId())[1] != null) {
+								sender.sendMessage("Привет!");
 								if (!sc.exists(args[2])) {
 									sc.createScheme(args[2], main.getLRhands().get(p.getUniqueId()), p.getUniqueId(),
 											p.getWorld());
@@ -112,10 +113,12 @@ public class Manager implements CommandExecutor {
 									p.sendMessage(colors.color(main.getMessages().getString("scheme-exists")));
 								}
 							} else {
-								p.sendMessage(colors.color(main.getMessages().getString("not-selected")));
+								sender.sendMessage("Пока.");
+								sender.sendMessage(colors.color(main.getMessages().getString("not-selected")));
 							}
 						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("not-selected")));
+							sender.sendMessage("Пока!");
+							sender.sendMessage(colors.color(main.getMessages().getString("not-selected")));
 						}
 					} else if (args[1].equalsIgnoreCase("delete")) {
 						if (sc.exists(args[2])) {
@@ -167,16 +170,18 @@ public class Manager implements CommandExecutor {
 					break;
 				case "info":
 					throwInfo(sender, false);
-					main.send("");
 					break;
 				case "kits":
 					kits.sendKits(sender);
+					break;
 				case "schemes":
 					sc.sendSchemes(sender);
+					break;
 				case "reload":
 					main.reloadConfig();
 					main.reloadMessages();
 					main.send(colors.color(main.getMessages().getString("reloaded")));
+					break;
 				default:
 					break;
 				}
