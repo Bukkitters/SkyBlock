@@ -149,6 +149,7 @@ public class Manager implements CommandExecutor {
 				default:
 					break;
 				}
+				break;
 			default:
 				sender.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
 				break;
