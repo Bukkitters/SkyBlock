@@ -64,7 +64,12 @@ public class Schemes {
 		}
 		return false;
 	}
-
+	
+	public void delScheme(String string) {
+		File f = new File(main.getDataFolder() + "/schemes", string + ".yml");
+		f.delete();
+	}
+	
 	public void buildScheme(UUID id, Location location, String scheme) {
 		FileConfiguration sc = YamlConfiguration
 				.loadConfiguration(new File(main.getDataFolder() + "/schemes", scheme + ".yml"));

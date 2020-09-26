@@ -34,6 +34,7 @@ public class Selector implements Listener {
 						ll[1] = e.getClickedBlock().getLocation();
 						main.getLRhands().put(p.getUniqueId(), ll);
 						p.sendMessage(colors.color(main.getMessages().getString("second-set")));
+						e.setCancelled(true);
 					} else if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 						Location[] ll = new Location[2];
 						if (main.getLRhands().containsKey(p.getUniqueId())) {
@@ -42,6 +43,7 @@ public class Selector implements Listener {
 						ll[0] = e.getClickedBlock().getLocation();
 						main.getLRhands().put(p.getUniqueId(), ll);
 						p.sendMessage(colors.color(main.getMessages().getString("first-set")));
+						e.setCancelled(true);
 					}
 				}
 			}

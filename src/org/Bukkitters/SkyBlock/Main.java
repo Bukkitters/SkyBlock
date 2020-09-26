@@ -97,7 +97,7 @@ public class Main extends JavaPlugin {
 	}
 
 	public void send(String s) {
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[SkyBlock] " + s));
+		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&b[SkyBlock]&r " + s));
 	}
 
 	public void generateWorld() {

@@ -8,4 +8,4 @@ depends: [Vault]
 commands:
   skyblock:
     description: SkyBlock main command.
-    aliases: [sb, sblock, скайблок, blocksky]
+    aliases: [sb, sblock, скайблок]

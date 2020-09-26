@@ -32,7 +32,7 @@ public class Manager implements CommandExecutor {
 			Player p = (Player) sender;
 			switch (args.length) {
 			case 0:
-				throwInfo(sender);
+				throwInfo(sender, true);
 				break;
 			case 1:
 				switch (args[0]) {
@@ -55,7 +55,7 @@ public class Manager implements CommandExecutor {
 					throwHelp(sender, true);
 					break;
 				case "info":
-					throwInfo(sender);
+					throwInfo(sender, true);
 					break;
 				case "spawn":
 					if (!p.getWorld().getName().equalsIgnoreCase("skyblock")) {
@@ -117,7 +117,12 @@ public class Manager implements CommandExecutor {
 							p.sendMessage(colors.color(main.getMessages().getString("not-selected")));
 						}
 					} else if (args[1].equalsIgnoreCase("delete")) {
-						// TODO
+						if (sc.exists(args[2])) {
+							sc.delScheme(args[2]);
+							sender.sendMessage(colors.color(main.getMessages().getString("scheme-deleted")));
+						} else {
+							sender.sendMessage(colors.color(main.getMessages().getString("scheme-not-exist")));
+						}
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
 					}
@@ -151,7 +156,7 @@ public class Manager implements CommandExecutor {
 		} else {
 			switch (args.length) {
 			case 0:
-				throwInfo(sender);
+				throwInfo(sender, false);
 				break;
 			case 1:
 				switch (args[0]) {
@@ -159,7 +164,8 @@ public class Manager implements CommandExecutor {
 					throwHelp(sender, false);
 					break;
 				case "info":
-					throwInfo(sender);
+					throwInfo(sender, false);
+					main.send("");
 					break;
 				case "kits":
 					kits.sendKits(sender);
@@ -186,14 +192,34 @@ public class Manager implements CommandExecutor {
 
 	private void throwHelp(CommandSender sender, boolean b) {
 		if (b) {
-
+			sender.sendMessage(colors.color("&e"));
 		} else {
-
+			main.send("");
+			main.send("");
+			main.send("");
+			main.send("");
+			main.send("");
+			main.send("");
+			main.send("");
+			main.send("");
+			main.send("");
 		}
 	}
 
-	private void throwInfo(CommandSender sender) {
-
+	private void throwInfo(CommandSender sender, boolean b) {
+		if(b) {
+			sender.sendMessage(colors.color("&bSkyBlock"));
+			sender.sendMessage(colors.color("&eVersion: &b" + main.getDescription().getVersion()));
+			sender.sendMessage(colors.color("&eAuthors: &b" + main.getDescription().getAuthors()));
+			sender.sendMessage(colors.color("&eUse &b/skyblock help &efor help."));
+			sender.sendMessage(colors.color("&eAliases: &b/sb, /sblock, /скайблок"));
+		} else {
+			main.send("&bSkyBlock");
+			main.send("&eVersion: &b" + main.getDescription().getVersion());
+			main.send("&eAuthors: &b" + main.getDescription().getAuthors());
+			main.send("&eUse &b/skyblock help &efor help.");
+			main.send("&eAliases: &b/sb, /sblock, /скайблок");
+		}
 	}
 
 	public Location getBackLocation() {
