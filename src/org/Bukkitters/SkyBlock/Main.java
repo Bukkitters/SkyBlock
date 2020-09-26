@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.Bukkitters.SkyBlock.Commands.Manager;
 import org.Bukkitters.SkyBlock.Events.InventoryProtect;
 import org.Bukkitters.SkyBlock.Events.JoinEvent;
+import org.Bukkitters.SkyBlock.Events.QuitEvent;
 import org.Bukkitters.SkyBlock.Events.Selector;
 import org.Bukkitters.SkyBlock.Utils.IChunkGenerator;
 import org.Bukkitters.SkyBlock.Utils.PlayerDataClass;
@@ -34,6 +35,7 @@ public class Main extends JavaPlugin {
 	private FileConfiguration msg;
 	private List<UUID> translators = new ArrayList<UUID>();
 	private HashMap<UUID, Location[]> lrhands = new HashMap<UUID, Location[]>();
+	private HashMap<UUID, UUID> invites = new HashMap<UUID, UUID>();
 	private static Main instance;
 
 	public void onEnable() {
@@ -48,7 +50,14 @@ public class Main extends JavaPlugin {
 		new Manager(this);
 		new JoinEvent(this);
 		new InventoryProtect(this);
+		new QuitEvent(this);
 		send("&aPlugin enabled!");
+	}
+	
+	public void onDisable() {
+		saveMessages();
+		saveConfig();
+		send("&cPlugin disabled!");
 	}
 
 	private void saveProfiles() {
@@ -60,25 +69,15 @@ public class Main extends JavaPlugin {
 	}
 
 	private void generateFoldersAndFiles() {
-		if (!new File(this.getDataFolder(), "schemes").exists()) {
-			new File(this.getDataFolder(), "schemes").mkdir();
-		}
-		if (!new File(this.getDataFolder(), "kits").exists()) {
-			new File(this.getDataFolder(), "kits").mkdir();
-		}
+		if (!new File(this.getDataFolder(), "schemes").exists()) new File(this.getDataFolder(), "schemes").mkdir();
+		if (!new File(this.getDataFolder(), "kits").exists()) new File(this.getDataFolder(), "kits").mkdir();
 		if (getConfig().getBoolean("create-default-files")) {
 			File dk = new File(this.getDataFolder() + "/kits", "defaultKit.yml");
 			File f = new File(this.getDataFolder() + "/kits", "farmer.yml");
 			File ds = new File(this.getDataFolder() + "/schemes", "defaultScheme");
-			if (!dk.exists()) {
-				saveResource("kits/defaultKit.yml", false);
-			}
-			if (!f.exists()) {
-				saveResource("kits/farmer.yml", false);
-			}
-			if (!ds.exists()) {
-				saveResource("schemes/defaultScheme.yml", false);
-			}
+			if (!dk.exists()) saveResource("kits/defaultKit.yml", false);
+			if (!f.exists()) saveResource("kits/farmer.yml", false);
+			if (!ds.exists()) saveResource("schemes/defaultScheme.yml", false);
 		}
 	}
 
@@ -99,24 +98,14 @@ public class Main extends JavaPlugin {
 	public void reloadMessages() {
 		msg = YamlConfiguration.loadConfiguration(msgf);
 		InputStream defConfigStream = getResource("config.yml");
-		if (defConfigStream == null) {
-			return;
-		}
+		if (defConfigStream == null) return;
 		msg.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
-	}
-
-	public void onDisable() {
-		saveMessages();
-		saveConfig();
-		send("&cPlugin disabled!");
 	}
 
 	private void saveMessages() {
 		try {
 			msg.save(msgf);
-		} catch (IOException ex) {
-			send("&cFile wasn't saved!");
-		}
+		} catch (IOException ex) {}
 	}
 
 	public void send(String s) {
@@ -141,6 +130,10 @@ public class Main extends JavaPlugin {
 
 	public HashMap<UUID, Location[]> getLRhands() {
 		return lrhands;
+	}
+
+	public HashMap<UUID, UUID> getInvites() {
+		return invites;
 	}
 
 }

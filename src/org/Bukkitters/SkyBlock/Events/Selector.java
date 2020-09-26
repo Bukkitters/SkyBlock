@@ -15,6 +15,7 @@ public class Selector implements Listener {
 
 	private ChatColors colors = new ChatColors();
 	private Main main;
+	
 	public Selector(Main main) {
 		this.main = main;
 		main.getServer().getPluginManager().registerEvents(this, main);

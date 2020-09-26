@@ -1,16 +1,17 @@
 package org.Bukkitters.SkyBlock.Commands;
 
+import java.util.UUID;
 import org.Bukkitters.SkyBlock.Main;
 import org.Bukkitters.SkyBlock.Utils.ChatColors;
 import org.Bukkitters.SkyBlock.Utils.Kits;
 import org.Bukkitters.SkyBlock.Utils.PlayerDataClass;
 import org.Bukkitters.SkyBlock.Utils.Schemes;
+import org.Bukkitters.SkyBlock.Utils.SkyBlocks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public class Manager implements CommandExecutor {
@@ -19,6 +20,7 @@ public class Manager implements CommandExecutor {
 	private Kits kits = new Kits();
 	private PlayerDataClass data = new PlayerDataClass();
 	private ChatColors colors = new ChatColors();
+	private SkyBlocks sb = new SkyBlocks();
 	private Main main;
 
 	public Manager(Main main) {
@@ -40,14 +42,33 @@ public class Manager implements CommandExecutor {
 					p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
 					break;
 				case "create":
-					Location location = new Location(Bukkit.getWorld("skyblock"), 0, 70, 0);
+					Location location = sb.findLocation();
 					data.setWorldInventory(p.getUniqueId(), p.getInventory());
 					p.teleport(location);
 					data.swapInventory(p);
-					sc.buildScheme(p.getUniqueId(), location, sc.randomScheme());
+					sb.buildScheme(p.getUniqueId(), location, sc.randomScheme());
+					p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation().clone().add(0, 1, 0));
 					p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
 					break;
 				case "delete":
+					if (sb.hasSkyBlock(p)) {
+						sb.deleteSkyBlock(Bukkit.getPlayerExact(args[1]), true);
+					} else {
+						p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
+					}
+					break;
+				case "setspawn":
+					//TODO spawnpoint
+					break;
+				case "accept":
+					if (sender.hasPermission("advancedskyblock.accept")) {
+						if (main.getInvites().containsKey(((Player) sender).getUniqueId())) {
+							accept(sender, main.getInvites().get(((Player) sender).getUniqueId()));
+							sender.sendMessage(colors.color(main.getMessages().getString("accepted")));
+						}
+					} else {
+						sender.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+					}
 					break;
 				case "help":
 					throwHelp(sender, true);
@@ -56,24 +77,26 @@ public class Manager implements CommandExecutor {
 					throwInfo(sender, true);
 					break;
 				case "spawn":
-					if (!p.getWorld().getName().equalsIgnoreCase("skyblock")) {
+					if (sb.hasSkyBlock(p)) {
 						main.getTranslators().add(p.getUniqueId());
-						data.setWorldInventory(p.getUniqueId(), p.getInventory());
-						p.teleport(new Location(Bukkit.getWorld("skyblock"), 0, 70, 0));
-						data.swapInventory(p);
+						if (!p.getWorld().getName().equalsIgnoreCase("skyblock")) {
+							data.setWorldInventory(p.getUniqueId(), p.getInventory());
+							p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(sb.getSkyblockSpawn(p.getUniqueId())).getLocation().clone().add(0, 1, 0));
+							data.swapInventory(p);
+						} else {
+							p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(sb.getSkyblockSpawn(p.getUniqueId())).getLocation().clone().add(0, 1, 0));
+						}
 						main.getTranslators().remove(p.getUniqueId());
 						p.sendMessage(colors.color(main.getMessages().getString("spawned")));
 					} else {
-						main.getTranslators().add(p.getUniqueId());
-						p.teleport(new Location(Bukkit.getWorld("skyblock"), 0, 70, 0));
-						main.getTranslators().remove(p.getUniqueId());
+						p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
 					}
 					break;
 				case "leave":
 					if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
 						main.getTranslators().add(p.getUniqueId());
 						data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
-						p.teleport(getBackLocation());
+						p.teleport(sb.getBackLocation());
 						data.swapInventory(p);
 						main.getTranslators().remove(p.getUniqueId());
 						p.sendMessage(colors.color(main.getMessages().getString("left")));
@@ -92,7 +115,32 @@ public class Manager implements CommandExecutor {
 					break;
 				}
 			} else if (args.length == 2) {
-
+				switch (args[0]) {
+				case "kit":
+					if (sender.hasPermission("advancedskyblock.kit")) {
+						//TODO get kit <name>
+					} else {
+						sender.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+					}
+					break;
+				case "invite":
+					if (sender.hasPermission("advancedskyblock.invite")) {
+						invite(sender, args[1]);
+					} else {
+						sender.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+					}
+					break;
+				case "create":
+					if (sender.hasPermission("advancedskyblock.create")) {
+						//TODO create skyblock with <scheme>
+					} else {
+						sender.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+					}
+					break;
+				default:
+					sender.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
+					break;
+				}
 			} else if (args.length == 3) {
 				switch (args[0]) {
 				case "scheme":
@@ -100,7 +148,6 @@ public class Manager implements CommandExecutor {
 						if (main.getLRhands().containsKey(p.getUniqueId())) {
 							if (main.getLRhands().get(p.getUniqueId())[0] != null
 									&& main.getLRhands().get(p.getUniqueId())[1] != null) {
-								sender.sendMessage("Привет!");
 								if (!sc.exists(args[2])) {
 									sc.createScheme(args[2], main.getLRhands().get(p.getUniqueId()), p.getUniqueId(),
 											p.getWorld());
@@ -108,12 +155,9 @@ public class Manager implements CommandExecutor {
 								} else {
 									p.sendMessage(colors.color(main.getMessages().getString("scheme-exists")));
 								}
-							} else {
-								sender.sendMessage("Пока.");
 								sender.sendMessage(colors.color(main.getMessages().getString("not-selected")));
 							}
 						} else {
-							sender.sendMessage("Пока!");
 							sender.sendMessage(colors.color(main.getMessages().getString("not-selected")));
 						}
 					} else if (args[1].equalsIgnoreCase("delete")) {
@@ -151,7 +195,7 @@ public class Manager implements CommandExecutor {
 					break;
 				}
 			} else {
-				p.sendMessage(colors.color(main.getConfig().getString("wrong-command")));
+				p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
 			}
 		} else {
 			switch (args.length) {
@@ -183,14 +227,19 @@ public class Manager implements CommandExecutor {
 				}
 				break;
 			case 2:
-				if (args[0].equalsIgnoreCase("givekit")) {
-					// TODO give kit
-					main.send(main.getConfig().getString("kit-given"));
-				} else if (args[0].equalsIgnoreCase("delete")) {
-					// TODO del skyblock
-					main.send(main.getConfig().getString("deleted"));
+				if (args[0].equalsIgnoreCase("delete")) {
+					if (Bukkit.getPlayerExact(args[1]) != null) {
+						if (sb.hasSkyBlock(Bukkit.getPlayerExact(args[1]))) {
+							sb.deleteSkyBlock(Bukkit.getPlayerExact(args[1]), false);
+						} else {
+							main.send(main.getMessages().getString("player-has-no-skyblock"));
+						}
+					} else {
+						main.send(main.getMessages().getString("player-not-found"));
+					}
+					main.send(main.getMessages().getString("deleted"));
 				} else {
-					main.send(main.getConfig().getString("wrong-command"));
+					main.send(main.getMessages().getString("wrong-command"));
 				}
 				break;
 			case 3:
@@ -203,7 +252,7 @@ public class Manager implements CommandExecutor {
 							main.send(main.getMessages().getString("kit-not-exist"));
 						}
 					} else {
-						main.send(main.getConfig().getString("wrong-command"));
+						main.send(main.getMessages().getString("wrong-command"));
 					}
 				} else if (args[0].equalsIgnoreCase("scheme")) {
 					if (args[1].equalsIgnoreCase("delete")) {
@@ -214,18 +263,66 @@ public class Manager implements CommandExecutor {
 							main.send(main.getMessages().getString("scheme-not-exist"));
 						}
 					} else {
-						main.send(main.getConfig().getString("wrong-command"));
+						main.send(main.getMessages().getString("wrong-command"));
+					}
+				} else if (args[0].equalsIgnoreCase("givekit")) {
+					if (kits.exists(args[1])) {
+						if (Bukkit.getPlayerExact(args[2]) != null) {
+							kits.giveKit(Bukkit.getPlayerExact(args[2]), args[1]);
+							main.send(main.getMessages().getString("kit-given"));
+						} else {
+							main.send(main.getMessages().getString("player-not-found"));
+						}
+					} else {
+						main.send(main.getMessages().getString("kit-not-exist"));
 					}
 				} else {
-					main.send(main.getConfig().getString("wrong-command"));
+					main.send(main.getMessages().getString("wrong-command"));
 				}
 				break;
 			default:
-				main.send(main.getConfig().getString("wrong-command"));
+				main.send(main.getMessages().getString("wrong-command"));
 				break;
 			}
 		}
 		return true;
+	}
+	
+	private void invite(CommandSender sender, String string) {
+		if (Bukkit.getPlayerExact(string) != null) {
+			if (sender.hasPermission("advancedskyblock.invite")) {
+				UUID id = Bukkit.getPlayerExact(string).getUniqueId();
+				Player p = (Player) sender;
+				if (Bukkit.getPlayer(id).isOnline()) {
+					if (!id.equals(p.getUniqueId())) {
+						if (sb.hasSkyBlock(p)) {
+							main.getInvites().put(id, p.getUniqueId());
+							p.sendMessage(colors.color(main.getMessages().getString("invited")));
+							Bukkit.getPlayer(id).sendMessage(colors.color(
+									main.getMessages().getString("player-invited").replaceAll("%name%", p.getName())));
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
+						}
+					} else {
+						p.sendMessage(colors.color(main.getMessages().getString("self-invite")));
+					}
+				} else {
+					p.sendMessage(colors.color(main.getMessages().getString("player-offline")));
+				}
+			} else {
+				sender.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+			}
+		} else {
+			sender.sendMessage(colors.color(main.getMessages().getString("player-not-found")));
+		}
+	}
+
+	private void accept(CommandSender sender, UUID uuid) {
+		((Player) sender).teleport(sb.getSkyblockSpawn(uuid));
+		sender.sendMessage(colors.color(main.getMessages().getString("accepted")));
+		Bukkit.getPlayer(uuid)
+				.sendMessage(colors.color(main.getMessages().getString("player-accepted")));
+		main.getInvites().remove(((Player) sender).getUniqueId());
 	}
 
 	private void throwHelp(CommandSender sender, boolean b) {
@@ -235,10 +332,6 @@ public class Manager implements CommandExecutor {
 			sender.sendMessage(colors.color("&e/skyblock info &f- plugin info"));
 			sender.sendMessage(colors.color("&e/skyblock kits &f- kits list"));
 			sender.sendMessage(colors.color("&e/skyblock schemes &f- schemes list"));
-			sender.sendMessage(colors.color("&e/skyblock kit delete <name> &f- delete kit"));
-			sender.sendMessage(colors.color("&e/skyblock scheme delete <name> &f- delete scheme"));
-			sender.sendMessage(colors.color("&e/skyblock givekit <player> &f- give player a kit"));
-			sender.sendMessage(colors.color("&e/skyblock delete <player> &f- delete player's skyblock"));
 		} else {
 			main.send("&bSkyBlock &ehelp page:");
 			main.send("&e/skyblock help &f- opens this page");
@@ -247,7 +340,7 @@ public class Manager implements CommandExecutor {
 			main.send("&e/skyblock schemes &f- schemes list");
 			main.send("&e/skyblock kit delete <name> &f- delete kit");
 			main.send("&e/skyblock scheme delete <name> &f- delete scheme");
-			main.send("&e/skyblock givekit <player> &f- give player a kit");
+			main.send("&e/skyblock givekit <name> <player> &f- give player a kit");
 			main.send("&e/skyblock delete <player> &f- delete player's skyblock");
 		}
 	}
@@ -266,30 +359,6 @@ public class Manager implements CommandExecutor {
 			main.send("&eUse &b/skyblock help &efor help.");
 			main.send("&eAliases: &b/sb, /sblock, /скайблок");
 		}
-	}
-
-	public Location getBackLocation() {
-		Location loc = Bukkit.getWorlds().get(0).getSpawnLocation();
-		if (main.getConfig().getString("spawn-point").equalsIgnoreCase("CUSTOM_SPAWNPOINT")) {
-			if (main.getConfig().getConfigurationSection("spawn-location") != null) {
-				ConfigurationSection s = main.getConfig().getConfigurationSection("spawn-location");
-				loc = new Location(Bukkit.getWorld(s.getString("world")), s.getDouble("x"), s.getDouble("y"),
-						s.getDouble("z"));
-			} else {
-				main.getConfig().set("spawn-point", "WORLD_SPAWNPOINT");
-				main.send(
-						"&cError! Can not teleport player while &f'spawn-location' &cis &fundefined&c. Set &f'spawn-point' &cto &f'WORLD_SPAWNPOINT'&c.");
-				main.saveConfig();
-			}
-		} else {
-			if (!main.getConfig().getString("spawn-point").equalsIgnoreCase("WORLD_SPAWNPOINT")) {
-				main.getConfig().set("spawn-point", "WORLD_SPAWNPOINT");
-				main.send(
-						"&cError! Can not teleport player while &f'spawn-point' &cis &funknown&c. Set to &f'WORLD_SPAWNPOINT'&c.");
-				main.saveConfig();
-			}
-		}
-		return loc;
 	}
 
 }

@@ -20,7 +20,6 @@ public class Schemes {
 
 	private Main main = Main.getInstance();
 	private File schemesFolder = new File(main.getDataFolder(), "schemes");
-	private File skyBlocksFolder = new File(main.getDataFolder(), "skyblocks");
 	private ChatColors colors = new ChatColors();
 
 	public void createScheme(String name, Location[] locations, UUID id, World w) {
@@ -64,22 +63,10 @@ public class Schemes {
 		}
 		return false;
 	}
-	
+
 	public void delScheme(String string) {
 		File f = new File(main.getDataFolder() + "/schemes", string + ".yml");
 		f.delete();
-	}
-	
-	public void buildScheme(UUID id, Location location, String scheme) {
-		FileConfiguration sc = YamlConfiguration
-				.loadConfiguration(new File(main.getDataFolder() + "/schemes", scheme + ".yml"));
-		for (String s : sc.getStringList("locations")) {
-			double x = Double.valueOf(s.split(";")[0]), y = Double.valueOf(s.split(";")[1]),
-					z = Double.valueOf(s.split(";")[2]);
-			Location loc = new Location(Bukkit.getWorld("skyblock"), x, y, z);
-			Material m = Material.valueOf(s.split(";")[3]);
-			location.clone().add(loc).getBlock().setType(m);
-		}
 	}
 
 	public String randomScheme() {
@@ -92,36 +79,6 @@ public class Schemes {
 		}
 	}
 
-	public Location findLocation() {
-		Location location = new Location(Bukkit.getWorld("skyblock"), 0.0, 69.0, 0.0);
-		List<Location> locs = new ArrayList<Location>();
-		if (skyBlocksFolder != null) {
-			for (File f : skyBlocksFolder.listFiles()) {
-				FileConfiguration c = YamlConfiguration.loadConfiguration(f);
-				locs.add(c.getLocation("spawnpoint"));
-			}
-			Random r = new Random();
-			int i = r.nextInt(3);
-			while (locs.contains(location)) {
-				switch (i) {
-				case 0:
-					location.add(640.0, 0.0, 0.0);
-					break;
-				case 1:
-					location.add(0.0, 0.0, 640.0);
-					break;
-				case 2:
-					location.subtract(640.0, 0.0, 0.0);
-					break;
-				case 3:
-					location.subtract(0.0, 0.0, 640.0);
-					break;
-				}
-			}
-		}
-		return location;
-	}
-	
 	public void sendSchemes(CommandSender sender) {
 		sender.sendMessage(colors.color(main.getMessages().getString("schemes-title")));
 		if (sender instanceof Player) {
@@ -168,35 +125,13 @@ public class Schemes {
 				FileConfiguration f = YamlConfiguration.loadConfiguration(new File(schemesFolder, st + ".yml"));
 				if (p.hasPermission(f.getString("permission"))) {
 					return colors.color(main.getMessages().getString("available"));
+				} else if (f.getString("owner").equalsIgnoreCase(id.toString())) {
+					return colors.color(main.getMessages().getString("available"));
 				} else {
 					return colors.color(main.getMessages().getString("unavailable"));
 				}
 			}
 		}
 	}
-	
-	public void demolish(Location loc) {
-		Boolean empty = true;
-		for (Double i = 1.0; i < 69.0; i++) {
-			empty = true;
-			for (Double a = loc.getX() - i; a < loc.getX() + i; a++) {
-				for (Double b = loc.getY() - i; b < loc.getY() + i; b++) {
-					for (Double c = loc.getZ() - i; c < loc.getZ() + i; c++) {
-						if (Bukkit.getWorld("skyblock").getBlockAt(new Location(Bukkit.getWorld("skyblock"), a, b, c))
-								.getType() != Material.AIR) {
-							new Location(Bukkit.getWorld("skyblock"), a, b, c).getBlock().setType(Material.AIR);
-							empty = false;
-						}
-					}
-				}
-			}
-			if (empty) {
-				return;
-			}
-		}
-	}
 
-	public void sendSchemes(Player p) {
-		
-	}
 }

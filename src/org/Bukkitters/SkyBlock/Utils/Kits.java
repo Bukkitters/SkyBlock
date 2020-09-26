@@ -18,6 +18,7 @@ public class Kits {
 
 	private Main main = Main.getInstance();
 	private ChatColors colors = new ChatColors();
+	private PlayerDataClass data = new PlayerDataClass();
 	private File kitsFolder = new File(main.getDataFolder(), "kits");
 
 	public boolean exists(String s) {
@@ -104,6 +105,39 @@ public class Kits {
 				}
 			}
 		}
+	}
+	
+	public boolean isAvailable(String kit, UUID id) {
+		Player p = Bukkit.getPlayer(id);
+		if (p.hasPermission("skyblock.admin")) {
+			return true;
+		} else {
+			if (main.getConfig().getStringList("free-kits").contains(kit)) {
+				return true;
+			} else {
+				FileConfiguration f = YamlConfiguration.loadConfiguration(new File(kitsFolder, kit + ".yml"));
+				if (p.hasPermission(f.getString("permission"))) {
+					return true;
+				} else if (f.getString("owner").equalsIgnoreCase(id.toString())) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+	}
+
+	public void giveKit(Player p, String kit) {
+		data.addUsedKit(p, kit);
+		for (ItemStack i : getKit(kit)) {
+			p.getInventory().addItem(i);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<ItemStack> getKit(String kit) {
+		FileConfiguration f = YamlConfiguration.loadConfiguration(new File(kitsFolder, kit + ".yml"));
+		return (List<ItemStack>) f.getList("items");
 	}
 
 }
