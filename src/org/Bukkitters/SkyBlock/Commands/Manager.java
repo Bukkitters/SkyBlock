@@ -231,7 +231,7 @@ public class Manager implements CommandExecutor {
 	private void throwHelp(CommandSender sender, boolean b) {
 		if (b) {
 			sender.sendMessage(colors.color("&bSkyBlock &ehelp page:"));
-			main.send("");
+			sender.sendMessage(colors.color(""));
 		} else {
 			main.send("&bSkyBlock &ehelp page:");
 			main.send("");
