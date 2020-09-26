@@ -12,6 +12,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.google.common.base.Charsets;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -91,9 +92,17 @@ public class Main extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		reloadConfig();
-		reloadMessages();
+		saveMessages();
+		saveConfig();
 		send("&cPlugin disabled!");
+	}
+
+	private void saveMessages() {
+		try {
+			msg.save(msgf);
+		} catch (IOException ex) {
+			send("&cFile wasn't saved!");
+		}
 	}
 
 	public void send(String s) {
