@@ -231,10 +231,24 @@ public class Manager implements CommandExecutor {
 	private void throwHelp(CommandSender sender, boolean b) {
 		if (b) {
 			sender.sendMessage(colors.color("&bSkyBlock &ehelp page:"));
-			sender.sendMessage(colors.color(""));
+			sender.sendMessage(colors.color("&e/skyblock help &f- opens this page"));
+			sender.sendMessage(colors.color("&e/skyblock info &f- plugin info"));
+			sender.sendMessage(colors.color("&e/skyblock kits &f- kits list"));
+			sender.sendMessage(colors.color("&e/skyblock schemes &f- schemes list"));
+			sender.sendMessage(colors.color("&e/skyblock kit delete <name> &f- delete kit"));
+			sender.sendMessage(colors.color("&e/skyblock scheme delete <name> &f- delete scheme"));
+			sender.sendMessage(colors.color("&e/skyblock givekit <player> &f- give player a kit"));
+			sender.sendMessage(colors.color("&e/skyblock delete <player> &f- delete player's skyblock"));
 		} else {
 			main.send("&bSkyBlock &ehelp page:");
-			main.send("");
+			main.send("&e/skyblock help &f- opens this page");
+			main.send("&e/skyblock info &f- plugin info");
+			main.send("&e/skyblock kits &f- kits list");
+			main.send("&e/skyblock schemes &f- schemes list");
+			main.send("&e/skyblock kit delete <name> &f- delete kit");
+			main.send("&e/skyblock scheme delete <name> &f- delete scheme");
+			main.send("&e/skyblock givekit <player> &f- give player a kit");
+			main.send("&e/skyblock delete <player> &f- delete player's skyblock");
 		}
 	}
 
