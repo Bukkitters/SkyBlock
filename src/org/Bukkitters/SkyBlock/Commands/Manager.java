@@ -183,7 +183,15 @@ public class Manager implements CommandExecutor {
 				}
 				break;
 			case 2:
-				// TODO
+				if (args[0].equalsIgnoreCase("givekit")) {
+					// TODO give kit
+					main.send(main.getConfig().getString("kit-given"));
+				} else if (args[0].equalsIgnoreCase("delete")) {
+					// TODO del skyblock
+					main.send(main.getConfig().getString("deleted"));
+				} else {
+					main.send(main.getConfig().getString("wrong-command"));
+				}
 				break;
 			case 3:
 				if (args[0].equalsIgnoreCase("kit")) {

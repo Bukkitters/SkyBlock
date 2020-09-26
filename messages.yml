@@ -1,4 +1,6 @@
 spawned: '&aTeleported to SkyBlock.'
+deleted: '&aSkyblock deleted.'
+kit-given: '&aGiven kit to a player.'
 left: '&bTeleported to normal World.'
 first-set: '&aFirst position set!'
 second-set: '&aSecond position set!'
