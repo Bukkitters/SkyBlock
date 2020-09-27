@@ -100,7 +100,7 @@ public class PlayerDataClass {
 		return (List<ItemStack>) data.getList("SkyBlockInventory");
 	}
 
-	private List<String> getUsedKits(UUID id) {
+	List<String> getUsedKits(UUID id) {
 		List<String> usedKits = new ArrayList<String>();
 		File f = new File(Main.getInstance().getServer().getWorldContainer() + "/skyblock/playerdata",
 				id.toString() + ".yml");
