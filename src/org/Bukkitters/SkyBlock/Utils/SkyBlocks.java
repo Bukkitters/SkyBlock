@@ -151,7 +151,13 @@ public class SkyBlocks {
 
 	public boolean canBuild(UUID id) {
 		List<String> schemes = new ArrayList<String>();
-		if ()
+		if (schemesFolder.exists()) {
+			if (schemesFolder.listFiles().length > 0) {
+				for (File f : schemesFolder.listFiles()) {
+					
+				}
+			}
+		}
 		return false;
 	}
 

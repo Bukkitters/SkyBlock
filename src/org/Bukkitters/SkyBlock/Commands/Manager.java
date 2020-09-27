@@ -186,9 +186,6 @@ public class Manager implements CommandExecutor {
 				case "create":
 					if (sender.hasPermission("advancedskyblock.create")) {
 						if (sc.exists(args[1])) {
-<<<<<<< Updated upstream
-							if (sc.isAvailable()) {
-=======
 							if (sc.isAvailable(p.getUniqueId(), args[1])) {
 								Location location = sb.findLocation();
 								data.setWorldInventory(p.getUniqueId(), p.getInventory());
@@ -198,7 +195,6 @@ public class Manager implements CommandExecutor {
 								p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation().clone()
 										.add(0.0, 1.0, 0.0));
 								p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
->>>>>>> Stashed changes
 							} else {
 								sender.sendMessage(colors.color(main.getMessages().getString("scheme-not-available")));
 							}
