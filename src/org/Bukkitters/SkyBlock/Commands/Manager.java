@@ -74,8 +74,8 @@ public class Manager implements CommandExecutor {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 					}
 					break;
-				case "setspawn":
-					if (p.hasPermission("skyblock.setspawn")) {
+				case "setcustomspawn":
+					if (p.hasPermission("skyblock.setcustomspawn")) {
 						main.getConfig().set("spawn-location.world", p.getWorld().getName());
 						main.getConfig().set("spawn-location.x",
 								Double.valueOf(String.format("%.2f", p.getLocation().getX())));
@@ -85,6 +85,17 @@ public class Manager implements CommandExecutor {
 								Double.valueOf(String.format("%.2f", p.getLocation().getZ())));
 						main.saveConfig();
 						p.sendMessage(colors.color(main.getMessages().getString("spawn-set")));
+					} else {
+						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+					}
+					break;
+				case "setspawn":
+					if (p.hasPermission("skyblock.setspawn")) {
+						if (sb.hasSkyBlock(p)) {
+							sb.setSpawn(p.getUniqueId(), p.getLocation());
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
+						}
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 					}
@@ -116,12 +127,12 @@ public class Manager implements CommandExecutor {
 							if (!p.getWorld().getName().equalsIgnoreCase("skyblock")) {
 								data.setWorldInventory(p.getUniqueId(), p.getInventory());
 								p.teleport(Bukkit.getWorld("skyblock")
-										.getHighestBlockAt(sb.getSkyblockSpawn(p.getUniqueId())).getLocation().clone()
+										.getHighestBlockAt(sb.getSkyBlockSpawn(p.getUniqueId())).getLocation().clone()
 										.add(0, 1, 0));
 								data.swapInventory(p);
 							} else {
 								p.teleport(Bukkit.getWorld("skyblock")
-										.getHighestBlockAt(sb.getSkyblockSpawn(p.getUniqueId())).getLocation().clone()
+										.getHighestBlockAt(sb.getSkyBlockSpawn(p.getUniqueId())).getLocation().clone()
 										.add(0, 1, 0));
 							}
 							main.getTranslators().remove(p.getUniqueId());
@@ -442,8 +453,7 @@ public class Manager implements CommandExecutor {
 	}
 
 	private void accept(CommandSender sender, UUID uuid) {
-		((Player) sender).teleport(sb.getSkyblockSpawn(uuid));
-		sender.sendMessage(colors.color(main.getMessages().getString("accepted")));
+		((Player) sender).teleport(sb.getSkyBlockSpawn(uuid));
 		Bukkit.getPlayer(uuid).sendMessage(colors.color(main.getMessages().getString("player-accepted")));
 		main.getInvites().remove(((Player) sender).getUniqueId());
 	}

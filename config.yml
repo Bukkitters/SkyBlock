@@ -7,7 +7,7 @@ void-fall-protection: true
 create-default-files: true
 #Item in hand for selecting points
 wand-material: 'WOODEN_AXE'
-#Where to teleport players who leave skyblock. WORLD_SPAWNPOINT or CUSTOM_SPAWNPOINT(/sb setspawn).
+#Where to teleport players who leave skyblock. WORLD_SPAWNPOINT or CUSTOM_SPAWNPOINT(/sb setcustomspawn).
 spawn-point: 'WORLD_SPAWNPOINT'
 #Kits settings
 kits:

@@ -33,7 +33,7 @@ public class Damager implements Listener {
 				} else {
 					if (main.getConfig().getBoolean("void-fall-protection")) {
 						if (sb.hasSkyBlock((Player) e.getEntity())) {
-							e.getEntity().teleport(sb.getSkyblockSpawn(e.getEntity().getUniqueId()));
+							e.getEntity().teleport(sb.getSkyBlockSpawn(e.getEntity().getUniqueId()));
 						} else {
 							e.getEntity().teleport(sb.getBackLocation());
 						}

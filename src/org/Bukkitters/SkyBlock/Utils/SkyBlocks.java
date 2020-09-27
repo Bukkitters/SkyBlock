@@ -38,7 +38,9 @@ public class SkyBlocks {
 		} catch (IOException e) {
 		}
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
+		sb.set("location", location);
 		sb.set("spawnpoint", location);
+		location.clone().subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
 		sb.set("scheme", scheme);
 		try {
 			sb.save(skyblock);
@@ -73,7 +75,7 @@ public class SkyBlocks {
 		if (skyBlocksFolder.exists()) {
 			for (File f : skyBlocksFolder.listFiles()) {
 				FileConfiguration c = YamlConfiguration.loadConfiguration(f);
-				locs.add(c.getLocation("spawnpoint"));
+				locs.add(c.getLocation("location"));
 			}
 			Random r = new Random();
 			int i = r.nextInt(3);
@@ -107,7 +109,7 @@ public class SkyBlocks {
 	public void deleteSkyBlock(Player p, boolean b) {
 		File skyblock = new File(skyBlocksFolder, p.getUniqueId().toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
-		demolish(sb.getLocation("spawnpoint"));
+		demolish(sb.getLocation("location"));
 		skyblock.delete();
 		if (p.isOnline()) {
 			if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
@@ -121,10 +123,17 @@ public class SkyBlocks {
 		}
 	}
 
-	public Location getSkyblockSpawn(UUID id) {
+	public Location getSkyblockLocation(UUID id) {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
-		return sb.getLocation("spawnpoint");
+		return sb.getLocation("location");
+	}
+	
+	public Location getSkyBlockSpawn(UUID id) {
+		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
+		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
+		Location loc = sb.getLocation("spawnpoint");
+		return Bukkit.getWorld("skyblock").getHighestBlockAt(loc).getLocation().clone().add(0, 1, 0);
 	}
 
 	public Location getBackLocation() {
@@ -168,6 +177,16 @@ public class SkyBlocks {
 			}
 		}
 		return false;
+	}
+
+	public void setSpawn(UUID id, Location location) {
+		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
+		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
+		sb.set("spawnpoint", location);
+		location.clone().subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
+		try {
+			sb.save(skyblock);
+		} catch (IOException e) {}
 	}
 
 }
