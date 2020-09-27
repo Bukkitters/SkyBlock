@@ -182,6 +182,7 @@ public class SkyBlocks {
 	public void setSpawn(UUID id, Location location) {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
+		sb.getLocation("spawnpoint").clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
 		sb.set("spawnpoint", location);
 		location.clone().subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
 		try {

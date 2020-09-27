@@ -77,12 +77,9 @@ public class Manager implements CommandExecutor {
 				case "setcustomspawn":
 					if (p.hasPermission("skyblock.setcustomspawn")) {
 						main.getConfig().set("spawn-location.world", p.getWorld().getName());
-						main.getConfig().set("spawn-location.x",
-								Double.valueOf(String.format("%.2f", p.getLocation().getX())));
-						main.getConfig().set("spawn-location.y",
-								Double.valueOf(String.format("%.2f", p.getLocation().getY())));
-						main.getConfig().set("spawn-location.z",
-								Double.valueOf(String.format("%.2f", p.getLocation().getZ())));
+						main.getConfig().set("spawn-location.x", p.getLocation().getX());
+						main.getConfig().set("spawn-location.y", p.getLocation().getY());
+						main.getConfig().set("spawn-location.x", p.getLocation().getZ());
 						main.saveConfig();
 						p.sendMessage(colors.color(main.getMessages().getString("custom-spawn-set")));
 					} else {
@@ -183,9 +180,9 @@ public class Manager implements CommandExecutor {
 				switch (args[0]) {
 				case "kit":
 					if (p.hasPermission("skyblock.kit")) {
-						if (kits.exists(args[0])) {
-							if (kits.isAvailable(args[0], p.getUniqueId())) {
-								kits.giveKit(p, args[0]);
+						if (kits.exists(args[1])) {
+							if (kits.isAvailable(args[1], p.getUniqueId())) {
+								kits.giveKit(p, args[1]);
 								p.sendMessage(colors.color(main.getMessages().getString("kit-received")));
 							} else {
 								p.sendMessage(colors.color(main.getMessages().getString("kit-unavailable")));
@@ -260,6 +257,7 @@ public class Manager implements CommandExecutor {
 									} else {
 										p.sendMessage(colors.color(main.getMessages().getString("scheme-exists")));
 									}
+								} else {
 									p.sendMessage(colors.color(main.getMessages().getString("not-selected")));
 								}
 							} else {
