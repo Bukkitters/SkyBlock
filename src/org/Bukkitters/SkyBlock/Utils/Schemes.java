@@ -69,11 +69,23 @@ public class Schemes {
 		f.delete();
 	}
 
-	public String randomScheme() {
+	public String randomScheme(UUID id) {
 		if (schemesFolder.listFiles().length != 1) {
 			Random r = new Random();
-			int i = r.nextInt(schemesFolder.listFiles().length - 1);
-			return schemesFolder.listFiles()[i].getName().replaceAll(".yml", "");
+			List<String> schemes = new ArrayList<String>();
+			for (File f : schemesFolder.listFiles()) {
+				FileConfiguration c = YamlConfiguration.loadConfiguration(f);
+				if (c.getString("owner").equalsIgnoreCase(id.toString())) {
+					schemes.add(f.getName().replaceAll(".yml", ""));
+				} else if (Bukkit.getPlayer(id).hasPermission(c.getString("permission"))) {
+					schemes.add(f.getName().replaceAll(".yml", ""));
+				} else if (main.getConfig().getStringList("free-schemes")
+						.contains(f.getName().replaceAll(".yml", ""))) {
+					schemes.add(f.getName().replaceAll(".yml", ""));
+				}
+			}
+			int i = r.nextInt(schemes.size() - 1);
+			return schemes.get(i);
 		} else {
 			return schemesFolder.listFiles()[0].getName().replaceAll(".yml", "");
 		}

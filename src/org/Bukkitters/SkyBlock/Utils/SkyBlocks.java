@@ -16,12 +16,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class SkyBlocks {
-	
+
 	private Main main = Main.getInstance();
 	private File skyBlocksFolder = new File(main.getDataFolder(), "skyblocks");
 	private File schemesFolder = new File(main.getDataFolder(), "schemes");
 	private ChatColors colors = new ChatColors();
-	
+
 	public void buildScheme(UUID id, Location location, String scheme) {
 		FileConfiguration sc = YamlConfiguration
 				.loadConfiguration(new File(main.getDataFolder() + "/schemes", scheme + ".yml"));
@@ -35,15 +35,17 @@ public class SkyBlocks {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		try {
 			skyblock.createNewFile();
-		} catch (IOException e) {}
+		} catch (IOException e) {
+		}
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
 		sb.set("spawnpoint", location);
 		sb.set("scheme", scheme);
 		try {
 			sb.save(skyblock);
-		} catch (IOException e) {}
+		} catch (IOException e) {
+		}
 	}
-	
+
 	private void demolish(Location loc) {
 		Boolean empty = true;
 		for (Double i = 1.0; i < 69.0; i++) {
@@ -64,7 +66,7 @@ public class SkyBlocks {
 			}
 		}
 	}
-	
+
 	public Location findLocation() {
 		Location location = new Location(Bukkit.getWorld("skyblock"), 0.0, 70.0, 0.0);
 		List<Location> locs = new ArrayList<Location>();
@@ -124,7 +126,7 @@ public class SkyBlocks {
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
 		return sb.getLocation("spawnpoint");
 	}
-	
+
 	public Location getBackLocation() {
 		Location loc = Bukkit.getWorlds().get(0).getSpawnLocation();
 		if (main.getConfig().getString("spawn-point").equalsIgnoreCase("CUSTOM_SPAWNPOINT")) {
@@ -150,11 +152,18 @@ public class SkyBlocks {
 	}
 
 	public boolean canBuild(UUID id) {
-		List<String> schemes = new ArrayList<String>();
 		if (schemesFolder.exists()) {
 			if (schemesFolder.listFiles().length > 0) {
 				for (File f : schemesFolder.listFiles()) {
-					
+					FileConfiguration c = YamlConfiguration.loadConfiguration(f);
+					if (c.getString("owner").equalsIgnoreCase(id.toString())) {
+						return true;
+					} else if (Bukkit.getPlayer(id).hasPermission(c.getString("permission"))) {
+						return true;
+					} else if (main.getConfig().getStringList("free-schemes")
+							.contains(f.getName().replaceAll(".yml", ""))) {
+						return true;
+					}
 				}
 			}
 		}

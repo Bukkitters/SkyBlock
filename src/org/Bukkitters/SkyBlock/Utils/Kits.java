@@ -106,19 +106,27 @@ public class Kits {
 			}
 		}
 	}
-	
+
 	public boolean isAvailable(String kit, UUID id) {
 		Player p = Bukkit.getPlayer(id);
 		if (p.hasPermission("skyblock.admin")) {
 			return true;
 		} else {
-			if (main.getConfig().getStringList("free-kits").contains(kit)) {
-				return true;
-			} else {
-				FileConfiguration f = YamlConfiguration.loadConfiguration(new File(kitsFolder, kit + ".yml"));
-				if (p.hasPermission(f.getString("permission"))) {
+			if (!data.getUsedKits(id).contains(kit)) {
+				if (main.getConfig().getStringList("free-kits").contains(kit)) {
 					return true;
-				} else if (f.getString("owner").equalsIgnoreCase(id.toString())) {
+				} else {
+					FileConfiguration f = YamlConfiguration.loadConfiguration(new File(kitsFolder, kit + ".yml"));
+					if (p.hasPermission(f.getString("permission"))) {
+						return true;
+					} else if (f.getString("owner").equalsIgnoreCase(id.toString())) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+			} else {
+				if (p.hasPermission("skyblock.true")) {
 					return true;
 				} else {
 					return false;
