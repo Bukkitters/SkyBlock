@@ -55,7 +55,7 @@ public class Main extends JavaPlugin {
 		new QuitEvent(this);
 		new Damager(this);
 		send("&aPlugin enabled!");
-		getCommand("skyblock").setTabCompleter(new TabComplete());
+		getCommand("skyblock").setTabCompleter(new TabComplete(this));
 	}
 	
 	public void onDisable() {
