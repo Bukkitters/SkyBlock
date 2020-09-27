@@ -84,7 +84,7 @@ public class Manager implements CommandExecutor {
 						main.getConfig().set("spawn-location.z",
 								Double.valueOf(String.format("%.2f", p.getLocation().getZ())));
 						main.saveConfig();
-						p.sendMessage(colors.color(main.getMessages().getString("spawn-set")));
+						p.sendMessage(colors.color(main.getMessages().getString("custom-spawn-set")));
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 					}
@@ -93,6 +93,7 @@ public class Manager implements CommandExecutor {
 					if (p.hasPermission("skyblock.setspawn")) {
 						if (sb.hasSkyBlock(p)) {
 							sb.setSpawn(p.getUniqueId(), p.getLocation());
+							p.sendMessage(colors.color(main.getMessages().getString("spawn-set")));
 						} else {
 							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
 						}
