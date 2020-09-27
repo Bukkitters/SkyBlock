@@ -24,7 +24,30 @@ public class TabComplete implements TabCompleter, Listener {
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
 		if (cmd.getName().equalsIgnoreCase("skyblock")) {
 			if (sender instanceof Player) {
-
+				/*
+				 * Права
+				 * skyblock.info
+				 * skyblock.help
+				 * skyblock.leave
+				 * skyblock.spawn
+				 * skyblock.reload
+				 * skyblock.kits
+				 * skyblock.schemes
+				 * skyblock.create
+				 * skyblock.delete
+				 * skyblock.setspawn
+				 * skyblock.accept
+				 * skyblock.spawn
+				 * skyblock.kit
+				 * skyblock.invite
+				 * skyblock.setcustomspawn
+				 * skyblock.delete.others
+				 * skyblock.createscheme
+				 * skyblock.deletescheme
+				 * skyblock.createkit
+				 * skyblock.deletekit
+				 * skyblock.givekit
+				 */
 			} else {
 				if (args.length == 1) {
 					List<String> firstArg = new ArrayList<String>();

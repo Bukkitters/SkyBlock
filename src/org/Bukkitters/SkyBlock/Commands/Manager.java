@@ -37,7 +37,7 @@ public class Manager implements CommandExecutor {
 			} else if (args.length == 1) {
 				switch (args[0]) {
 				case "reload":
-					if (p.hasPermission("skyblock.reload")) {
+					if (isPermitted(p, "skyblock.reload")) {
 						main.reloadConfig();
 						main.reloadMessages();
 						p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
@@ -46,7 +46,7 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "create":
-					if (p.hasPermission("skyblock.create")) {
+					if (isPermitted(p, "skyblock.create")) {
 						if (sb.canBuild(p.getUniqueId())) {
 							Location location = sb.findLocation();
 							data.setWorldInventory(p.getUniqueId(), p.getInventory());
@@ -64,7 +64,7 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "delete":
-					if (p.hasPermission("skyblock.create")) {
+					if (isPermitted(p, "skyblock.create")) {
 						if (sb.hasSkyBlock(p)) {
 							sb.deleteSkyBlock(p, true);
 						} else {
@@ -75,7 +75,7 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "setcustomspawn":
-					if (p.hasPermission("skyblock.setcustomspawn")) {
+					if (isPermitted(p, "skyblock.setcustomspawn")) {
 						main.getConfig().set("spawn-location.world", p.getWorld().getName());
 						main.getConfig().set("spawn-location.x", p.getLocation().getX());
 						main.getConfig().set("spawn-location.y", p.getLocation().getY());
@@ -87,7 +87,7 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "setspawn":
-					if (p.hasPermission("skyblock.setspawn")) {
+					if (isPermitted(p, "skyblock.setspawn")) {
 						if (sb.hasSkyBlock(p)) {
 							if (sb.distanceKept(p.getUniqueId(), p.getLocation())) {
 								sb.setSpawn(p.getUniqueId(), p.getLocation());
@@ -103,7 +103,7 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "accept":
-					if (p.hasPermission("skyblock.accept")) {
+					if (isPermitted(p, "skyblock.accept")) {
 						if (main.getInvites().containsKey((p.getUniqueId()))) {
 							accept(sender, main.getInvites().get(p.getUniqueId()));
 							p.sendMessage(colors.color(main.getMessages().getString("accepted")));
@@ -116,14 +116,14 @@ public class Manager implements CommandExecutor {
 					throwHelp(sender, true);
 					break;
 				case "info":
-					if (p.hasPermission("skyblock.info")) {
+					if (isPermitted(p, "skyblock.info")) {
 						throwInfo(sender, true);
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 					}
 					break;
 				case "spawn":
-					if (p.hasPermission("skyblock.spawn")) {
+					if (isPermitted(p, "skyblock.spawn")) {
 						if (sb.hasSkyBlock(p)) {
 							main.getTranslators().add(p.getUniqueId());
 							if (!p.getWorld().getName().equalsIgnoreCase("skyblock")) {
@@ -147,7 +147,7 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "leave":
-					if (p.hasPermission("skyblock.leave")) {
+					if (isPermitted(p, "skyblock.leave")) {
 						if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
 							main.getTranslators().add(p.getUniqueId());
 							data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
@@ -163,14 +163,14 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "kits":
-					if (p.hasPermission("skyblock.kits")) {
+					if (isPermitted(p, "skyblock.kits")) {
 						kits.sendKits(sender);
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 					}
 					break;
 				case "schemes":
-					if (p.hasPermission("skyblock.schemes")) {
+					if (isPermitted(p, "skyblock.schemes")) {
 						sc.sendSchemes(sender);
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
@@ -183,7 +183,7 @@ public class Manager implements CommandExecutor {
 			} else if (args.length == 2) {
 				switch (args[0]) {
 				case "kit":
-					if (p.hasPermission("skyblock.kit")) {
+					if (isPermitted(p, "skyblock.kit")) {
 						if (kits.exists(args[1])) {
 							if (kits.isAvailable(args[1], p.getUniqueId())) {
 								kits.giveKit(p, args[1]);
@@ -199,14 +199,14 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "invite":
-					if (p.hasPermission("skyblock.invite")) {
-						invite(sender, args[1]);
+					if (isPermitted(p, "skyblock.invite")) {
+						invite(p, args[1]);
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 					}
 					break;
 				case "create":
-					if (p.hasPermission("skyblock.create")) {
+					if (isPermitted(p, "skyblock.create")) {
 						if (sc.exists(args[1])) {
 							if (sc.isAvailable(p.getUniqueId(), args[1])) {
 								Location location = sb.findLocation();
@@ -228,7 +228,7 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "delete":
-					if (p.hasPermission("skyblock.delete.others")) {
+					if (isPermitted(p, "skyblock.delete.others")) {
 						if (Bukkit.getPlayerExact(args[1]) != null) {
 							if (sb.hasSkyBlock(Bukkit.getPlayerExact(args[1]))) {
 								sb.deleteSkyBlock(Bukkit.getPlayerExact(args[1]), false);
@@ -250,7 +250,7 @@ public class Manager implements CommandExecutor {
 				switch (args[0]) {
 				case "scheme":
 					if (args[1].equalsIgnoreCase("create")) {
-						if (p.hasPermission("skyblock.createscheme")) {
+						if (isPermitted(p, "skyblock.createscheme")) {
 							if (main.getLRhands().containsKey(p.getUniqueId())) {
 								if (main.getLRhands().get(p.getUniqueId())[0] != null
 										&& main.getLRhands().get(p.getUniqueId())[1] != null) {
@@ -271,7 +271,7 @@ public class Manager implements CommandExecutor {
 							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
 					} else if (args[1].equalsIgnoreCase("delete")) {
-						if (p.hasPermission("skyblock.deletescheme")) {
+						if (isPermitted(p, "skyblock.deletescheme")) {
 							if (sc.exists(args[2])) {
 								sc.delScheme(args[2]);
 								p.sendMessage(colors.color(main.getMessages().getString("scheme-deleted")));
@@ -287,7 +287,7 @@ public class Manager implements CommandExecutor {
 					break;
 				case "kit":
 					if (args[1].equalsIgnoreCase("create")) {
-						if (p.hasPermission("skyblock.createkit")) {
+						if (isPermitted(p, "skyblock.createkit")) {
 							if (!kits.exists(args[2])) {
 								kits.createKit(args[2], p.getInventory(), p.getUniqueId());
 								p.sendMessage(colors.color(main.getMessages().getString("kit-created")));
@@ -298,7 +298,7 @@ public class Manager implements CommandExecutor {
 							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
 					} else if (args[1].equalsIgnoreCase("delete")) {
-						if (p.hasPermission("skyblock.deletekit")) {
+						if (isPermitted(p, "skyblock.deletekit")) {
 							if (kits.exists(args[2])) {
 								kits.deleteKit(args[2]);
 								p.sendMessage(colors.color(main.getMessages().getString("kit-deleted")));
@@ -313,7 +313,7 @@ public class Manager implements CommandExecutor {
 					}
 					break;
 				case "givekit":
-					if (p.hasPermission("skyblock.givekit")) {
+					if (isPermitted(p, "skyblock.givekit")) {
 						if (kits.exists(args[1])) {
 							if (Bukkit.getPlayerExact(args[2]) != null) {
 								kits.giveKit(Bukkit.getPlayerExact(args[2]), args[1]);
@@ -426,11 +426,10 @@ public class Manager implements CommandExecutor {
 		return true;
 	}
 
-	private void invite(CommandSender sender, String string) {
+	private void invite(Player p, String string) {
 		if (Bukkit.getPlayerExact(string) != null) {
-			if (sender.hasPermission("skyblock.invite")) {
+			if (isPermitted(p, "skyblock.invite")) {
 				UUID id = Bukkit.getPlayerExact(string).getUniqueId();
-				Player p = (Player) sender;
 				if (Bukkit.getPlayer(id).isOnline()) {
 					if (!id.equals(p.getUniqueId())) {
 						if (sb.hasSkyBlock(p)) {
@@ -448,10 +447,10 @@ public class Manager implements CommandExecutor {
 					p.sendMessage(colors.color(main.getMessages().getString("player-offline")));
 				}
 			} else {
-				sender.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+				p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 			}
 		} else {
-			sender.sendMessage(colors.color(main.getMessages().getString("player-not-found")));
+			p.sendMessage(colors.color(main.getMessages().getString("player-not-found")));
 		}
 	}
 
@@ -461,6 +460,15 @@ public class Manager implements CommandExecutor {
 		main.getInvites().remove(((Player) sender).getUniqueId());
 	}
 
+	private boolean isPermitted(Player p, String perm) {
+		if (p.hasPermission("skyblock.admin"))
+			return true;
+		else if (p.hasPermission(perm))
+			return true;
+		else
+			return false;
+	}
+
 	private void throwHelp(CommandSender sender, boolean b) {
 		if (b) {
 			sender.sendMessage(colors.color("&bSkyBlock &ehelp page:"));
@@ -468,6 +476,14 @@ public class Manager implements CommandExecutor {
 			sender.sendMessage(colors.color("&e/skyblock info &f- plugin info"));
 			sender.sendMessage(colors.color("&e/skyblock kits &f- kits list"));
 			sender.sendMessage(colors.color("&e/skyblock schemes &f- schemes list"));
+			sender.sendMessage(colors.color("create, delete, setspawn, spawn, leave, accept для игроков"));
+			sender.sendMessage(colors.color("kit <name>, invite <nick>, create <scheme> для игроков"));
+			if (sender.hasPermission("skyblock.admin")) {
+				sender.sendMessage(colors.color("reload, setcustomspawn для админов"));
+				sender.sendMessage(colors.color("delete <nick> для админов"));
+				sender.sendMessage(colors.color(
+						"scheme create <name>, scheme delete <name>, kit create <name>, kit delete <name>, givekit <name> <nick> для админов"));
+			}
 		} else {
 			main.send("&bSkyBlock &ehelp page:");
 			main.send("&e/skyblock help &f- opens this page");
