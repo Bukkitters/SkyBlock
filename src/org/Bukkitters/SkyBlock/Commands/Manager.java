@@ -89,8 +89,12 @@ public class Manager implements CommandExecutor {
 				case "setspawn":
 					if (p.hasPermission("skyblock.setspawn")) {
 						if (sb.hasSkyBlock(p)) {
-							sb.setSpawn(p.getUniqueId(), p.getLocation());
-							p.sendMessage(colors.color(main.getMessages().getString("spawn-set")));
+							if (sb.distanceKept(p.getUniqueId(), p.getLocation())) {
+								sb.setSpawn(p.getUniqueId(), p.getLocation());
+								p.sendMessage(colors.color(main.getMessages().getString("spawn-set")));
+							} else {
+								p.sendMessage(colors.color(main.getMessages().getString("too-far")));
+							}
 						} else {
 							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
 						}
@@ -217,7 +221,7 @@ public class Manager implements CommandExecutor {
 								p.sendMessage(colors.color(main.getMessages().getString("scheme-unavailable")));
 							}
 						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("scheme-not-found")));
+							p.sendMessage(colors.color(main.getMessages().getString("scheme-not-exist")));
 						}
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
@@ -313,12 +317,12 @@ public class Manager implements CommandExecutor {
 						if (kits.exists(args[1])) {
 							if (Bukkit.getPlayerExact(args[2]) != null) {
 								kits.giveKit(Bukkit.getPlayerExact(args[2]), args[1]);
-								p.sendMessage(main.getMessages().getString("kit-given"));
+								p.sendMessage(colors.color(main.getMessages().getString("kit-given")));
 							} else {
-								p.sendMessage(main.getMessages().getString("player-not-found"));
+								p.sendMessage(colors.color(main.getMessages().getString("player-not-found")));
 							}
 						} else {
-							p.sendMessage(main.getMessages().getString("kit-not-exist"));
+							p.sendMessage(colors.color(main.getMessages().getString("kit-not-exist")));
 						}
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));

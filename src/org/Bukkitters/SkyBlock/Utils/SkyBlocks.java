@@ -39,8 +39,8 @@ public class SkyBlocks {
 		}
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
 		sb.set("location", location);
-		sb.set("spawnpoint", location);
-		location.clone().subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
+		sb.set("spawnpoint", location.getWorld().getHighestBlockAt(location).getLocation());
+		location.getWorld().getHighestBlockAt(location).setType(Material.BEDROCK);
 		sb.set("scheme", scheme);
 		try {
 			sb.save(skyblock);
@@ -188,6 +188,17 @@ public class SkyBlocks {
 		try {
 			sb.save(skyblock);
 		} catch (IOException e) {}
+	}
+	
+	public boolean distanceKept(UUID id, Location location) {
+		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
+		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
+		double resX = sb.getLocation("spawnpoint").getX() - location.getX();
+		double resZ = sb.getLocation("spawnpoint").getZ() - location.getZ();
+		if (resX < 320 && resX > -320 && resZ < 320 && resZ > -320) {
+			return true;
+		}
+		return false;
 	}
 
 }

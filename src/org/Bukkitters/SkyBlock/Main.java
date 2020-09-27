@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import org.Bukkitters.SkyBlock.Commands.Manager;
+import org.Bukkitters.SkyBlock.Events.Breaker;
 import org.Bukkitters.SkyBlock.Events.Damager;
 import org.Bukkitters.SkyBlock.Events.InventoryProtect;
 import org.Bukkitters.SkyBlock.Events.JoinEvent;
@@ -54,6 +55,7 @@ public class Main extends JavaPlugin {
 		new InventoryProtect(this);
 		new QuitEvent(this);
 		new Damager(this);
+		new Breaker(this);
 		send("&aPlugin enabled!");
 		getCommand("skyblock").setTabCompleter(new TabComplete(this));
 	}

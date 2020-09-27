@@ -140,6 +140,7 @@ public class Kits {
 		for (ItemStack i : getKit(kit)) {
 			p.getInventory().addItem(i);
 		}
+		p.sendMessage(colors.color(main.getMessages().getString("given-kit-received").replaceAll("%kit%", kit)));
 	}
 
 	@SuppressWarnings("unchecked")
