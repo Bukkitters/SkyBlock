@@ -134,4 +134,24 @@ public class Schemes {
 		}
 	}
 
+	public boolean isAvailable(UUID id, String st) {
+		Player p = Bukkit.getPlayer(id);
+		if (p.hasPermission("advancedskyblock.admin")) {
+			return true;
+		} else {
+			if (main.getConfig().getStringList("free-schemes").contains(st)) {
+				return true;
+			} else {
+				FileConfiguration f = YamlConfiguration.loadConfiguration(new File(schemesFolder, st + ".yml"));
+				if (p.hasPermission(f.getString("permission"))) {
+					return true;
+				} else if (f.getString("owner").equalsIgnoreCase(id.toString())) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+	}
+
 }
