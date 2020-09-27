@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import org.Bukkitters.SkyBlock.Commands.Manager;
+import org.Bukkitters.SkyBlock.Events.Damager;
 import org.Bukkitters.SkyBlock.Events.InventoryProtect;
 import org.Bukkitters.SkyBlock.Events.JoinEvent;
 import org.Bukkitters.SkyBlock.Events.QuitEvent;
@@ -52,13 +53,14 @@ public class Main extends JavaPlugin {
 		new JoinEvent(this);
 		new InventoryProtect(this);
 		new QuitEvent(this);
+		new Damager(this);
 		send("&aPlugin enabled!");
 		getCommand("skyblock").setTabCompleter(new TabComplete());
 	}
 	
 	public void onDisable() {
-		saveMessages();
-		saveConfig();
+		reloadMessages();
+		reloadConfig();
 		send("&cPlugin disabled!");
 	}
 
@@ -104,7 +106,7 @@ public class Main extends JavaPlugin {
 		msg.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
 	}
 
-	private void saveMessages() {
+	public void saveMessages() {
 		try {
 			msg.save(msgf);
 		} catch (IOException ex) {}

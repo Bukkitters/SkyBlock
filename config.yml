@@ -1,6 +1,8 @@
 #SkyBlock configuration
+#Protection from getting killed on skyblock
+death-protection: false
 #Void fall protection
-death-protection: true
+void-fall-protection: true
 #Create default kits and schemes
 create-default-files: true
 #Item in hand for selecting points

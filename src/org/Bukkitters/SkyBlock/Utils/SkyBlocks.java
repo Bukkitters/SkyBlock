@@ -67,7 +67,7 @@ public class SkyBlocks {
 	public Location findLocation() {
 		Location location = new Location(Bukkit.getWorld("skyblock"), 0.0, 70.0, 0.0);
 		List<Location> locs = new ArrayList<Location>();
-		if (skyBlocksFolder != null) {
+		if (skyBlocksFolder.exists()) {
 			for (File f : skyBlocksFolder.listFiles()) {
 				FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 				locs.add(c.getLocation("spawnpoint"));
