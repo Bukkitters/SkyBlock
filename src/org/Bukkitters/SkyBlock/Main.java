@@ -26,6 +26,7 @@ import org.Bukkitters.SkyBlock.Events.QuitEvent;
 import org.Bukkitters.SkyBlock.Events.Selector;
 import org.Bukkitters.SkyBlock.Utils.IChunkGenerator;
 import org.Bukkitters.SkyBlock.Utils.PlayerDataClass;
+import org.Bukkitters.SkyBlock.Utils.TabComplete;
 
 public class Main extends JavaPlugin {
 
@@ -52,6 +53,7 @@ public class Main extends JavaPlugin {
 		new InventoryProtect(this);
 		new QuitEvent(this);
 		send("&aPlugin enabled!");
+		getCommand("skyblock").setTabCompleter(new TabComplete());
 	}
 	
 	public void onDisable() {
