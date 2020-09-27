@@ -19,6 +19,7 @@ public class SkyBlocks {
 	
 	private Main main = Main.getInstance();
 	private File skyBlocksFolder = new File(main.getDataFolder(), "skyblocks");
+	private File schemesFolder = new File(main.getDataFolder(), "schemes");
 	private ChatColors colors = new ChatColors();
 	
 	public void buildScheme(UUID id, Location location, String scheme) {
@@ -146,6 +147,12 @@ public class SkyBlocks {
 			}
 		}
 		return loc;
+	}
+
+	public boolean canBuild(UUID id) {
+		List<String> schemes = new ArrayList<String>();
+		if ()
+		return false;
 	}
 
 }

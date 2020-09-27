@@ -78,7 +78,7 @@ public class Main extends JavaPlugin {
 		if (getConfig().getBoolean("create-default-files")) {
 			File dk = new File(this.getDataFolder() + "/kits", "defaultKit.yml");
 			File f = new File(this.getDataFolder() + "/kits", "farmer.yml");
-			File ds = new File(this.getDataFolder() + "/schemes", "defaultScheme");
+			File ds = new File(this.getDataFolder() + "/schemes", "defaultScheme.yml");
 			if (!dk.exists()) saveResource("kits/defaultKit.yml", false);
 			if (!f.exists()) saveResource("kits/farmer.yml", false);
 			if (!ds.exists()) saveResource("schemes/defaultScheme.yml", false);

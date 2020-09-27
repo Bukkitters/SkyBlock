@@ -47,14 +47,18 @@ public class Manager implements CommandExecutor {
 					break;
 				case "create":
 					if (sender.hasPermission("advancedskyblock.create")) {
-						Location location = sb.findLocation();
-						data.setWorldInventory(p.getUniqueId(), p.getInventory());
-						p.teleport(location);
-						data.swapInventory(p);
-						sb.buildScheme(p.getUniqueId(), location, sc.randomScheme());
-						p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation().clone()
-								.add(0.0, 1.0, 0.0));
-						p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
+						if (sb.canBuild(p.getUniqueId())) {
+							Location location = sb.findLocation();
+							data.setWorldInventory(p.getUniqueId(), p.getInventory());
+							p.teleport(location);
+							data.swapInventory(p);
+							sb.buildScheme(p.getUniqueId(), location, sc.randomScheme());
+							p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation().clone()
+									.add(0.0, 1.0, 0.0));
+							p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
+						} else {
+							sender.sendMessage(colors.color(main.getMessages().getString("no-scheme-available")));
+						}
 					} else {
 						sender.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 					}
@@ -182,7 +186,19 @@ public class Manager implements CommandExecutor {
 				case "create":
 					if (sender.hasPermission("advancedskyblock.create")) {
 						if (sc.exists(args[1])) {
+<<<<<<< Updated upstream
 							if (sc.isAvailable()) {
+=======
+							if (sc.isAvailable(p.getUniqueId(), args[1])) {
+								Location location = sb.findLocation();
+								data.setWorldInventory(p.getUniqueId(), p.getInventory());
+								p.teleport(location);
+								data.swapInventory(p);
+								sb.buildScheme(p.getUniqueId(), location, args[1]);
+								p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation().clone()
+										.add(0.0, 1.0, 0.0));
+								p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
+>>>>>>> Stashed changes
 							} else {
 								sender.sendMessage(colors.color(main.getMessages().getString("scheme-not-available")));
 							}
