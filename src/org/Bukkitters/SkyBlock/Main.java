@@ -54,7 +54,6 @@ public class Main extends JavaPlugin {
 		new InventoryProtect(this);
 		new QuitEvent(this);
 		new Damager(this);
-//		new TabComplete(this);
 		send("&aPlugin enabled!");
 		getCommand("skyblock").setTabCompleter(new TabComplete());
 	}

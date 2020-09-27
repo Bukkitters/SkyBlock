@@ -13,10 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 public class TabComplete implements TabCompleter {
-	
-//	public TabComplete(Main main) {
-//		main.getServer().getPluginManager().registerEvents((Listener) this, main);
-//	}
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {

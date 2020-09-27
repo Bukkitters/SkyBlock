@@ -183,7 +183,6 @@ public class Manager implements CommandExecutor {
 					if (sender.hasPermission("advancedskyblock.create")) {
 						if (sc.exists(args[1])) {
 							if (sc.isAvailable()) {
-								
 							} else {
 								sender.sendMessage(colors.color(main.getMessages().getString("scheme-not-available")));
 							}
