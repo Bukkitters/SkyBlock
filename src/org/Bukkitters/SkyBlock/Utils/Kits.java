@@ -149,4 +149,34 @@ public class Kits {
 		return (List<ItemStack>) f.getList("items");
 	}
 
+	public List<String> getAvailableKits(CommandSender sender) {
+		List<String> kits = new ArrayList<String>();
+		for (File f : kitsFolder.listFiles()) {
+			String name = f.getName().replaceAll(".yml", "");
+			if (sender.hasPermission("advancedskyblock.admin")) {
+				kits.add(name);
+			} else {
+				if (main.getConfig().getStringList("free-kits").contains(name)) {
+					kits.add(name);
+				} else {
+					FileConfiguration conf = YamlConfiguration.loadConfiguration(new File(kitsFolder, name + ".yml"));
+					if (sender.hasPermission(conf.getString("permission"))) {
+						kits.add(name);
+					} else if (conf.getString("owner").equalsIgnoreCase(((Player) sender).getUniqueId().toString())) {
+						kits.add(name);
+					}
+				}
+			}
+		}
+		return kits;
+	}
+
+	public List<String> getKits() {
+		List<String> kits = new ArrayList<String>();
+		for (File f : kitsFolder.listFiles()) {
+			kits.add(f.getName().replaceAll(".yml", ""));
+		}
+		return kits;
+	}
+
 }

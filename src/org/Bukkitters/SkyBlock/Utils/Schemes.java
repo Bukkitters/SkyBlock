@@ -166,4 +166,35 @@ public class Schemes {
 		}
 	}
 
+	public List<String> getAvailableSchemes(CommandSender sender) {
+		List<String> sc = new ArrayList<String>();
+		for (File f : schemesFolder.listFiles()) {
+			String name = f.getName().replaceAll(".yml", "");
+			if (sender.hasPermission("advancedskyblock.admin")) {
+				sc.add(name);
+			} else {
+				if (main.getConfig().getStringList("free-schemes").contains(name)) {
+					sc.add(name);
+				} else {
+					FileConfiguration conf = YamlConfiguration
+							.loadConfiguration(new File(schemesFolder, name + ".yml"));
+					if (sender.hasPermission(conf.getString("permission"))) {
+						sc.add(name);
+					} else if (conf.getString("owner").equalsIgnoreCase(((Player) sender).getUniqueId().toString())) {
+						sc.add(name);
+					}
+				}
+			}
+		}
+		return sc;
+	}
+
+	public List<String> getSchemes() {
+		List<String> kits = new ArrayList<String>();
+		for (File f : schemesFolder.listFiles()) {
+			kits.add(f.getName().replaceAll(".yml", ""));
+		}
+		return kits;
+	}
+
 }
