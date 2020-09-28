@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.Bukkitters</groupId>
 	<artifactId>SkyBlock</artifactId>
-	<version>1.0</version>
+	<version>1.0-BETA</version>
 	<name>SkyBlock</name>
 	<description>SkyBlock plugin.</description>
 	<build>

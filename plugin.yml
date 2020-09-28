@@ -1,6 +1,6 @@
 name: SkyBlock
 main: org.Bukkitters.SkyBlock.Main
-version: 1.0
+version: 1.0-BETA
 description: SkyBlock plugin
 authors: [NukerFall, Soyer]
 api-version: 1.16
@@ -8,4 +8,4 @@ depends: [Vault]
 commands:
   skyblock:
     description: SkyBlock main command.
-    aliases: [sb, sblock, скайблок]
+    aliases: [sb, sblock]
