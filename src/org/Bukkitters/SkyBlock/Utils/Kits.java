@@ -135,12 +135,14 @@ public class Kits {
 		}
 	}
 
-	public void giveKit(Player p, String kit) {
+	public void giveKit(Player p, String kit, boolean b) {
 		data.addUsedKit(p, kit);
 		for (ItemStack i : getKit(kit)) {
 			p.getInventory().addItem(i);
 		}
-		p.sendMessage(colors.color(main.getMessages().getString("given-kit-received").replaceAll("%kit%", kit)));
+		if (!b) {
+			p.sendMessage(colors.color(main.getMessages().getString("given-kit-received").replaceAll("%kit%", kit)));
+		}
 	}
 
 	@SuppressWarnings("unchecked")

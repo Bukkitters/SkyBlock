@@ -74,10 +74,24 @@ public class TabComplete implements TabCompleter, Listener {
 						}
 						break;
 					case "kit":
+						if (sender.hasPermission("skyblock.createkit")) {
+							secondArg.add("create");
+						}
+						if (sender.hasPermission("skyblock.deletekit")) {
+							secondArg.add("delete");
+						}
 						if (sender.hasPermission("skyblock.kit")) {
 							for (String s : kits.getAvailableKits(sender)) {
 								secondArg.add(s);
 							}
+						}
+						break;
+					case "scheme":
+						if (sender.hasPermission("skyblock.createscheme")) {
+							secondArg.add("create");
+						}
+						if (sender.hasPermission("skyblock.deletescheme")) {
+							secondArg.add("delete");
 						}
 						break;
 					case "invite":
