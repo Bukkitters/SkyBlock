@@ -24,3 +24,5 @@ free-kits:
 #Free schemes
 free-schemes:
 - defaultScheme
+#Send title?
+send-titles: true
