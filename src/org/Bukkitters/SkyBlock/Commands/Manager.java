@@ -374,7 +374,6 @@ public class Manager implements CommandExecutor {
 								sb.buildScheme(p.getUniqueId(), location, args[1]);
 								p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation().clone()
 										.add(0.0, 1.0, 0.0));
-//								p.sendMessage(colors.color(main.getMessages().getString("reloaded"))); //Почему здесь сообщение reloaded? Добавил created.
 								p.sendMessage(colors.color(main.getMessages().getString("created")));
 								if (main.getConfig().getBoolean("send-titles")) {
 									try {
@@ -719,13 +718,13 @@ public class Manager implements CommandExecutor {
 			sender.sendMessage(colors.color("&eVersion: &b" + main.getDescription().getVersion()));
 			sender.sendMessage(colors.color("&eAuthors: &b" + main.getDescription().getAuthors()));
 			sender.sendMessage(colors.color("&eUse &b/skyblock help &efor help."));
-			sender.sendMessage(colors.color("&eAliases: &b/sb, /sblock, /скайблок"));
+			sender.sendMessage(colors.color("&eAliases: &b/sb, /sblock"));
 		} else {
 			main.send("&bSkyBlock");
 			main.send("&eVersion: &b" + main.getDescription().getVersion());
 			main.send("&eAuthors: &b" + main.getDescription().getAuthors());
 			main.send("&eUse &b/skyblock help &efor help.");
-			main.send("&eAliases: &b/sb, /sblock, /скайблок");
+			main.send("&eAliases: &b/sb, /sblock");
 		}
 	}
 
