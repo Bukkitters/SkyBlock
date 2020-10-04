@@ -77,9 +77,6 @@ public class Manager implements CommandExecutor {
 					if (isPermitted(p, "skyblock.delete")) {
 						if (sb.hasSkyBlock(p)) {
 							sb.deleteSkyBlock(p, true);
-							if (main.getConfig().getBoolean("send-titles")) {
-								sendTitle(p, "deleted-title", "deleted-title-time");
-							}
 						} else {
 							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
 						}
@@ -222,7 +219,7 @@ public class Manager implements CommandExecutor {
 									p.sendMessage(colors.color(main.getMessages().getString("kit-received"))
 											.replace("%kit%", args[1]));
 									if (main.getConfig().getBoolean("send-titles")) {
-										sendTitle(p, "kit-received-title", "kit-received-title-time");
+										sendTitle(p, "kit-received-title", "kit-received-title-time", args[1]);
 									}
 								} else {
 									p.sendMessage(colors.color(main.getMessages().getString("not-in-skyblock-world")));
@@ -274,9 +271,6 @@ public class Manager implements CommandExecutor {
 						if (Bukkit.getPlayerExact(args[1]) != null) {
 							if (sb.hasSkyBlock(Bukkit.getPlayerExact(args[1]))) {
 								sb.deleteSkyBlock(Bukkit.getPlayerExact(args[1]), false);
-								if (main.getConfig().getBoolean("send-titles")) {
-									sendTitle(p, "force-deleted-title", "force-deleted-title-time");
-								}
 							} else {
 								p.sendMessage(colors.color(main.getMessages().getString("player-has-no-skyblock")));
 							}
@@ -480,6 +474,26 @@ public class Manager implements CommandExecutor {
 		return true;
 	}
 
+	private void sendTitle(Player p, String string, String string2, String string3) {
+		try {
+			String[] s = main.getMessages().getString(string).split(";", 2);
+			String[] i = main.getMessages().getString(string2).split(";", 3);
+			Integer fadeIn = Integer.valueOf(i[0]);
+			Integer stay = Integer.valueOf(i[1]);
+			Integer fadeOut = Integer.valueOf(i[2]);
+			p.sendTitle(colors.color(s[0]).replaceAll("%kit%", string3), colors.color(s[1]).replaceAll("%kit%", string3), fadeIn, stay, fadeOut);
+		} catch (NumberFormatException e) {
+			p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
+			main.send(main.getMessages().getString("number-format-exception").replace("%line%",
+					main.getMessages().getString("reloaded-title-time")));
+			p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
+			main.send(main.getMessages().getString("missing-separator") + " &7(reloaded-title or reloaded-title-time)");
+			p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
+		}
+	}
+
 	private void sendTitle(Player p, String string, String string2) {
 		try {
 			String[] s = main.getMessages().getString(string).split(";", 2);
@@ -498,7 +512,6 @@ public class Manager implements CommandExecutor {
 			main.send(main.getMessages().getString("missing-separator") + " &7(reloaded-title or reloaded-title-time)");
 			p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
 		}
-
 	}
 
 	private void invite(Player p, String string) {

@@ -51,7 +51,7 @@ public class SkyBlocks {
 
 	public void demolish(Location loc) {
 		Boolean empty = true;
-		for (Double i = 5.0; i < 69.0; i++) {
+		for (Double i = 8.0; i < 70.0; i+=2) {
 			empty = true;
 			for (Double a = loc.getX() - i; a < loc.getX() + i; a++) {
 				for (Double b = loc.getY() - i; b < loc.getY() + i; b++) {
@@ -122,10 +122,21 @@ public class SkyBlocks {
 			}
 			if (b) {
 				p.sendMessage(colors.color(main.getMessages().getString("deleted")));
+				if (main.getConfig().getBoolean("send-titles")) {
+					sendTitle(p, "deleted-title", "deleted-title-time");
+				}
+				
 			} else {
 				p.sendMessage(colors.color(main.getMessages().getString("force-deleted")));
+				if (main.getConfig().getBoolean("send-titles")) {
+					sendTitle(p, "force-deleted-title", "force-deleted-title-time");
+				}
 			}
 		}
+	}
+
+	private void sendTitle(Player p, String string, String string2) {
+		
 	}
 
 	public Location getSkyblockLocation(UUID id) {
