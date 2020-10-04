@@ -2,24 +2,23 @@ package org.Bukkitters.SkyBlock.Events;
 
 import org.Bukkitters.SkyBlock.Main;
 import org.Bukkitters.SkyBlock.Utils.SkyBlocks;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
-public class Breaker implements Listener {
+public class Builder implements Listener {
 
 	private Main main;
 	private SkyBlocks sb = new SkyBlocks();
 
-	public Breaker(Main main) {
+	public Builder(Main main) {
 		main.getServer().getPluginManager().registerEvents(this, main);
 		this.main = main;
 	}
 
 	@EventHandler
-	public void onBreak(BlockBreakEvent e) {
-		if (e.getBlock().getWorld().getName().equals("skyblock")) {
+	public void onBuild(BlockPlaceEvent e) {
+		if (e.getBlock().getWorld().getName().equalsIgnoreCase("skyblock")) {
 			if (!main.getConfig().getBoolean("allow-build-on-other-skyblock")) {
 				if (sb.hasSkyBlock(e.getPlayer())) {
 					if (!sb.distanceKept(e.getPlayer().getUniqueId(),
@@ -29,9 +28,6 @@ public class Breaker implements Listener {
 				} else {
 					e.setCancelled(true);
 				}
-			}
-			if (e.getBlock().getType().equals(Material.BEDROCK)) {
-				e.setCancelled(true);
 			}
 		}
 	}

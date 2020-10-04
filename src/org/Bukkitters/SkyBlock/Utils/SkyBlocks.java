@@ -113,7 +113,7 @@ public class SkyBlocks {
 		skyblock.delete();
 		if (p.isOnline()) {
 			if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
-				p.teleport(getBackLocation());
+				//p.teleport(getBackLocation());
 			}
 			if (b) {
 				p.sendMessage(colors.color(main.getMessages().getString("deleted")));
@@ -128,7 +128,7 @@ public class SkyBlocks {
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
 		return sb.getLocation("location");
 	}
-	
+
 	public Location getSkyBlockSpawn(UUID id) {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
@@ -187,9 +187,10 @@ public class SkyBlocks {
 		location.clone().subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
 		try {
 			sb.save(skyblock);
-		} catch (IOException e) {}
+		} catch (IOException e) {
+		}
 	}
-	
+
 	public boolean distanceKept(UUID id, Location location) {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);

@@ -1,6 +1,6 @@
 name: SkyBlock
 main: org.Bukkitters.SkyBlock.Main
-version: 1.0-BETA
+version: 1.0
 description: SkyBlock plugin
 authors: [NukerFall, Soyer]
 api-version: 1.16

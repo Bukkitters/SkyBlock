@@ -5,6 +5,8 @@ death-protection: false
 void-fall-protection: true
 #Create default kits and schemes
 create-default-files: true
+#Allow players to build on other players' skyblock
+allow-build-on-other-skyblock: false
 #Item in hand for selecting points
 wand-material: 'WOODEN_AXE'
 #Where to teleport players who leave skyblock. WORLD_SPAWNPOINT or CUSTOM_SPAWNPOINT(/sb setcustomspawn).

@@ -20,10 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import org.Bukkitters.SkyBlock.Commands.Manager;
+import org.Bukkitters.SkyBlock.Events.BlockLava;
 import org.Bukkitters.SkyBlock.Events.Breaker;
+import org.Bukkitters.SkyBlock.Events.Builder;
 import org.Bukkitters.SkyBlock.Events.Damager;
 import org.Bukkitters.SkyBlock.Events.InventoryProtect;
 import org.Bukkitters.SkyBlock.Events.JoinEvent;
+import org.Bukkitters.SkyBlock.Events.LeavesControl;
 import org.Bukkitters.SkyBlock.Events.QuitEvent;
 import org.Bukkitters.SkyBlock.Events.Selector;
 import org.Bukkitters.SkyBlock.Utils.IChunkGenerator;
@@ -56,10 +59,13 @@ public class Main extends JavaPlugin {
 		new QuitEvent(this);
 		new Damager(this);
 		new Breaker(this);
+		new LeavesControl(this);
+		new BlockLava(this);
+		new Builder(this);
 		send("&aPlugin enabled!");
 		getCommand("skyblock").setTabCompleter(new TabComplete(this));
 	}
-	
+
 	public void onDisable() {
 		reloadMessages();
 		reloadConfig();
@@ -75,15 +81,20 @@ public class Main extends JavaPlugin {
 	}
 
 	private void generateFoldersAndFiles() {
-		if (!new File(this.getDataFolder(), "schemes").exists()) new File(this.getDataFolder(), "schemes").mkdir();
-		if (!new File(this.getDataFolder(), "kits").exists()) new File(this.getDataFolder(), "kits").mkdir();
+		if (!new File(this.getDataFolder(), "schemes").exists())
+			new File(this.getDataFolder(), "schemes").mkdir();
+		if (!new File(this.getDataFolder(), "kits").exists())
+			new File(this.getDataFolder(), "kits").mkdir();
 		if (getConfig().getBoolean("create-default-files")) {
 			File dk = new File(this.getDataFolder() + "/kits", "defaultKit.yml");
 			File f = new File(this.getDataFolder() + "/kits", "farmer.yml");
 			File ds = new File(this.getDataFolder() + "/schemes", "defaultScheme.yml");
-			if (!dk.exists()) saveResource("kits/defaultKit.yml", false);
-			if (!f.exists()) saveResource("kits/farmer.yml", false);
-			if (!ds.exists()) saveResource("schemes/defaultScheme.yml", false);
+			if (!dk.exists())
+				saveResource("kits/defaultKit.yml", false);
+			if (!f.exists())
+				saveResource("kits/farmer.yml", false);
+			if (!ds.exists())
+				saveResource("schemes/defaultScheme.yml", false);
 		}
 	}
 
@@ -104,14 +115,16 @@ public class Main extends JavaPlugin {
 	public void reloadMessages() {
 		msg = YamlConfiguration.loadConfiguration(msgf);
 		InputStream defConfigStream = getResource("config.yml");
-		if (defConfigStream == null) return;
+		if (defConfigStream == null)
+			return;
 		msg.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
 	}
 
 	public void saveMessages() {
 		try {
 			msg.save(msgf);
-		} catch (IOException ex) {}
+		} catch (IOException ex) {
+		}
 	}
 
 	public void send(String s) {
