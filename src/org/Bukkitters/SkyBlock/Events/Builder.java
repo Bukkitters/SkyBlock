@@ -27,6 +27,28 @@ public class Builder implements Listener {
 							sb.getSkyblockLocation(e.getPlayer().getUniqueId()))) {
 						e.getPlayer().sendMessage(cl.color(main.getMessages().getString("not-allowed-build")));
 						e.setCancelled(true);
+						if (main.getConfig().getBoolean("send-titles")) {
+							try {
+								String[] s = main.getMessages().getString("not-allowed-build-title").split(";", 2);
+								String[] i = main.getMessages().getString("not-allowed-build-title-time").split(";", 3);
+								Integer fadeIn = Integer.valueOf(i[0]);
+								Integer stay = Integer.valueOf(i[1]);
+								Integer fadeOut = Integer.valueOf(i[2]);
+								e.getPlayer().sendTitle(cl.color(s[0]), cl.color(s[1]), fadeIn, stay, fadeOut);
+							} catch (NumberFormatException ex) {
+								String[] s = main.getMessages().getString("not-allowed-build-title").split(";", 2);
+								e.getPlayer().sendMessage(cl.color((main.getMessages().getString("check-console"))));
+								main.send(main.getMessages().getString("number-format-exception").replace("%line%",
+										"not-allowed-build-title"));
+								e.getPlayer().sendTitle(cl.color(s[0]), cl.color(s[1]), 15, 30, 10);
+							} catch (ArrayIndexOutOfBoundsException ex) {
+								e.getPlayer().sendMessage(cl.color((main.getMessages().getString("check-console"))));
+								main.send(main.getMessages().getString("missing-separator")
+										+ " &7(not-allowed-build-title or not-allowed-build-title-time)");
+								e.getPlayer().sendTitle(cl.color("&e[!]"),
+										cl.color(main.getMessages().getString("not-allowed-build-title")), 15, 30, 10);
+							}
+						}
 					}
 				} else {
 					e.getPlayer().sendMessage(cl.color(main.getMessages().getString("not-allowed-build")));

@@ -1,5 +1,7 @@
 package org.Bukkitters.SkyBlock.Commands;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import org.Bukkitters.SkyBlock.Main;
 import org.Bukkitters.SkyBlock.Utils.ChatColors;
@@ -22,6 +24,8 @@ public class Manager implements CommandExecutor {
 	private ChatColors colors = new ChatColors();
 	private SkyBlocks sb = new SkyBlocks();
 	private Main main;
+
+	Map<String, String> messages = new HashMap<String, String>();
 
 	public Manager(Main main) {
 		main.getCommand("skyblock").setExecutor(this);
@@ -358,6 +362,10 @@ public class Manager implements CommandExecutor {
 								if (Bukkit.getPlayerExact(args[2]).getWorld().getName().equalsIgnoreCase("skyblock")) {
 									kits.giveKit(Bukkit.getPlayerExact(args[2]), args[1], false);
 									p.sendMessage(colors.color(main.getMessages().getString("kit-given")));
+									if (main.getConfig().getBoolean("send-titles")) {
+										sendTitle(p, "kit-given-title", "kit-given-title-time");
+										sendTitle(Bukkit.getPlayerExact(args[2]), "given-kit-received-title", "given-kit-received-title-time", args[1]);
+									}
 								} else {
 									p.sendMessage(
 											colors.color(main.getMessages().getString("player-not-in-skyblock-world")));
@@ -453,6 +461,9 @@ public class Manager implements CommandExecutor {
 							if (Bukkit.getPlayerExact(args[2]).getWorld().getName().equalsIgnoreCase("skyblock")) {
 								kits.giveKit(Bukkit.getPlayerExact(args[2]), args[1], false);
 								main.send(main.getMessages().getString("kit-given"));
+								if (main.getConfig().getBoolean("send-titles")) {
+									sendTitle(Bukkit.getPlayerExact(args[2]), "given-kit-received-title", "given-kit-received-title-time", args[1]);
+								}
 							} else {
 								main.send(main.getMessages().getString("player-not-in-skyblock-world"));
 							}
@@ -481,16 +492,18 @@ public class Manager implements CommandExecutor {
 			Integer fadeIn = Integer.valueOf(i[0]);
 			Integer stay = Integer.valueOf(i[1]);
 			Integer fadeOut = Integer.valueOf(i[2]);
-			p.sendTitle(colors.color(s[0]).replaceAll("%kit%", string3), colors.color(s[1]).replaceAll("%kit%", string3), fadeIn, stay, fadeOut);
+			p.sendTitle(colors.color(s[0]).replaceAll("%kit%", string3).replaceAll("%name%", string3),
+					colors.color(s[1]).replaceAll("%kit%", string3).replaceAll("%name%", string3), fadeIn, stay,
+					fadeOut);
 		} catch (NumberFormatException e) {
+			String[] s = main.getMessages().getString(string).split(";", 2);
 			p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-			main.send(main.getMessages().getString("number-format-exception").replace("%line%",
-					main.getMessages().getString("reloaded-title-time")));
-			p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
+			main.send(main.getMessages().getString("number-format-exception").replace("%line%", string));
+			p.sendTitle(colors.color(s[0]), colors.color(s[1]), 15, 30, 10);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-			main.send(main.getMessages().getString("missing-separator") + " &7(reloaded-title or reloaded-title-time)");
-			p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
+			main.send(main.getMessages().getString("missing-separator") + " &7(" + string + " or " + string2 + ")");
+			p.sendTitle(colors.color("&e[!]"), colors.color(main.getMessages().getString(string)), 15, 30, 10);
 		}
 	}
 
@@ -503,14 +516,14 @@ public class Manager implements CommandExecutor {
 			Integer fadeOut = Integer.valueOf(i[2]);
 			p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
 		} catch (NumberFormatException e) {
+			String[] s = main.getMessages().getString(string).split(";", 2);
 			p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-			main.send(main.getMessages().getString("number-format-exception").replace("%line%",
-					main.getMessages().getString("reloaded-title-time")));
-			p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
+			main.send(main.getMessages().getString("number-format-exception").replace("%line%", string));
+			p.sendTitle(colors.color(s[0]), colors.color(s[1]), 15, 30, 10);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-			main.send(main.getMessages().getString("missing-separator") + " &7(reloaded-title or reloaded-title-time)");
-			p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
+			main.send(main.getMessages().getString("missing-separator") + " &7(" + string + " or " + string2 + ")");
+			p.sendTitle(colors.color("&e[!]"), colors.color(main.getMessages().getString(string)), 15, 30, 10);
 		}
 	}
 
@@ -525,6 +538,10 @@ public class Manager implements CommandExecutor {
 							p.sendMessage(colors.color(main.getMessages().getString("invited")));
 							Bukkit.getPlayer(id).sendMessage(colors.color(
 									main.getMessages().getString("player-invited").replaceAll("%name%", p.getName())));
+							if (main.getConfig().getBoolean("send-titles")) {
+								sendTitle(p, "invited-title", "invited-title-time");
+								sendTitle(p, "player-invited-title", "player-invited-title-time", p.getName());
+							}
 						} else {
 							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
 						}
@@ -546,6 +563,10 @@ public class Manager implements CommandExecutor {
 		((Player) sender).teleport(sb.getSkyBlockSpawn(uuid));
 		Bukkit.getPlayer(uuid).sendMessage(colors.color(main.getMessages().getString("player-accepted")));
 		main.getInvites().remove(((Player) sender).getUniqueId());
+		if (main.getConfig().getBoolean("send-titles")) {
+			sendTitle((Player) sender, "accepted-title", "accepted-title-time");
+			sendTitle(Bukkit.getPlayer(uuid), "player-accepted-title", "player-accepted-title-time", sender.getName());
+		}
 	}
 
 	private boolean isPermitted(Player p, String perm) {
