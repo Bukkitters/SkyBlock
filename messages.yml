@@ -55,6 +55,8 @@ given-kit-received: '&aYou have received a kit %kit% from administartion.'
 too-far: '&cYou can not set spawn too far from your skyblock.'
 no-invites: '&cNobody invited you.'
 player-not-in-skyblock-world: '&cPlayer is not in skyblock world!'
+not-allowed-break: '&cYou are not allowed to break blocks here!'
+not-allowed-build: '&cYou are not allowed to build here!'
 
 #titles
 #Use ';' to separate title from subtitle (Without quotes).

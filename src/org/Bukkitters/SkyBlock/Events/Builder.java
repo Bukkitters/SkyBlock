@@ -1,6 +1,7 @@
 package org.Bukkitters.SkyBlock.Events;
 
 import org.Bukkitters.SkyBlock.Main;
+import org.Bukkitters.SkyBlock.Utils.ChatColors;
 import org.Bukkitters.SkyBlock.Utils.SkyBlocks;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,6 +11,7 @@ public class Builder implements Listener {
 
 	private Main main;
 	private SkyBlocks sb = new SkyBlocks();
+	private ChatColors cl = new ChatColors();
 
 	public Builder(Main main) {
 		main.getServer().getPluginManager().registerEvents(this, main);
@@ -23,9 +25,11 @@ public class Builder implements Listener {
 				if (sb.hasSkyBlock(e.getPlayer())) {
 					if (!sb.distanceKept(e.getPlayer().getUniqueId(),
 							sb.getSkyblockLocation(e.getPlayer().getUniqueId()))) {
+						e.getPlayer().sendMessage(cl.color(main.getMessages().getString("not-allowed-build")));
 						e.setCancelled(true);
 					}
 				} else {
+					e.getPlayer().sendMessage(cl.color(main.getMessages().getString("not-allowed-build")));
 					e.setCancelled(true);
 				}
 			}

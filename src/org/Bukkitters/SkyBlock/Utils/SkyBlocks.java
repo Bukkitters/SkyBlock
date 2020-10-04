@@ -10,6 +10,7 @@ import org.Bukkitters.SkyBlock.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -48,16 +49,16 @@ public class SkyBlocks {
 		}
 	}
 
-	private void demolish(Location loc) {
+	public void demolish(Location loc) {
 		Boolean empty = true;
-		for (Double i = 1.0; i < 69.0; i++) {
+		for (Double i = 5.0; i < 69.0; i++) {
 			empty = true;
 			for (Double a = loc.getX() - i; a < loc.getX() + i; a++) {
 				for (Double b = loc.getY() - i; b < loc.getY() + i; b++) {
 					for (Double c = loc.getZ() - i; c < loc.getZ() + i; c++) {
 						if (Bukkit.getWorld("skyblock").getBlockAt(new Location(Bukkit.getWorld("skyblock"), a, b, c))
 								.getType() != Material.AIR) {
-							new Location(Bukkit.getWorld("skyblock"), a, b, c).getBlock().setType(Material.AIR);
+							place(Bukkit.getWorld("skyblock"), a, b, c, Material.AIR);
 							empty = false;
 						}
 					}
@@ -67,6 +68,10 @@ public class SkyBlocks {
 				return;
 			}
 		}
+	}
+
+	public void place(World world, double x, double y, double z, Material m) {
+		world.getBlockAt(new Location(world, x, y, z)).setType(m);
 	}
 
 	public Location findLocation() {
@@ -113,7 +118,7 @@ public class SkyBlocks {
 		skyblock.delete();
 		if (p.isOnline()) {
 			if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
-				//p.teleport(getBackLocation());
+				p.teleport(getBackLocation());
 			}
 			if (b) {
 				p.sendMessage(colors.color(main.getMessages().getString("deleted")));

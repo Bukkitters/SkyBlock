@@ -1,6 +1,7 @@
 package org.Bukkitters.SkyBlock.Events;
 
 import org.Bukkitters.SkyBlock.Main;
+import org.Bukkitters.SkyBlock.Utils.ChatColors;
 import org.Bukkitters.SkyBlock.Utils.SkyBlocks;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -11,6 +12,7 @@ public class Breaker implements Listener {
 
 	private Main main;
 	private SkyBlocks sb = new SkyBlocks();
+	private ChatColors cl = new ChatColors();
 
 	public Breaker(Main main) {
 		main.getServer().getPluginManager().registerEvents(this, main);
@@ -24,9 +26,11 @@ public class Breaker implements Listener {
 				if (sb.hasSkyBlock(e.getPlayer())) {
 					if (!sb.distanceKept(e.getPlayer().getUniqueId(),
 							sb.getSkyblockLocation(e.getPlayer().getUniqueId()))) {
+						e.getPlayer().sendMessage(cl.color(main.getMessages().getString("not-allowed-break")));
 						e.setCancelled(true);
 					}
 				} else {
+					e.getPlayer().sendMessage(cl.color(main.getMessages().getString("not-allowed-break")));
 					e.setCancelled(true);
 				}
 			}

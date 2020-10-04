@@ -42,24 +42,7 @@ public class Manager implements CommandExecutor {
 						main.reloadMessages();
 						p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
 						if (main.getConfig().getBoolean("send-titles")) {
-							try {
-								String[] s = main.getMessages().getString("reloaded-title").split(";", 2);
-								String[] i = main.getMessages().getString("reloaded-title-time").split(";", 3);
-								Integer fadeIn = Integer.valueOf(i[0]);
-								Integer stay = Integer.valueOf(i[1]);
-								Integer fadeOut = Integer.valueOf(i[2]);
-								p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
-							} catch (NumberFormatException e) {
-								p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-								main.send(main.getMessages().getString("number-format-exception").replace("%line%",
-										main.getMessages().getString("reloaded-title-time")));
-								p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
-							} catch (ArrayIndexOutOfBoundsException e) {
-								p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-								main.send(main.getMessages().getString("missing-separator")
-										+ " &7(reloaded-title or reloaded-title-time)");
-								p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
-							}
+							sendTitle(p, "reloaded-title", "reloaded-title-time");
 						}
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
@@ -78,26 +61,7 @@ public class Manager implements CommandExecutor {
 										.add(0.0, 1.0, 0.0));
 								p.sendMessage(colors.color(main.getMessages().getString("created")));
 								if (main.getConfig().getBoolean("send-titles")) {
-									try {
-										String[] s = main.getMessages().getString("created-title").split(";", 2);
-										String[] i = main.getMessages().getString("created-title-time").split(";", 3);
-										Integer fadeIn = Integer.valueOf(i[0]);
-										Integer stay = Integer.valueOf(i[1]);
-										Integer fadeOut = Integer.valueOf(i[2]);
-										p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
-									} catch (NumberFormatException e) {
-										p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-										main.send(main.getMessages().getString("number-format-exception")
-												.replace("%line%", main.getMessages().getString("created-title-time")));
-										p.sendTitle(colors.color("&e[!]"), colors.color("&aSkyblock created!"), 15, 30,
-												10);
-									} catch (ArrayIndexOutOfBoundsException e) {
-										p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-										main.send(main.getMessages().getString("missing-separator")
-												+ " &7(created-title or created-title-time)");
-										p.sendTitle(colors.color("&e[!]"), colors.color("&aSkyblock created!"), 15, 30,
-												10);
-									}
+									sendTitle(p, "created-title", "created-title-time");
 								}
 							} else {
 								p.sendMessage(colors.color(main.getMessages().getString("already-have")));
@@ -114,24 +78,7 @@ public class Manager implements CommandExecutor {
 						if (sb.hasSkyBlock(p)) {
 							sb.deleteSkyBlock(p, true);
 							if (main.getConfig().getBoolean("send-titles")) {
-								try {
-									String[] s = main.getMessages().getString("deleted-title").split(";", 2);
-									String[] i = main.getMessages().getString("deleted-title-time").split(";", 3);
-									Integer fadeIn = Integer.valueOf(i[0]);
-									Integer stay = Integer.valueOf(i[1]);
-									Integer fadeOut = Integer.valueOf(i[2]);
-									p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
-								} catch (NumberFormatException e) {
-									p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-									main.send(main.getMessages().getString("number-format-exception").replace("%line%",
-											main.getMessages().getString("deleted-title-time")));
-									p.sendTitle(colors.color("&e[!]"), colors.color("&cSkyblock deleted!"), 15, 30, 10);
-								} catch (ArrayIndexOutOfBoundsException e) {
-									p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-									main.send(main.getMessages().getString("missing-separator")
-											+ " &7(deleted-title or deleted-title-time)");
-									p.sendTitle(colors.color("&e[!]"), colors.color("&cSkyblock deleted!"), 15, 30, 10);
-								}
+								sendTitle(p, "deleted-title", "deleted-title-time");
 							}
 						} else {
 							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
@@ -149,26 +96,7 @@ public class Manager implements CommandExecutor {
 						main.saveConfig();
 						p.sendMessage(colors.color(main.getMessages().getString("custom-spawn-set")));
 						if (main.getConfig().getBoolean("send-titles")) {
-							try {
-								String[] s = main.getMessages().getString("custom-spawn-set-title").split(";", 2);
-								String[] i = main.getMessages().getString("custom-spawn-set-title-time").split(";", 3);
-								Integer fadeIn = Integer.valueOf(i[0]);
-								Integer stay = Integer.valueOf(i[1]);
-								Integer fadeOut = Integer.valueOf(i[2]);
-								p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
-							} catch (NumberFormatException e) {
-								p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-								main.send(main.getMessages().getString("number-format-exception").replace("%line%",
-										main.getMessages().getString("custom-spawn-set-title-time")));
-								p.sendTitle(colors.color("&e[!]"), colors.color("&aSkyblock spawnpoint set!"), 15, 30,
-										10);
-							} catch (ArrayIndexOutOfBoundsException e) {
-								p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-								main.send(main.getMessages().getString("missing-separator")
-										+ " &7(custom-spawn-set-title or custom-spawn-set-title-time)");
-								p.sendTitle(colors.color("&e[!]"), colors.color("&aSkyblock spawnpoint set!"), 15, 30,
-										10);
-							}
+							sendTitle(p, "custom-spawn-set-title", "custom-spawn-set-title-time");
 						}
 					} else {
 						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
@@ -182,31 +110,7 @@ public class Manager implements CommandExecutor {
 									sb.setSpawn(p.getUniqueId(), p.getLocation());
 									p.sendMessage(colors.color(main.getMessages().getString("spawn-set")));
 									if (main.getConfig().getBoolean("send-titles")) {
-										try {
-											String[] s = main.getMessages().getString("spawn-set-title").split(";", 2);
-											String[] i = main.getMessages().getString("spawn-set-title-time").split(";",
-													3);
-											Integer fadeIn = Integer.valueOf(i[0]);
-											Integer stay = Integer.valueOf(i[1]);
-											Integer fadeOut = Integer.valueOf(i[2]);
-											p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
-										} catch (NumberFormatException e) {
-											p.sendMessage(
-													colors.color((main.getMessages().getString("check-console"))));
-											main.send(main.getMessages().getString("number-format-exception").replace(
-													"%line%", main.getMessages().getString("spawn-set-title-time")));
-											p.sendTitle(colors.color("&e[!]"),
-													colors.color("&aSpawn point for your skyblock is reset."), 15, 30,
-													10);
-										} catch (ArrayIndexOutOfBoundsException e) {
-											p.sendMessage(
-													colors.color((main.getMessages().getString("check-console"))));
-											main.send(main.getMessages().getString("missing-separator")
-													+ " &7(spawn-set-title or spawn-set-title-time)");
-											p.sendTitle(colors.color("&e[!]"),
-													colors.color("&aSpawn point for your skyblock is reset."), 15, 30,
-													10);
-										}
+										sendTitle(p, "spawn-set-title", "spawn-set-title-time");
 									}
 								} else {
 									p.sendMessage(colors.color(main.getMessages().getString("too-far")));
@@ -261,26 +165,7 @@ public class Manager implements CommandExecutor {
 							main.getTranslators().remove(p.getUniqueId());
 							p.sendMessage(colors.color(main.getMessages().getString("spawned")));
 							if (main.getConfig().getBoolean("send-titles")) {
-								try {
-									String[] s = main.getMessages().getString("spawned-title").split(";", 2);
-									String[] i = main.getMessages().getString("spawned-title-time").split(";", 3);
-									Integer fadeIn = Integer.valueOf(i[0]);
-									Integer stay = Integer.valueOf(i[1]);
-									Integer fadeOut = Integer.valueOf(i[2]);
-									p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
-								} catch (NumberFormatException e) {
-									p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-									main.send(main.getMessages().getString("number-format-exception").replace("%line%",
-											main.getMessages().getString("spawned-title-time")));
-									p.sendTitle(colors.color("&e[!]"), colors.color("&aTeleported to SkyBlock."), 15,
-											30, 10);
-								} catch (ArrayIndexOutOfBoundsException e) {
-									p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-									main.send(main.getMessages().getString("missing-separator")
-											+ " &7(spawned-title or spawned-title-time)");
-									p.sendTitle(colors.color("&e[!]"), colors.color("&aTeleported to SkyBlock."), 15,
-											30, 10);
-								}
+								sendTitle(p, "spawned-title", "spawned-title-time");
 							}
 						} else {
 							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
@@ -299,26 +184,7 @@ public class Manager implements CommandExecutor {
 							main.getTranslators().remove(p.getUniqueId());
 							p.sendMessage(colors.color(main.getMessages().getString("left")));
 							if (main.getConfig().getBoolean("send-titles")) {
-								try {
-									String[] s = main.getMessages().getString("left-title").split(";", 2);
-									String[] i = main.getMessages().getString("left-title-time").split(";", 3);
-									Integer fadeIn = Integer.valueOf(i[0]);
-									Integer stay = Integer.valueOf(i[1]);
-									Integer fadeOut = Integer.valueOf(i[2]);
-									p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
-								} catch (NumberFormatException e) {
-									p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-									main.send(main.getMessages().getString("number-format-exception").replace("%line%",
-											main.getMessages().getString("left-title-time")));
-									p.sendTitle(colors.color("&e[!]"), colors.color("&bTeleported to normal World."),
-											15, 30, 10);
-								} catch (ArrayIndexOutOfBoundsException e) {
-									p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-									main.send(main.getMessages().getString("missing-separator")
-											+ " &7(left-title or left-title-time)");
-									p.sendTitle(colors.color("&e[!]"), colors.color("&bTeleported to normal World."),
-											15, 30, 10);
-								}
+								sendTitle(p, "left-title", "left-title-time");
 							}
 						} else {
 							p.sendMessage(colors.color(main.getMessages().getString("already-not-in-skyblock-world")));
@@ -356,32 +222,7 @@ public class Manager implements CommandExecutor {
 									p.sendMessage(colors.color(main.getMessages().getString("kit-received"))
 											.replace("%kit%", args[1]));
 									if (main.getConfig().getBoolean("send-titles")) {
-										try {
-											String[] s = main.getMessages().getString("kit-received-title")
-													.replace("%kit%", args[1]).split(";", 2);
-											String[] i = main.getMessages().getString("kit-received-title-time")
-													.split(";", 3);
-											Integer fadeIn = Integer.valueOf(i[0]);
-											Integer stay = Integer.valueOf(i[1]);
-											Integer fadeOut = Integer.valueOf(i[2]);
-											p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
-										} catch (NumberFormatException e) {
-											p.sendMessage(
-													colors.color((main.getMessages().getString("check-console"))));
-											main.send(main.getMessages().getString("number-format-exception").replace(
-													"%line%", main.getMessages().getString("kit-received-title-time")));
-											p.sendTitle(colors.color("&e[!]"),
-													colors.color("&aKit %kit% received.").replace("%kit%", args[1]), 15,
-													30, 10);
-										} catch (ArrayIndexOutOfBoundsException e) {
-											p.sendMessage(
-													colors.color((main.getMessages().getString("check-console"))));
-											main.send(main.getMessages().getString("missing-separator")
-													+ " &7(kit-received-title or kit-received-title-time)");
-											p.sendTitle(colors.color("&e[!]"),
-													colors.color("&aKit %kit% received.").replace("%kit%", args[1]), 15,
-													30, 10);
-										}
+										sendTitle(p, "kit-received-title", "kit-received-title-time");
 									}
 								} else {
 									p.sendMessage(colors.color(main.getMessages().getString("not-in-skyblock-world")));
@@ -416,26 +257,7 @@ public class Manager implements CommandExecutor {
 										.add(0.0, 1.0, 0.0));
 								p.sendMessage(colors.color(main.getMessages().getString("created")));
 								if (main.getConfig().getBoolean("send-titles")) {
-									try {
-										String[] s = main.getMessages().getString("created-title").split(";", 2);
-										String[] i = main.getMessages().getString("created-title-time").split(";", 3);
-										Integer fadeIn = Integer.valueOf(i[0]);
-										Integer stay = Integer.valueOf(i[1]);
-										Integer fadeOut = Integer.valueOf(i[2]);
-										p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
-									} catch (NumberFormatException e) {
-										p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-										main.send(main.getMessages().getString("number-format-exception")
-												.replace("%line%", main.getMessages().getString("created-title-time")));
-										p.sendTitle(colors.color("&e[!]"), colors.color("&aSkyblock created!"), 15, 30,
-												10);
-									} catch (ArrayIndexOutOfBoundsException e) {
-										p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-										main.send(main.getMessages().getString("missing-separator")
-												+ " &7(created-title or created-title-time)");
-										p.sendTitle(colors.color("&e[!]"), colors.color("&aSkyblock created!"), 15, 30,
-												10);
-									}
+									sendTitle(p, "created-title", "created-title-time");
 								}
 							} else {
 								p.sendMessage(colors.color(main.getMessages().getString("scheme-unavailable")));
@@ -453,27 +275,7 @@ public class Manager implements CommandExecutor {
 							if (sb.hasSkyBlock(Bukkit.getPlayerExact(args[1]))) {
 								sb.deleteSkyBlock(Bukkit.getPlayerExact(args[1]), false);
 								if (main.getConfig().getBoolean("send-titles")) {
-									try {
-										String[] s = main.getMessages().getString("force-deleted-title").split(";", 2);
-										String[] i = main.getMessages().getString("force-deleted-title-time").split(";",
-												3);
-										Integer fadeIn = Integer.valueOf(i[0]);
-										Integer stay = Integer.valueOf(i[1]);
-										Integer fadeOut = Integer.valueOf(i[2]);
-										p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
-									} catch (NumberFormatException e) {
-										p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-										main.send(main.getMessages().getString("number-format-exception").replace(
-												"%line%", main.getMessages().getString("force-deleted-title-time")));
-										p.sendTitle(colors.color("&e[!]"),
-												colors.color("&cYour skyblock was deleted by someone."), 15, 30, 10);
-									} catch (ArrayIndexOutOfBoundsException e) {
-										p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
-										main.send(main.getMessages().getString("missing-separator")
-												+ " &7(force-deleted-title or force-deleted-title-time)");
-										p.sendTitle(colors.color("&e[!]"),
-												colors.color("&cYour skyblock was deleted by someone."), 15, 30, 10);
-									}
+									sendTitle(p, "force-deleted-title", "force-deleted-title-time");
 								}
 							} else {
 								p.sendMessage(colors.color(main.getMessages().getString("player-has-no-skyblock")));
@@ -676,6 +478,27 @@ public class Manager implements CommandExecutor {
 			}
 		}
 		return true;
+	}
+
+	private void sendTitle(Player p, String string, String string2) {
+		try {
+			String[] s = main.getMessages().getString(string).split(";", 2);
+			String[] i = main.getMessages().getString(string2).split(";", 3);
+			Integer fadeIn = Integer.valueOf(i[0]);
+			Integer stay = Integer.valueOf(i[1]);
+			Integer fadeOut = Integer.valueOf(i[2]);
+			p.sendTitle(colors.color(s[0]), colors.color(s[1]), fadeIn, stay, fadeOut);
+		} catch (NumberFormatException e) {
+			p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
+			main.send(main.getMessages().getString("number-format-exception").replace("%line%",
+					main.getMessages().getString("reloaded-title-time")));
+			p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			p.sendMessage(colors.color((main.getMessages().getString("check-console"))));
+			main.send(main.getMessages().getString("missing-separator") + " &7(reloaded-title or reloaded-title-time)");
+			p.sendTitle(colors.color("&e[!]"), colors.color("&aPlugin reloaded!"), 15, 30, 10);
+		}
+
 	}
 
 	private void invite(Player p, String string) {
