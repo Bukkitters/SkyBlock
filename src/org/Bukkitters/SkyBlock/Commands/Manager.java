@@ -364,7 +364,8 @@ public class Manager implements CommandExecutor {
 									p.sendMessage(colors.color(main.getMessages().getString("kit-given")));
 									if (main.getConfig().getBoolean("send-titles")) {
 										sendTitle(p, "kit-given-title", "kit-given-title-time");
-										sendTitle(Bukkit.getPlayerExact(args[2]), "given-kit-received-title", "given-kit-received-title-time", args[1]);
+										sendTitle(Bukkit.getPlayerExact(args[2]), "given-kit-received-title",
+												"given-kit-received-title-time", args[1]);
 									}
 								} else {
 									p.sendMessage(
@@ -462,7 +463,8 @@ public class Manager implements CommandExecutor {
 								kits.giveKit(Bukkit.getPlayerExact(args[2]), args[1], false);
 								main.send(main.getMessages().getString("kit-given"));
 								if (main.getConfig().getBoolean("send-titles")) {
-									sendTitle(Bukkit.getPlayerExact(args[2]), "given-kit-received-title", "given-kit-received-title-time", args[1]);
+									sendTitle(Bukkit.getPlayerExact(args[2]), "given-kit-received-title",
+											"given-kit-received-title-time", args[1]);
 								}
 							} else {
 								main.send(main.getMessages().getString("player-not-in-skyblock-world"));

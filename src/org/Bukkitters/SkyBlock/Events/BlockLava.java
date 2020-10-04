@@ -24,6 +24,7 @@ public class BlockLava implements Listener {
 						if (e.getClickedBlock().getType().equals(Material.OBSIDIAN)) {
 							if (e.getClickedBlock().getWorld().getName().equalsIgnoreCase("skyblock")) {
 								e.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.LAVA_BUCKET));
+								e.setCancelled(true);
 							}
 						}
 					}
