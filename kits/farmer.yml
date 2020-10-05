@@ -1,5 +1,9 @@
 owner: 53725187-b3cd-3748-b3f8-a79ba597bbc4
 permission: skyblock.kit.farmer
+gui-item:
+  ==: org.bukkit.inventory.ItemStack
+  v: 2580
+  type: IRON_HOE
 items:
 - ==: org.bukkit.inventory.ItemStack
   v: 2580
@@ -26,15 +30,15 @@ items:
   amount: 8
 - ==: org.bukkit.inventory.ItemStack
   v: 2580
+  type: BEETROOT_SEEDS
+  amount: 2
+- ==: org.bukkit.inventory.ItemStack
+  v: 2580
   type: MELON_SEEDS
   amount: 2
 - ==: org.bukkit.inventory.ItemStack
   v: 2580
   type: PUMPKIN_SEEDS
-  amount: 2
-- ==: org.bukkit.inventory.ItemStack
-  v: 2580
-  type: BEETROOT_SEEDS
   amount: 2
 - ==: org.bukkit.inventory.ItemStack
   v: 2580

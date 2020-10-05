@@ -15,6 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Manager implements CommandExecutor {
 
@@ -36,357 +37,396 @@ public class Manager implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
-			if (args.length == 0) {
-				throwInfo(sender, true);
-			} else if (args.length == 1) {
-				switch (args[0]) {
-				case "reload":
-					if (isPermitted(p, "skyblock.reload")) {
-						main.reloadConfig();
-						main.reloadMessages();
-						p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
-						if (main.getConfig().getBoolean("send-titles")) {
-							sendTitle(p, "reloaded-title", "reloaded-title-time");
-						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "create":
-					if (isPermitted(p, "skyblock.create")) {
-						if (sb.canBuild(p.getUniqueId())) {
-							if (!sb.hasSkyBlock(p)) {
-								Location location = sb.findLocation();
-								data.setWorldInventory(p.getUniqueId(), p.getInventory());
-								p.teleport(location);
-								data.swapInventory(p);
-								sb.buildScheme(p.getUniqueId(), location, sc.randomScheme(p.getUniqueId()));
-								p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation().clone()
-										.add(0.0, 1.0, 0.0));
-								p.sendMessage(colors.color(main.getMessages().getString("created")));
-								if (main.getConfig().getBoolean("send-titles")) {
-									sendTitle(p, "created-title", "created-title-time");
-								}
-							} else {
-								p.sendMessage(colors.color(main.getMessages().getString("already-have")));
+			if (!main.getCooldowns().containsKey(p.getUniqueId())) {
+				if (args.length == 0) {
+					throwInfo(sender, true);
+				} else if (args.length == 1) {
+					switch (args[0]) {
+					case "reload":
+						if (isPermitted(p, "skyblock.reload")) {
+							main.reloadConfig();
+							main.reloadMessages();
+							p.sendMessage(colors.color(main.getMessages().getString("reloaded")));
+							if (main.getConfig().getBoolean("send-titles")) {
+								sendTitle(p, "reloaded-title", "reloaded-title-time");
 							}
 						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("no-scheme-available")));
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "delete":
-					if (isPermitted(p, "skyblock.delete")) {
-						if (sb.hasSkyBlock(p)) {
-							sb.deleteSkyBlock(p, true);
-						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
-						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "setcustomspawn":
-					if (isPermitted(p, "skyblock.setcustomspawn")) {
-						main.getConfig().set("spawn-location.world", p.getWorld().getName());
-						main.getConfig().set("spawn-location.x", p.getLocation().getX());
-						main.getConfig().set("spawn-location.y", p.getLocation().getY());
-						main.getConfig().set("spawn-location.z", p.getLocation().getZ());
-						main.saveConfig();
-						p.sendMessage(colors.color(main.getMessages().getString("custom-spawn-set")));
-						if (main.getConfig().getBoolean("send-titles")) {
-							sendTitle(p, "custom-spawn-set-title", "custom-spawn-set-title-time");
-						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "setspawn":
-					if (isPermitted(p, "skyblock.setspawn")) {
-						if (sb.hasSkyBlock(p)) {
-							if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
-								if (sb.distanceKept(p.getUniqueId(), p.getLocation())) {
-									sb.setSpawn(p.getUniqueId(), p.getLocation());
-									p.sendMessage(colors.color(main.getMessages().getString("spawn-set")));
+						break;
+					case "create":
+						if (isPermitted(p, "skyblock.create")) {
+							if (sb.canBuild(p.getUniqueId())) {
+								if (!sb.hasSkyBlock(p)) {
+									Location location = sb.findLocation();
+									data.setWorldInventory(p.getUniqueId(), p.getInventory());
+									p.teleport(location);
+									data.swapInventory(p);
+									sb.buildScheme(p.getUniqueId(), location, sc.randomScheme(p.getUniqueId()));
+									p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation()
+											.clone().add(0.0, 1.0, 0.0));
+									p.sendMessage(colors.color(main.getMessages().getString("created")));
+									kits.addDefaultKit(p);
 									if (main.getConfig().getBoolean("send-titles")) {
-										sendTitle(p, "spawn-set-title", "spawn-set-title-time");
+										sendTitle(p, "created-title", "created-title-time");
 									}
 								} else {
-									p.sendMessage(colors.color(main.getMessages().getString("too-far")));
+									p.sendMessage(colors.color(main.getMessages().getString("already-have")));
 								}
 							} else {
-								p.sendMessage(colors.color(main.getMessages().getString("not-in-skyblock-world")));
+								p.sendMessage(colors.color(main.getMessages().getString("no-scheme-available")));
 							}
 						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "accept":
-					if (isPermitted(p, "skyblock.accept")) {
-						if (main.getInvites().containsKey((p.getUniqueId()))) {
-							accept(sender, main.getInvites().get(p.getUniqueId()));
-							p.sendMessage(colors.color(main.getMessages().getString("accepted")));
-						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("no-invites")));
-						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "help":
-					throwHelp(sender, true);
-					break;
-				case "info":
-					if (isPermitted(p, "skyblock.info")) {
-						throwInfo(sender, true);
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "spawn":
-					if (isPermitted(p, "skyblock.spawn")) {
-						if (sb.hasSkyBlock(p)) {
-							main.getTranslators().add(p.getUniqueId());
-							if (!p.getWorld().getName().equalsIgnoreCase("skyblock")) {
-								data.setWorldInventory(p.getUniqueId(), p.getInventory());
-								p.teleport(Bukkit.getWorld("skyblock")
-										.getHighestBlockAt(sb.getSkyBlockSpawn(p.getUniqueId())).getLocation().clone()
-										.add(0, 1, 0));
-								data.swapInventory(p);
+						break;
+					case "delete":
+						if (isPermitted(p, "skyblock.delete")) {
+							if (sb.hasSkyBlock(p)) {
+								sb.deleteSkyBlock(p, true);
 							} else {
-								p.teleport(Bukkit.getWorld("skyblock")
-										.getHighestBlockAt(sb.getSkyBlockSpawn(p.getUniqueId())).getLocation().clone()
-										.add(0, 1, 0));
-							}
-							main.getTranslators().remove(p.getUniqueId());
-							p.sendMessage(colors.color(main.getMessages().getString("spawned")));
-							if (main.getConfig().getBoolean("send-titles")) {
-								sendTitle(p, "spawned-title", "spawned-title-time");
+								p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
 							}
 						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "leave":
-					if (isPermitted(p, "skyblock.leave")) {
-						if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
-							main.getTranslators().add(p.getUniqueId());
-							data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
-							p.teleport(sb.getBackLocation());
-							data.swapInventory(p);
-							main.getTranslators().remove(p.getUniqueId());
-							p.sendMessage(colors.color(main.getMessages().getString("left")));
+						break;
+					case "setcustomspawn":
+						if (isPermitted(p, "skyblock.setcustomspawn")) {
+							main.getConfig().set("spawn-location.world", p.getWorld().getName());
+							main.getConfig().set("spawn-location.x", p.getLocation().getX());
+							main.getConfig().set("spawn-location.y", p.getLocation().getY());
+							main.getConfig().set("spawn-location.z", p.getLocation().getZ());
+							main.saveConfig();
+							p.sendMessage(colors.color(main.getMessages().getString("custom-spawn-set")));
 							if (main.getConfig().getBoolean("send-titles")) {
-								sendTitle(p, "left-title", "left-title-time");
+								sendTitle(p, "custom-spawn-set-title", "custom-spawn-set-title-time");
 							}
 						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("already-not-in-skyblock-world")));
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "kits":
-					if (isPermitted(p, "skyblock.kits")) {
-						kits.sendKits(sender);
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "schemes":
-					if (isPermitted(p, "skyblock.schemes")) {
-						sc.sendSchemes(sender);
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				default:
-					p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
-					break;
-				}
-			} else if (args.length == 2) {
-				switch (args[0]) {
-				case "kit":
-					if (isPermitted(p, "skyblock.kit")) {
-						if (kits.exists(args[1])) {
-							if (kits.isAvailable(args[1], p.getUniqueId())) {
+						break;
+					case "setspawn":
+						if (isPermitted(p, "skyblock.setspawn")) {
+							if (sb.hasSkyBlock(p)) {
 								if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
-									kits.giveKit(p, args[1], true);
-									p.sendMessage(colors.color(main.getMessages().getString("kit-received"))
-											.replace("%kit%", args[1]));
-									if (main.getConfig().getBoolean("send-titles")) {
-										sendTitle(p, "kit-received-title", "kit-received-title-time", args[1]);
+									if (sb.distanceKept(p.getUniqueId(), p.getLocation())) {
+										sb.setSpawn(p.getUniqueId(), p.getLocation());
+										p.sendMessage(colors.color(main.getMessages().getString("spawn-set")));
+										if (main.getConfig().getBoolean("send-titles")) {
+											sendTitle(p, "spawn-set-title", "spawn-set-title-time");
+										}
+									} else {
+										p.sendMessage(colors.color(main.getMessages().getString("too-far")));
 									}
 								} else {
 									p.sendMessage(colors.color(main.getMessages().getString("not-in-skyblock-world")));
 								}
 							} else {
-								p.sendMessage(colors.color(main.getMessages().getString("kit-unavailable")));
+								p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
 							}
 						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("kit-not-exist")));
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "invite":
-					if (isPermitted(p, "skyblock.invite")) {
-						invite(p, args[1]);
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "create":
-					if (isPermitted(p, "skyblock.create")) {
-						if (sc.exists(args[1])) {
-							if (sc.isAvailable(p.getUniqueId(), args[1])) {
-								Location location = sb.findLocation();
-								data.setWorldInventory(p.getUniqueId(), p.getInventory());
-								p.teleport(location);
-								data.swapInventory(p);
-								sb.buildScheme(p.getUniqueId(), location, args[1]);
-								p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation().clone()
-										.add(0.0, 1.0, 0.0));
-								p.sendMessage(colors.color(main.getMessages().getString("created")));
+						break;
+					case "accept":
+						if (isPermitted(p, "skyblock.accept")) {
+							if (main.getInvites().containsKey((p.getUniqueId()))) {
+								accept(p, main.getInvites().get(p.getUniqueId()));
+								p.sendMessage(colors.color(main.getMessages().getString("accepted")));
+							} else {
+								p.sendMessage(colors.color(main.getMessages().getString("no-invites")));
+							}
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+						}
+						break;
+					case "help":
+						throwHelp(sender, true);
+						break;
+					case "info":
+						if (isPermitted(p, "skyblock.info")) {
+							throwInfo(sender, true);
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+						}
+						break;
+					case "spawn":
+						if (isPermitted(p, "skyblock.spawn")) {
+							if (sb.hasSkyBlock(p)) {
+								main.getTranslators().add(p.getUniqueId());
+								if (!p.getWorld().getName().equalsIgnoreCase("skyblock")) {
+									data.setWorldInventory(p.getUniqueId(), p.getInventory());
+									p.teleport(Bukkit.getWorld("skyblock")
+											.getHighestBlockAt(sb.getSkyBlockSpawn(p.getUniqueId())).getLocation()
+											.clone().add(0, 1, 0));
+									data.swapInventory(p);
+								} else {
+									p.teleport(Bukkit.getWorld("skyblock")
+											.getHighestBlockAt(sb.getSkyBlockSpawn(p.getUniqueId())).getLocation()
+											.clone().add(0, 1, 0));
+								}
+								main.getTranslators().remove(p.getUniqueId());
+								p.sendMessage(colors.color(main.getMessages().getString("spawned")));
 								if (main.getConfig().getBoolean("send-titles")) {
-									sendTitle(p, "created-title", "created-title-time");
+									sendTitle(p, "spawned-title", "spawned-title-time");
 								}
 							} else {
-								p.sendMessage(colors.color(main.getMessages().getString("scheme-unavailable")));
+								p.sendMessage(colors.color(main.getMessages().getString("you-have-no-skyblock")));
 							}
 						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("scheme-not-exist")));
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-					}
-					break;
-				case "delete":
-					if (isPermitted(p, "skyblock.delete.others")) {
-						if (Bukkit.getPlayerExact(args[1]) != null) {
-							if (sb.hasSkyBlock(Bukkit.getPlayerExact(args[1]))) {
-								sb.deleteSkyBlock(Bukkit.getPlayerExact(args[1]), false);
+						break;
+					case "leave":
+						if (isPermitted(p, "skyblock.leave")) {
+							if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
+								main.getTranslators().add(p.getUniqueId());
+								data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
+								p.teleport(sb.getBackLocation());
+								data.swapInventory(p);
+								main.getTranslators().remove(p.getUniqueId());
+								p.sendMessage(colors.color(main.getMessages().getString("left")));
+								if (main.getConfig().getBoolean("send-titles")) {
+									sendTitle(p, "left-title", "left-title-time");
+								}
 							} else {
-								p.sendMessage(colors.color(main.getMessages().getString("player-has-no-skyblock")));
+								p.sendMessage(
+										colors.color(main.getMessages().getString("already-not-in-skyblock-world")));
 							}
 						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("player-not-found")));
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+						break;
+					case "kits":
+						if (isPermitted(p, "skyblock.kits")) {
+							if (main.getConfig().getBoolean("kits.gui")) {
+								kits.sendGUIKits(p);
+							} else {
+								kits.sendKits(p);
+							}
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+						}
+						break;
+					case "schemes":
+						if (isPermitted(p, "skyblock.schemes")) {
+							if (main.getConfig().getBoolean("schemes.gui")) {
+								sc.sendGUISchemes(p);
+							} else {
+								sc.sendSchemes(p);
+							}
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+						}
+						break;
+					default:
+						p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
+						break;
 					}
-					break;
-				default:
-					p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
-					break;
-				}
-			} else if (args.length == 3) {
-				switch (args[0]) {
-				case "scheme":
-					if (args[1].equalsIgnoreCase("create")) {
-						if (isPermitted(p, "skyblock.createscheme")) {
-							if (main.getLRhands().containsKey(p.getUniqueId())) {
-								if (main.getLRhands().get(p.getUniqueId())[0] != null
-										&& main.getLRhands().get(p.getUniqueId())[1] != null) {
-									if (!sc.exists(args[2])) {
-										sc.createScheme(args[2], main.getLRhands().get(p.getUniqueId()),
-												p.getUniqueId(), p.getWorld());
-										p.sendMessage(colors.color(main.getMessages().getString("scheme-created")));
+				} else if (args.length == 2) {
+					switch (args[0]) {
+					case "kit":
+						if (isPermitted(p, "skyblock.kit")) {
+							if (kits.exists(args[1])) {
+								if (kits.isAvailable(args[1], p.getUniqueId())) {
+									if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
+										kits.giveKit(p, args[1], true);
+										p.sendMessage(colors.color(main.getMessages().getString("kit-received"))
+												.replace("%kit%", args[1]));
+										if (main.getConfig().getBoolean("send-titles")) {
+											sendTitle(p, "kit-received-title", "kit-received-title-time", args[1]);
+										}
 									} else {
-										p.sendMessage(colors.color(main.getMessages().getString("scheme-exists")));
+										p.sendMessage(
+												colors.color(main.getMessages().getString("not-in-skyblock-world")));
 									}
 								} else {
-									p.sendMessage(colors.color(main.getMessages().getString("not-selected")));
+									p.sendMessage(colors.color(main.getMessages().getString("kit-unavailable")));
 								}
-							} else {
-								p.sendMessage(colors.color(main.getMessages().getString("not-selected")));
-							}
-						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-						}
-					} else if (args[1].equalsIgnoreCase("delete")) {
-						if (isPermitted(p, "skyblock.deletescheme")) {
-							if (sc.exists(args[2])) {
-								sc.delScheme(args[2]);
-								p.sendMessage(colors.color(main.getMessages().getString("scheme-deleted")));
-							} else {
-								p.sendMessage(colors.color(main.getMessages().getString("scheme-not-exist")));
-							}
-						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
-					}
-					break;
-				case "kit":
-					if (args[1].equalsIgnoreCase("create")) {
-						if (isPermitted(p, "skyblock.createkit")) {
-							if (!kits.exists(args[2])) {
-								kits.createKit(args[2], p.getInventory(), p.getUniqueId());
-								p.sendMessage(colors.color(main.getMessages().getString("kit-created")));
-							} else {
-								p.sendMessage(colors.color(main.getMessages().getString("kit-exists")));
-							}
-						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
-						}
-					} else if (args[1].equalsIgnoreCase("delete")) {
-						if (isPermitted(p, "skyblock.deletekit")) {
-							if (kits.exists(args[2])) {
-								kits.deleteKit(args[2]);
-								p.sendMessage(colors.color(main.getMessages().getString("kit-deleted")));
 							} else {
 								p.sendMessage(colors.color(main.getMessages().getString("kit-not-exist")));
 							}
 						} else {
 							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
-					}
-					break;
-				case "givekit":
-					if (isPermitted(p, "skyblock.givekit")) {
-						if (kits.exists(args[1])) {
-							if (Bukkit.getPlayerExact(args[2]) != null) {
-								if (Bukkit.getPlayerExact(args[2]).getWorld().getName().equalsIgnoreCase("skyblock")) {
-									kits.giveKit(Bukkit.getPlayerExact(args[2]), args[1], false);
-									p.sendMessage(colors.color(main.getMessages().getString("kit-given")));
+						break;
+					case "invite":
+						if (isPermitted(p, "skyblock.invite")) {
+							invite(p, args[1]);
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+						}
+						break;
+					case "create":
+						if (isPermitted(p, "skyblock.create")) {
+							if (sc.exists(args[1])) {
+								if (sc.isAvailable(p.getUniqueId(), args[1])) {
+									Location location = sb.findLocation();
+									data.setWorldInventory(p.getUniqueId(), p.getInventory());
+									p.teleport(location);
+									data.swapInventory(p);
+									sb.buildScheme(p.getUniqueId(), location, args[1]);
+									p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation()
+											.clone().add(0.0, 1.0, 0.0));
+									p.sendMessage(colors.color(main.getMessages().getString("created")));
+									kits.addDefaultKit(p);
 									if (main.getConfig().getBoolean("send-titles")) {
-										sendTitle(p, "kit-given-title", "kit-given-title-time");
-										sendTitle(Bukkit.getPlayerExact(args[2]), "given-kit-received-title",
-												"given-kit-received-title-time", args[1]);
+										sendTitle(p, "created-title", "created-title-time");
 									}
 								} else {
-									p.sendMessage(
-											colors.color(main.getMessages().getString("player-not-in-skyblock-world")));
+									p.sendMessage(colors.color(main.getMessages().getString("scheme-unavailable")));
+								}
+							} else {
+								p.sendMessage(colors.color(main.getMessages().getString("scheme-not-exist")));
+							}
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+						}
+						break;
+					case "delete":
+						if (isPermitted(p, "skyblock.delete.others")) {
+							if (Bukkit.getPlayerExact(args[1]) != null) {
+								if (sb.hasSkyBlock(Bukkit.getPlayerExact(args[1]))) {
+									sb.deleteSkyBlock(Bukkit.getPlayerExact(args[1]), false);
+								} else {
+									p.sendMessage(colors.color(main.getMessages().getString("player-has-no-skyblock")));
 								}
 							} else {
 								p.sendMessage(colors.color(main.getMessages().getString("player-not-found")));
 							}
 						} else {
-							p.sendMessage(colors.color(main.getMessages().getString("kit-not-exist")));
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
-					} else {
-						p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+						break;
+					default:
+						p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
+						break;
 					}
-					break;
-				default:
+				} else if (args.length == 3) {
+					switch (args[0]) {
+					case "scheme":
+						if (args[1].equalsIgnoreCase("create")) {
+							if (isPermitted(p, "skyblock.createscheme")) {
+								if (main.getLRhands().containsKey(p.getUniqueId())) {
+									if (main.getLRhands().get(p.getUniqueId())[0] != null
+											&& main.getLRhands().get(p.getUniqueId())[1] != null) {
+										if (!sc.exists(args[2])) {
+											sc.createScheme(args[2], main.getLRhands().get(p.getUniqueId()),
+													p.getUniqueId(), p.getWorld());
+											p.sendMessage(colors.color(main.getMessages().getString("scheme-created")));
+										} else {
+											p.sendMessage(colors.color(main.getMessages().getString("scheme-exists")));
+										}
+									} else {
+										p.sendMessage(colors.color(main.getMessages().getString("not-selected")));
+									}
+								} else {
+									p.sendMessage(colors.color(main.getMessages().getString("not-selected")));
+								}
+							} else {
+								p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+							}
+						} else if (args[1].equalsIgnoreCase("delete")) {
+							if (isPermitted(p, "skyblock.deletescheme")) {
+								if (sc.exists(args[2])) {
+									sc.delScheme(args[2]);
+									p.sendMessage(colors.color(main.getMessages().getString("scheme-deleted")));
+								} else {
+									p.sendMessage(colors.color(main.getMessages().getString("scheme-not-exist")));
+								}
+							} else {
+								p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+							}
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
+						}
+						break;
+					case "kit":
+						if (args[1].equalsIgnoreCase("create")) {
+							if (isPermitted(p, "skyblock.createkit")) {
+								if (!kits.exists(args[2])) {
+									kits.createKit(args[2], p.getInventory(), p.getUniqueId());
+									p.sendMessage(colors.color(main.getMessages().getString("kit-created")));
+								} else {
+									p.sendMessage(colors.color(main.getMessages().getString("kit-exists")));
+								}
+							} else {
+								p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+							}
+						} else if (args[1].equalsIgnoreCase("delete")) {
+							if (isPermitted(p, "skyblock.deletekit")) {
+								if (kits.exists(args[2])) {
+									kits.deleteKit(args[2]);
+									p.sendMessage(colors.color(main.getMessages().getString("kit-deleted")));
+								} else {
+									p.sendMessage(colors.color(main.getMessages().getString("kit-not-exist")));
+								}
+							} else {
+								p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+							}
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
+						}
+						break;
+					case "givekit":
+						if (isPermitted(p, "skyblock.givekit")) {
+							if (kits.exists(args[1])) {
+								if (Bukkit.getPlayerExact(args[2]) != null) {
+									if (Bukkit.getPlayerExact(args[2]).getWorld().getName()
+											.equalsIgnoreCase("skyblock")) {
+										kits.giveKit(Bukkit.getPlayerExact(args[2]), args[1], false);
+										p.sendMessage(colors.color(main.getMessages().getString("kit-given")));
+										if (main.getConfig().getBoolean("send-titles")) {
+											sendTitle(p, "kit-given-title", "kit-given-title-time");
+											sendTitle(Bukkit.getPlayerExact(args[2]), "given-kit-received-title",
+													"given-kit-received-title-time", args[1]);
+										}
+									} else {
+										p.sendMessage(colors
+												.color(main.getMessages().getString("player-not-in-skyblock-world")));
+									}
+								} else {
+									p.sendMessage(colors.color(main.getMessages().getString("player-not-found")));
+								}
+							} else {
+								p.sendMessage(colors.color(main.getMessages().getString("kit-not-exist")));
+							}
+						} else {
+							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
+						}
+						break;
+					default:
+						p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
+						break;
+					}
+				} else {
 					p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
-					break;
+				}
+				if (!p.hasPermission("skyblock.admin")) {
+					main.getCooldowns().put(p.getUniqueId(), main.getConfig().getInt("command-cooldown"));
+					if (main.getCooldowns().size() == 1) {
+						BukkitRunnable r = new BukkitRunnable() {
+							@Override
+							public void run() {
+								for (UUID id : main.getCooldowns().keySet()) {
+									int time = main.getCooldowns().get(id);
+									if (time > 1) {
+										main.getCooldowns().put(id, time - 1);
+									} else {
+										main.getCooldowns().remove(id);
+										if (main.getCooldowns().size() == 0) {
+											this.cancel();
+										}
+									}
+								}
+							}
+						};
+						r.runTaskTimerAsynchronously(main, 20L, 20L);
+					}
 				}
 			} else {
-				p.sendMessage(colors.color(main.getMessages().getString("wrong-command")));
+				p.sendMessage(colors.color(main.getMessages().getString("cooldown").replaceAll("%time%", main.getCooldowns().get(p.getUniqueId()).toString())));
 			}
 		} else {
 			switch (args.length) {
@@ -561,13 +601,13 @@ public class Manager implements CommandExecutor {
 		}
 	}
 
-	private void accept(CommandSender sender, UUID uuid) {
-		((Player) sender).teleport(sb.getSkyBlockSpawn(uuid));
+	private void accept(Player p, UUID uuid) {
+		p.teleport(sb.getSkyBlockSpawn(uuid));
 		Bukkit.getPlayer(uuid).sendMessage(colors.color(main.getMessages().getString("player-accepted")));
-		main.getInvites().remove(((Player) sender).getUniqueId());
+		main.getInvites().remove(p.getUniqueId());
 		if (main.getConfig().getBoolean("send-titles")) {
-			sendTitle((Player) sender, "accepted-title", "accepted-title-time");
-			sendTitle(Bukkit.getPlayer(uuid), "player-accepted-title", "player-accepted-title-time", sender.getName());
+			sendTitle(p, "accepted-title", "accepted-title-time");
+			sendTitle(Bukkit.getPlayer(uuid), "player-accepted-title", "player-accepted-title-time", p.getName());
 		}
 	}
 

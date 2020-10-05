@@ -6,13 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.Bukkitters.SkyBlock.Main;
+import org.Bukkitters.SkyBlock.GUI.KitsGUI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class Kits {
 
@@ -35,6 +38,13 @@ public class Kits {
 			FileConfiguration kit = YamlConfiguration.loadConfiguration(f);
 			kit.set("owner", id.toString());
 			kit.set("permission", "skyblock.kit." + name);
+			if (Bukkit.getPlayer(id).getInventory().getItemInMainHand() != null
+					&& !Bukkit.getPlayer(id).getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
+				kit.set("gui-item",
+						new ItemStack(Bukkit.getPlayer(id).getInventory().getItemInMainHand().getType(), 1));
+			} else {
+				kit.set("gui-item", new ItemStack(Material.GOLD_NUGGET, 1));
+			}
 			List<ItemStack> list = new ArrayList<ItemStack>();
 			for (ItemStack i : Bukkit.getPlayer(id).getInventory().getContents()) {
 				if (i != null) {
@@ -126,7 +136,7 @@ public class Kits {
 					}
 				}
 			} else {
-				if (p.hasPermission("skyblock.true")) {
+				if (p.hasPermission("skyblock.admin")) {
 					return true;
 				} else {
 					return false;
@@ -151,20 +161,20 @@ public class Kits {
 		return (List<ItemStack>) f.getList("items");
 	}
 
-	public List<String> getAvailableKits(CommandSender sender) {
+	public List<String> getAvailableKits(Player p) {
 		List<String> kits = new ArrayList<String>();
 		for (File f : kitsFolder.listFiles()) {
 			String name = f.getName().replaceAll(".yml", "");
-			if (sender.hasPermission("advancedskyblock.admin")) {
+			if (p.hasPermission("advancedskyblock.admin")) {
 				kits.add(name);
 			} else {
 				if (main.getConfig().getStringList("free-kits").contains(name)) {
 					kits.add(name);
 				} else {
 					FileConfiguration conf = YamlConfiguration.loadConfiguration(new File(kitsFolder, name + ".yml"));
-					if (sender.hasPermission(conf.getString("permission"))) {
+					if (p.hasPermission(conf.getString("permission"))) {
 						kits.add(name);
-					} else if (conf.getString("owner").equalsIgnoreCase(((Player) sender).getUniqueId().toString())) {
+					} else if (conf.getString("owner").equalsIgnoreCase(p.getUniqueId().toString())) {
 						kits.add(name);
 					}
 				}
@@ -179,6 +189,24 @@ public class Kits {
 			kits.add(f.getName().replaceAll(".yml", ""));
 		}
 		return kits;
+	}
+
+	public void sendGUIKits(Player p) {
+		KitsGUI gui = new KitsGUI(getAvailableKits(p), "kits", p.getUniqueId(), (byte) 1);
+		gui.openInventory((byte) 1);
+		p.setMetadata("page", new FixedMetadataValue(main, 1));
+	}
+
+	public void addDefaultKit(Player p) {
+		if (main.getConfig().getBoolean("give-default-kit")) {
+			String kit = main.getConfig().getString("default-kit");
+			if (exists(kit)) {
+				data.addUsedKit(p, kit);
+				for (ItemStack i : getKit(kit)) {
+					p.getInventory().addItem(i);
+				}
+			}
+		}
 	}
 
 }

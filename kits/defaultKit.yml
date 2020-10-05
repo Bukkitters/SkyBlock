@@ -1,5 +1,9 @@
 owner: 53725187-b3cd-3748-b3f8-a79ba597bbc4
 permission: skyblock.kit.defaultKit
+gui-item:
+  ==: org.bukkit.inventory.ItemStack
+  v: 2580
+  type: WATER_BUCKET
 items:
 - ==: org.bukkit.inventory.ItemStack
   v: 2580

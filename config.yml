@@ -11,16 +11,37 @@ allow-build-on-other-skyblock: false
 send-titles: true
 #Item in hand for selecting points
 wand-material: 'WOODEN_AXE'
-#Where to teleport players who leave skyblock. WORLD_SPAWNPOINT or CUSTOM_SPAWNPOINT(/sb setcustomspawn).
+#Where to teleport players who leave skyblock. WORLD_SPAWNPOINT or CUSTOM_SPAWNPOINT(/sb setcustomspawn)
 spawn-point: 'WORLD_SPAWNPOINT'
+#Give kit when player creates skyblock
+give-default-kit: true
+#Default kit name
+default-kit: defaultKit
+#Materials(types) of gui items
+#BACK item
+back-gui-item: 'REDSTONE'
+back-gui-item-name: 'Go BACK!'
+#NEXT item
+next-gui-item: 'ARROW'
+next-gui-item-name: '&eGo AHEAD!'
+#GUI type describes where gui items would be set. Possible: 'FIRST_ROW_GUI_ITEMS', 'LAST_ROW_GUI_ITEMS', 'FIRST_AND_LAST_SLOTS_GUI_ITEMS' and 'FIRST_AND_LAST_ITEMS_GUI_ITEMS'
+gui-items-type: 'FIRST_ROW_GUI_ITEMS'
+#Delay between using commands(in seconds)
+command-cooldown: 15
 #Kits settings
 kits:
   show-only-available: false
   show-limits: true
+  gui: true
+  gui-name: '&2Kits'
+  gui-rows: 5
 #Schemes settings
 schemes:
   show-only-available: false
   show-limits: true
+  gui: true
+  gui-name: '&2Schemes'
+  gui-rows: 6
 #Free kits
 free-kits:
 - defaultKit

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import org.Bukkitters.SkyBlock.Main;
+import org.Bukkitters.SkyBlock.GUI.SchemesGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,6 +16,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class Schemes {
 
@@ -31,6 +34,12 @@ public class Schemes {
 		FileConfiguration conf = YamlConfiguration.loadConfiguration(f);
 		conf.set("permission", "skyblock.scheme." + name);
 		conf.set("owner", id.toString());
+		if (Bukkit.getPlayer(id).getInventory().getItemInMainHand() != null
+				&& !Bukkit.getPlayer(id).getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
+			conf.set("gui-item", new ItemStack(Bukkit.getPlayer(id).getInventory().getItemInMainHand().getType(), 1));
+		} else {
+			conf.set("gui-item", new ItemStack(Material.COBBLESTONE, 1));
+		}
 		Location loc1 = locations[0];
 		Location loc2 = locations[1];
 		double xmin = loc1.getX() < loc2.getX() ? loc1.getX() : loc2.getX(),
@@ -166,11 +175,11 @@ public class Schemes {
 		}
 	}
 
-	public List<String> getAvailableSchemes(CommandSender sender) {
+	public List<String> getAvailableSchemes(Player p) {
 		List<String> sc = new ArrayList<String>();
 		for (File f : schemesFolder.listFiles()) {
 			String name = f.getName().replaceAll(".yml", "");
-			if (sender.hasPermission("advancedskyblock.admin")) {
+			if (p.hasPermission("advancedskyblock.admin")) {
 				sc.add(name);
 			} else {
 				if (main.getConfig().getStringList("free-schemes").contains(name)) {
@@ -178,9 +187,9 @@ public class Schemes {
 				} else {
 					FileConfiguration conf = YamlConfiguration
 							.loadConfiguration(new File(schemesFolder, name + ".yml"));
-					if (sender.hasPermission(conf.getString("permission"))) {
+					if (p.hasPermission(conf.getString("permission"))) {
 						sc.add(name);
-					} else if (conf.getString("owner").equalsIgnoreCase(((Player) sender).getUniqueId().toString())) {
+					} else if (conf.getString("owner").equalsIgnoreCase(p.getUniqueId().toString())) {
 						sc.add(name);
 					}
 				}
@@ -195,6 +204,12 @@ public class Schemes {
 			kits.add(f.getName().replaceAll(".yml", ""));
 		}
 		return kits;
+	}
+
+	public void sendGUISchemes(Player p) {
+		SchemesGUI gui = new SchemesGUI(getAvailableSchemes(p), "schemes", p.getUniqueId(), (byte) 1);
+		gui.openInventory((byte) 1);
+		p.setMetadata("page", new FixedMetadataValue(main, 1));
 	}
 
 }

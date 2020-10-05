@@ -24,6 +24,7 @@ import org.Bukkitters.SkyBlock.Events.BlockLava;
 import org.Bukkitters.SkyBlock.Events.Breaker;
 import org.Bukkitters.SkyBlock.Events.Builder;
 import org.Bukkitters.SkyBlock.Events.Damager;
+import org.Bukkitters.SkyBlock.Events.InventoryClick;
 import org.Bukkitters.SkyBlock.Events.InventoryProtect;
 import org.Bukkitters.SkyBlock.Events.JoinEvent;
 import org.Bukkitters.SkyBlock.Events.LeavesControl;
@@ -43,6 +44,7 @@ public class Main extends JavaPlugin {
 	private HashMap<UUID, Location[]> lrhands = new HashMap<UUID, Location[]>();
 	private HashMap<UUID, UUID> invites = new HashMap<UUID, UUID>();
 	private static Main instance;
+	private HashMap<UUID, Integer> cooldowns = new HashMap<UUID, Integer>();
 
 	public void onEnable() {
 		instance = this;
@@ -52,6 +54,19 @@ public class Main extends JavaPlugin {
 		generateWorld();
 		generateFoldersAndFiles();
 		saveProfiles();
+		if (getConfig().getString("gui-items-type").equalsIgnoreCase("FIRST_ROW_GUI_ITEMS")
+				|| getConfig().getString("gui-items-type").equalsIgnoreCase("LAST_ROW_GUI_ITEMS")) {
+			if (getConfig().getInt("kits.gui-rows") <= 1) {
+				getConfig().set("kits.gui-rows", 2);
+				send("&cError! Can not make inventories while &f'kits.gui-rows' &cis set to &f1 &cor &flower&c. Number is set to &f2&c.");
+				saveConfig();
+			}
+			if (getConfig().getInt("schemes.gui-rows") <= 1) {
+				getConfig().set("schemes.gui-rows", 2);
+				send("&cError! Can not make inventories while &f'schemess.gui-rows' &cis set to &f1 &cor &flower&c. Number is set to &f2&c.");
+				saveConfig();
+			}
+		}
 		new Selector(this);
 		new Manager(this);
 		new JoinEvent(this);
@@ -62,6 +77,7 @@ public class Main extends JavaPlugin {
 		new LeavesControl(this);
 		new BlockLava(this);
 		new Builder(this);
+		new InventoryClick(this);
 		send("&aPlugin enabled!");
 		getCommand("skyblock").setTabCompleter(new TabComplete(this));
 	}
@@ -153,6 +169,10 @@ public class Main extends JavaPlugin {
 
 	public HashMap<UUID, UUID> getInvites() {
 		return invites;
+	}
+
+	public HashMap<UUID, Integer> getCooldowns() {
+		return cooldowns;
 	}
 
 }

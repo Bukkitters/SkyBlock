@@ -68,7 +68,7 @@ public class TabComplete implements TabCompleter, Listener {
 					switch (args[0]) {
 					case "create":
 						if (sender.hasPermission("skyblock.create")) {
-							for (String s : sc.getAvailableSchemes(sender)) {
+							for (String s : sc.getAvailableSchemes((Player) sender)) {
 								secondArg.add(s);
 							}
 						}
@@ -81,7 +81,7 @@ public class TabComplete implements TabCompleter, Listener {
 							secondArg.add("delete");
 						}
 						if (sender.hasPermission("skyblock.kit")) {
-							for (String s : kits.getAvailableKits(sender)) {
+							for (String s : kits.getAvailableKits((Player) sender)) {
 								secondArg.add(s);
 							}
 						}

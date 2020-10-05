@@ -51,7 +51,7 @@ public class SkyBlocks {
 
 	public void demolish(Location loc) {
 		Boolean empty = true;
-		for (Double i = 8.0; i < 70.0; i+=2) {
+		for (Double i = 8.0; i < 70.0; i += 2) {
 			empty = true;
 			for (Double a = loc.getX() - i; a < loc.getX() + i; a++) {
 				for (Double b = loc.getY() - i; b < loc.getY() + i; b++) {
@@ -125,7 +125,7 @@ public class SkyBlocks {
 				if (main.getConfig().getBoolean("send-titles")) {
 					sendTitle(p, "deleted-title", "deleted-title-time");
 				}
-				
+
 			} else {
 				p.sendMessage(colors.color(main.getMessages().getString("force-deleted")));
 				if (main.getConfig().getBoolean("send-titles")) {
@@ -136,7 +136,7 @@ public class SkyBlocks {
 	}
 
 	private void sendTitle(Player p, String string, String string2) {
-		
+
 	}
 
 	public Location getSkyblockLocation(UUID id) {
@@ -198,8 +198,8 @@ public class SkyBlocks {
 	public void setSpawn(UUID id, Location location) {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
-		sb.getLocation("spawnpoint").clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
-		sb.set("spawnpoint", location);
+		sb.getLocation("spawnpoint").getBlock().setType(Material.AIR);
+		sb.set("spawnpoint", location.subtract(0, 1, 0));
 		location.clone().subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
 		try {
 			sb.save(skyblock);
