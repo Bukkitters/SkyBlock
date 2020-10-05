@@ -18,8 +18,10 @@ public class LeavesControl implements Listener {
 	public void onBreak(BlockBreakEvent e) {
 		if (e.getBlock().getWorld().getName().equalsIgnoreCase("skyblock")) {
 			if (Tag.LEAVES.isTagged(e.getBlock().getType())) {
-				e.setDropItems(false);
-				e.getPlayer().getInventory().addItem(getLeaveItem(e.getBlock().getType()));
+				if (!e.getPlayer().getInventory().containsAtLeast(getLeaveItem(e.getBlock().getType()), 1)) {
+					e.setDropItems(false);
+					e.getPlayer().getInventory().addItem(getLeaveItem(e.getBlock().getType()));
+				}
 			}
 		}
 	}

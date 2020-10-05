@@ -78,8 +78,12 @@ public class InventoryClick implements Listener {
 									sendTitle(p, "kit-received-title", "kit-received-title-time", kit);
 								}
 							} else {
-								p.sendMessage(cl.color(main.getMessages().getString("kit-unavailable")));
+								p.sendMessage(cl.color(main.getMessages().getString("not-in-skyblock-world")));
+								e.setCancelled(true);
 							}
+						} else {
+							p.sendMessage(cl.color(main.getMessages().getString("kit-unavailable")));
+							e.setCancelled(true);
 						}
 					} else {
 						e.setCancelled(true);

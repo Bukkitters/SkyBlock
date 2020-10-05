@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Damager implements Listener {
 
@@ -34,11 +35,22 @@ public class Damager implements Listener {
 					if (main.getConfig().getBoolean("void-fall-protection")) {
 						Player p = (Player) e.getEntity();
 						if (sb.hasSkyBlock(p)) {
-							p.setVelocity(null);
-							p.teleport(sb.getSkyBlockSpawn(e.getEntity().getUniqueId()));
+							p.setInvulnerable(true);
+							p.teleport(sb.getSkyBlockSpawn(p.getUniqueId()));
+							BukkitRunnable r = new BukkitRunnable() {
+								@Override
+								public void run() {
+									if ((int) p.getLocation().clone().subtract(0, 1, 0).getY() == (int) p.getWorld().getHighestBlockYAt(p.getLocation())) {
+										p.setInvulnerable(false);
+										this.cancel();
+									}
+								}
+							};
+							r.runTaskTimerAsynchronously(main, 3l, 1l);
 						} else {
 							p.teleport(sb.getBackLocation());
 						}
+						e.setCancelled(true);
 					}
 				}
 			}

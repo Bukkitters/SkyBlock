@@ -136,7 +136,7 @@ public class SkyBlocks {
 	}
 
 	private void sendTitle(Player p, String string, String string2) {
-
+//todo
 	}
 
 	public Location getSkyblockLocation(UUID id) {
@@ -199,7 +199,7 @@ public class SkyBlocks {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
 		sb.getLocation("spawnpoint").getBlock().setType(Material.AIR);
-		sb.set("spawnpoint", location.subtract(0, 1, 0));
+		sb.set("spawnpoint", location.clone().subtract(0, 1, 0));
 		location.clone().subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
 		try {
 			sb.save(skyblock);
