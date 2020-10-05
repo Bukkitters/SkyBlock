@@ -52,6 +52,7 @@ public class Main extends JavaPlugin {
 		saveDefaultMessages();
 		msg = YamlConfiguration.loadConfiguration(msgf);
 		generateWorld();
+		generateNetherWorld();
 		generateFoldersAndFiles();
 		saveProfiles();
 		if (getConfig().getString("gui-items-type").equalsIgnoreCase("FIRST_ROW_GUI_ITEMS")
@@ -161,7 +162,18 @@ public class Main extends JavaPlugin {
 			new File(getServer().getWorldContainer() + "/skyblock", "playerdata").mkdir();
 		}
 	}
-
+	
+	public void generateNetherWorld() {
+		if (getServer().getWorld("skyblock_nether") == null) {
+			WorldCreator wc = new WorldCreator("skyblock_nether");
+			wc.generateStructures(false);
+			wc.type(WorldType.FLAT);
+			wc.environment(Environment.NETHER);
+			wc.generator(cg);
+			getServer().createWorld(wc);
+			new File(getServer().getWorldContainer() + "/skyblock_nether", "playerdata").mkdir();
+		}
+	}
 	public List<UUID> getTranslators() {
 		return translators;
 	}

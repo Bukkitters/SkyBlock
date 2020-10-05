@@ -11,6 +11,7 @@ import org.Bukkitters.SkyBlock.Utils.Schemes;
 import org.Bukkitters.SkyBlock.Utils.SkyBlocks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -50,6 +51,8 @@ public class Manager implements CommandExecutor {
 							if (main.getConfig().getBoolean("send-titles")) {
 								sendTitle(p, "reloaded-title", "reloaded-title-time");
 							}
+							p.teleport(new Location(Bukkit.getWorld("skyblock_nether"), 0, 70, 0));
+							p.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.COBBLESTONE);
 						} else {
 							p.sendMessage(colors.color(main.getMessages().getString("no-permission")));
 						}
