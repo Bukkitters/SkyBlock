@@ -42,7 +42,7 @@ public class InventoryClick implements Listener {
 				if (e.getCurrentItem().getType()
 						.equals(Material.valueOf(Main.getInstance().getConfig().getString("next-gui-item")))
 						&& e.getCurrentItem().getItemMeta().getDisplayName()
-								.equalsIgnoreCase(main.getConfig().getString("next-gui-item-name"))) {
+								.equalsIgnoreCase(cl.color(main.getConfig().getString("next-gui-item-name")))) {
 					e.setCancelled(true);
 					if (inv.getPage() < inv.getMaxpages()) {
 						byte toset = p.getMetadata("page").get(0).asByte();
@@ -54,7 +54,7 @@ public class InventoryClick implements Listener {
 				} else if (e.getCurrentItem().getType()
 						.equals(Material.valueOf(Main.getInstance().getConfig().getString("back-gui-item")))
 						&& e.getCurrentItem().getItemMeta().getDisplayName()
-								.equalsIgnoreCase(main.getConfig().getString("back-gui-item-name"))) {
+								.equalsIgnoreCase(cl.color(main.getConfig().getString("back-gui-item-name")))) {
 					e.setCancelled(true);
 					if (inv.getPage() > 1) {
 						byte toset = p.getMetadata("page").get(0).asByte();
@@ -78,7 +78,7 @@ public class InventoryClick implements Listener {
 									sendTitle(p, "kit-received-title", "kit-received-title-time", kit);
 								}
 							} else {
-								p.sendMessage(cl.color(main.getMessages().getString("kit-unavailbale")));
+								p.sendMessage(cl.color(main.getMessages().getString("kit-unavailable")));
 							}
 						}
 					} else {

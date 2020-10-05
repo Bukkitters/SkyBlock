@@ -426,7 +426,8 @@ public class Manager implements CommandExecutor {
 					}
 				}
 			} else {
-				p.sendMessage(colors.color(main.getMessages().getString("cooldown").replaceAll("%time%", main.getCooldowns().get(p.getUniqueId()).toString())));
+				p.sendMessage(colors.color(main.getMessages().getString("cooldown").replaceAll("%time%",
+						main.getCooldowns().get(p.getUniqueId()).toString())));
 			}
 		} else {
 			switch (args.length) {

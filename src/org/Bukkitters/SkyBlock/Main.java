@@ -83,6 +83,9 @@ public class Main extends JavaPlugin {
 	}
 
 	public void onDisable() {
+		for (Player p : getServer().getOnlinePlayers()) {
+			p.closeInventory();
+		}
 		reloadMessages();
 		reloadConfig();
 		send("&cPlugin disabled!");

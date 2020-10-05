@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class KitsGUI extends MultiPagedInventory {
 
@@ -26,6 +27,14 @@ public class KitsGUI extends MultiPagedInventory {
 
 	@Override
 	public void openInventory(byte page) {
+		ItemStack back = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("back-gui-item")));
+		ItemStack next = new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("next-gui-item")));
+		ItemMeta m = back.getItemMeta();
+		m.setDisplayName(ChatColors.scolor(Main.getInstance().getConfig().getString("back-gui-item-name")));
+		back.setItemMeta(m);
+		m = next.getItemMeta();
+		m.setDisplayName(ChatColors.scolor(Main.getInstance().getConfig().getString("next-gui-item-name")));
+		next.setItemMeta(m);
 		inventory.clear();
 		ItemStack[] items = getPagedItems(page);
 		switch (getCustomType()) {
@@ -35,10 +44,8 @@ public class KitsGUI extends MultiPagedInventory {
 					inventory.setItem(i, items[i - 9]);
 				}
 			}
-			inventory.setItem(0,
-					new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("back-gui-item")), 1));
-			inventory.setItem(8,
-					new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("next-gui-item")), 1));
+			inventory.setItem(0, back);
+			inventory.setItem(8, next);
 			break;
 		case LAST_ROW_GUI_ITEMS:
 			for (int i = 0; i < (getRows() - 1) * 9; i++) {
@@ -46,10 +53,8 @@ public class KitsGUI extends MultiPagedInventory {
 					inventory.setItem(i, items[i]);
 				}
 			}
-			inventory.setItem(inventory.getSize() - 9,
-					new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("back-gui-item")), 1));
-			inventory.setItem(inventory.getSize() - 1,
-					new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("next-gui-item")), 1));
+			inventory.setItem(inventory.getSize() - 9, back);
+			inventory.setItem(inventory.getSize() - 1, next);
 			break;
 		case FIRST_AND_LAST_ITEMS_GUI_ITEMS:
 			for (int i = 1; i < inventory.getSize(); i++) {
@@ -57,10 +62,8 @@ public class KitsGUI extends MultiPagedInventory {
 					inventory.setItem(i, items[i - 1]);
 				}
 			}
-			inventory.setItem(0,
-					new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("back-gui-item")), 1));
-			inventory.setItem(inventory.firstEmpty(),
-					new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("next-gui-item")), 1));
+			inventory.setItem(0, back);
+			inventory.setItem(inventory.firstEmpty(), next);
 			break;
 		case FIRST_AND_LAST_SLOTS_GUI_ITEMS:
 			for (int i = 1; i < inventory.getSize(); i++) {
@@ -68,10 +71,8 @@ public class KitsGUI extends MultiPagedInventory {
 					inventory.setItem(i, items[i - 1]);
 				}
 			}
-			inventory.setItem(0,
-					new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("back-gui-item")), 1));
-			inventory.setItem(inventory.getSize() - 1,
-					new ItemStack(Material.valueOf(Main.getInstance().getConfig().getString("next-gui-item")), 1));
+			inventory.setItem(0, back);
+			inventory.setItem(inventory.getSize() - 1, next);
 			break;
 		default:
 			break;

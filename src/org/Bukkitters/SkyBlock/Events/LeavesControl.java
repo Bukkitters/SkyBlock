@@ -13,7 +13,7 @@ public class LeavesControl implements Listener {
 	public LeavesControl(Main main) {
 		main.getServer().getPluginManager().registerEvents(this, main);
 	}
-	
+
 	@EventHandler
 	public void onBreak(BlockBreakEvent e) {
 		if (e.getBlock().getWorld().getName().equalsIgnoreCase("skyblock")) {

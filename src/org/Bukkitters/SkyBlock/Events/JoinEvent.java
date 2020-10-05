@@ -15,7 +15,6 @@ public class JoinEvent implements Listener {
 	private PlayerDataClass data = new PlayerDataClass();
 	private SkyBlocks sb = new SkyBlocks();
 	private ChatColors colors = new ChatColors();
-
 	private Main main;
 
 	public JoinEvent(Main main) {

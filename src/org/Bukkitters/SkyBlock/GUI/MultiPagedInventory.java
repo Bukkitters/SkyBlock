@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.Bukkitters.SkyBlock.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -119,8 +118,6 @@ public abstract class MultiPagedInventory implements InventoryHolder {
 		for (int i = 0; i < items.length; i++) {
 			int fromtoset = i + (page - 1) * rows * 9 - toDecrease * (page - 1);
 			if (fromtoset < itemsToPlace.size()) {
-				Bukkit.broadcastMessage("Slot taken: " + i + ". Name taken: "
-						+ itemsToPlace.get(fromtoset).getItemMeta().getDisplayName());
 				items[i] = itemsToPlace.get(fromtoset);
 			} else {
 				return items;
