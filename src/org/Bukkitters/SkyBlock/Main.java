@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
 import org.Bukkitters.SkyBlock.Commands.Manager;
 import org.Bukkitters.SkyBlock.Events.BlockLava;
 import org.Bukkitters.SkyBlock.Events.Breaker;
@@ -67,6 +68,11 @@ public class Main extends JavaPlugin {
 				send("&cError! Can not make inventories while &f'schemess.gui-rows' &cis set to &f1 &cor &flower&c. Number is set to &f2&c.");
 				saveConfig();
 			}
+		}
+		if (!getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+			send("&cPlaceholderAPI not hooked");
+		} else {
+			send("&aPlaceholderAPI found and hooked!");
 		}
 		new Selector(this);
 		new Manager(this);
