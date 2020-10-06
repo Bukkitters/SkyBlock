@@ -3,6 +3,7 @@ package org.Bukkitters.SkyBlock.Events;
 import org.Bukkitters.SkyBlock.Main;
 import org.Bukkitters.SkyBlock.Utils.ChatColors;
 import org.Bukkitters.SkyBlock.Utils.SkyBlocks;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -22,10 +23,11 @@ public class Builder implements Listener {
 	public void onBuild(BlockPlaceEvent e) {
 		if (e.getBlock().getWorld().getName().equalsIgnoreCase("skyblock")) {
 			if (!main.getConfig().getBoolean("allow-build-on-other-skyblock")) {
-				if (sb.hasSkyBlock(e.getPlayer())) {
-					if (!sb.distanceKept(e.getPlayer().getUniqueId(),
-							sb.getSkyblockLocation(e.getPlayer().getUniqueId()))) {
-						e.getPlayer().sendMessage(cl.color(main.getMessages().getString("not-allowed-build")));
+				Player p = e.getPlayer();
+				if (sb.hasSkyBlock(p)) {
+					if (!sb.distanceKept(p.getUniqueId(),
+							sb.getSkyblockLocation(p.getUniqueId()))) {
+						p.sendMessage(cl.color(p, main.getMessages().getString("not-allowed-build")));
 						e.setCancelled(true);
 						if (main.getConfig().getBoolean("send-titles")) {
 							try {
@@ -34,24 +36,24 @@ public class Builder implements Listener {
 								Integer fadeIn = Integer.valueOf(i[0]);
 								Integer stay = Integer.valueOf(i[1]);
 								Integer fadeOut = Integer.valueOf(i[2]);
-								e.getPlayer().sendTitle(cl.color(s[0]), cl.color(s[1]), fadeIn, stay, fadeOut);
+								e.getPlayer().sendTitle(cl.color(p, s[0]), cl.color(p, s[1]), fadeIn, stay, fadeOut);
 							} catch (NumberFormatException ex) {
 								String[] s = main.getMessages().getString("not-allowed-build-title").split(";", 2);
-								e.getPlayer().sendMessage(cl.color((main.getMessages().getString("check-console"))));
+								e.getPlayer().sendMessage(cl.color(p, (main.getMessages().getString("check-console"))));
 								main.send(main.getMessages().getString("number-format-exception").replace("%line%",
 										"not-allowed-build-title"));
-								e.getPlayer().sendTitle(cl.color(s[0]), cl.color(s[1]), 15, 30, 10);
+								e.getPlayer().sendTitle(cl.color(p, s[0]), cl.color(p, s[1]), 15, 30, 10);
 							} catch (ArrayIndexOutOfBoundsException ex) {
-								e.getPlayer().sendMessage(cl.color((main.getMessages().getString("check-console"))));
+								e.getPlayer().sendMessage(cl.color(p, (main.getMessages().getString("check-console"))));
 								main.send(main.getMessages().getString("missing-separator")
 										+ " &7(not-allowed-build-title or not-allowed-build-title-time)");
-								e.getPlayer().sendTitle(cl.color("&e[!]"),
-										cl.color(main.getMessages().getString("not-allowed-build-title")), 15, 30, 10);
+								e.getPlayer().sendTitle(cl.color(p, "&e[!]"),
+										cl.color(p, main.getMessages().getString("not-allowed-build-title")), 15, 30, 10);
 							}
 						}
 					}
 				} else {
-					e.getPlayer().sendMessage(cl.color(main.getMessages().getString("not-allowed-build")));
+					e.getPlayer().sendMessage(cl.color(p, main.getMessages().getString("not-allowed-build")));
 					e.setCancelled(true);
 				}
 			}

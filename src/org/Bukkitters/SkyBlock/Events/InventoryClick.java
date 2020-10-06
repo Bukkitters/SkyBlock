@@ -42,7 +42,7 @@ public class InventoryClick implements Listener {
 				if (e.getCurrentItem().getType()
 						.equals(Material.valueOf(Main.getInstance().getConfig().getString("next-gui-item")))
 						&& e.getCurrentItem().getItemMeta().getDisplayName()
-								.equalsIgnoreCase(cl.color(main.getConfig().getString("next-gui-item-name")))) {
+								.equalsIgnoreCase(cl.color(p, main.getConfig().getString("next-gui-item-name")))) {
 					e.setCancelled(true);
 					if (inv.getPage() < inv.getMaxpages()) {
 						byte toset = p.getMetadata("page").get(0).asByte();
@@ -54,7 +54,7 @@ public class InventoryClick implements Listener {
 				} else if (e.getCurrentItem().getType()
 						.equals(Material.valueOf(Main.getInstance().getConfig().getString("back-gui-item")))
 						&& e.getCurrentItem().getItemMeta().getDisplayName()
-								.equalsIgnoreCase(cl.color(main.getConfig().getString("back-gui-item-name")))) {
+								.equalsIgnoreCase(cl.color(p, main.getConfig().getString("back-gui-item-name")))) {
 					e.setCancelled(true);
 					if (inv.getPage() > 1) {
 						byte toset = p.getMetadata("page").get(0).asByte();
@@ -69,8 +69,8 @@ public class InventoryClick implements Listener {
 						if (kits.isAvailable(kit, p.getUniqueId())) {
 							if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
 								kits.giveKit(p, kit, true);
-								p.sendMessage(
-										cl.color(main.getMessages().getString("kit-received")).replace("%kit%", kit));
+								p.sendMessage(cl.color(p, main.getMessages().getString("kit-received")).replace("%kit%",
+										kit));
 								e.setCancelled(true);
 								p.closeInventory();
 								p.removeMetadata("page", main);
@@ -78,11 +78,11 @@ public class InventoryClick implements Listener {
 									sendTitle(p, "kit-received-title", "kit-received-title-time", kit);
 								}
 							} else {
-								p.sendMessage(cl.color(main.getMessages().getString("not-in-skyblock-world")));
+								p.sendMessage(cl.color(p, main.getMessages().getString("not-in-skyblock-world")));
 								e.setCancelled(true);
 							}
 						} else {
-							p.sendMessage(cl.color(main.getMessages().getString("kit-unavailable")));
+							p.sendMessage(cl.color(p, main.getMessages().getString("kit-unavailable")));
 							e.setCancelled(true);
 						}
 					} else {
@@ -100,17 +100,17 @@ public class InventoryClick implements Listener {
 			Integer fadeIn = Integer.valueOf(i[0]);
 			Integer stay = Integer.valueOf(i[1]);
 			Integer fadeOut = Integer.valueOf(i[2]);
-			p.sendTitle(cl.color(s[0]).replaceAll("%kit%", kit), cl.color(s[1]).replaceAll("%kit%", kit), fadeIn, stay,
-					fadeOut);
+			p.sendTitle(cl.color(p, s[0]).replaceAll("%kit%", kit), cl.color(p, s[1]).replaceAll("%kit%", kit), fadeIn,
+					stay, fadeOut);
 		} catch (NumberFormatException e) {
 			String[] s = main.getMessages().getString(string).split(";", 2);
-			p.sendMessage(cl.color((main.getMessages().getString("check-console"))));
+			p.sendMessage(cl.color(p, main.getMessages().getString("check-console")));
 			main.send(main.getMessages().getString("number-format-exception").replace("%line%", string));
-			p.sendTitle(cl.color(s[0]), cl.color(s[1]), 15, 30, 10);
+			p.sendTitle(cl.color(p, s[0]), cl.color(p, s[1]), 15, 30, 10);
 		} catch (ArrayIndexOutOfBoundsException e) {
-			p.sendMessage(cl.color((main.getMessages().getString("check-console"))));
+			p.sendMessage(cl.color(p, main.getMessages().getString("check-console")));
 			main.send(main.getMessages().getString("missing-separator") + " &7(" + string + " or " + string2 + ")");
-			p.sendTitle(cl.color("&e[!]"), cl.color(main.getMessages().getString(string)), 15, 30, 10);
+			p.sendTitle(cl.color(p, "&e[!]"), cl.color(p, main.getMessages().getString(string)), 15, 30, 10);
 		}
 	}
 

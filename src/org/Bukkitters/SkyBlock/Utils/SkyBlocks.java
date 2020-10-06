@@ -121,13 +121,13 @@ public class SkyBlocks {
 				p.teleport(getBackLocation());
 			}
 			if (b) {
-				p.sendMessage(colors.color(main.getMessages().getString("deleted")));
+				p.sendMessage(colors.color(p, main.getMessages().getString("deleted")));
 				if (main.getConfig().getBoolean("send-titles")) {
 					sendTitle(p, "deleted-title", "deleted-title-time");
 				}
 
 			} else {
-				p.sendMessage(colors.color(main.getMessages().getString("force-deleted")));
+				p.sendMessage(colors.color(p, main.getMessages().getString("force-deleted")));
 				if (main.getConfig().getBoolean("send-titles")) {
 					sendTitle(p, "force-deleted-title", "force-deleted-title-time");
 				}

@@ -101,7 +101,7 @@ public class Schemes {
 	}
 
 	public void sendSchemes(CommandSender sender) {
-		sender.sendMessage(colors.color(main.getMessages().getString("schemes-title")));
+		sender.sendMessage(colors.color1(main.getMessages().getString("schemes-title")));
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			List<String> schemes = new ArrayList<String>();
@@ -109,19 +109,19 @@ public class Schemes {
 				schemes.add(f.getName().replaceAll(".yml", ""));
 			}
 			if (main.getConfig().getBoolean("schemes.show-only-available")) {
-				String s = colors.color(main.getMessages().getString("available-scheme-format"));
+				String s = colors.color(p, main.getMessages().getString("available-scheme-format"));
 				for (String string : schemes) {
 					p.sendMessage(s.replaceAll("%scheme%", string));
 				}
 			} else {
 				if (main.getConfig().getBoolean("schemes.show-limits")) {
-					String s = colors.color(main.getMessages().getString("limit-scheme-format"));
+					String s = colors.color(p, main.getMessages().getString("limit-scheme-format"));
 					for (String string : schemes) {
 						p.sendMessage(s.replaceAll("%scheme%", string).replaceAll("%available%",
 								getAvailableScheme(string, ((Player) sender).getUniqueId())));
 					}
 				} else {
-					String s = colors.color(main.getMessages().getString("default-scheme-format"));
+					String s = colors.color(p, main.getMessages().getString("default-scheme-format"));
 					for (String string : schemes) {
 						p.sendMessage(s.replaceAll("%scheme%", string));
 					}
@@ -138,18 +138,18 @@ public class Schemes {
 	private String getAvailableScheme(String st, UUID id) {
 		Player p = Bukkit.getPlayer(id);
 		if (p.hasPermission("advancedskyblock.admin")) {
-			return colors.color(main.getMessages().getString("available"));
+			return colors.color(p, main.getMessages().getString("available"));
 		} else {
 			if (main.getConfig().getStringList("free-schemes").contains(st)) {
-				return colors.color(main.getMessages().getString("available"));
+				return colors.color(p, main.getMessages().getString("available"));
 			} else {
 				FileConfiguration f = YamlConfiguration.loadConfiguration(new File(schemesFolder, st + ".yml"));
 				if (p.hasPermission(f.getString("permission"))) {
-					return colors.color(main.getMessages().getString("available"));
+					return colors.color(p, main.getMessages().getString("available"));
 				} else if (f.getString("owner").equalsIgnoreCase(id.toString())) {
-					return colors.color(main.getMessages().getString("available"));
+					return colors.color(p, main.getMessages().getString("available"));
 				} else {
-					return colors.color(main.getMessages().getString("unavailable"));
+					return colors.color(p, main.getMessages().getString("unavailable"));
 				}
 			}
 		}

@@ -34,11 +34,11 @@ public class JoinEvent implements Listener {
 				if (p.getLocation().clone().subtract(0, 1, 0).getBlock().getType() == Material.AIR
 						|| p.getLocation().clone().subtract(0, 1, 0).getBlock().getType() == Material.CAVE_AIR) {
 					p.teleport(sb.getBackLocation());
-					p.sendMessage(colors.color(main.getMessages().getString("unsafe-spawn")));
+					p.sendMessage(colors.color(p, main.getMessages().getString("unsafe-spawn")));
 				}
 			} else {
 				p.teleport(sb.getBackLocation());
-				p.sendMessage(colors.color(main.getMessages().getString("no-death-protection")));
+				p.sendMessage(colors.color(p, main.getMessages().getString("no-death-protection")));
 			}
 		} else {
 			data.setWorldInventory(p.getUniqueId(), p.getInventory());

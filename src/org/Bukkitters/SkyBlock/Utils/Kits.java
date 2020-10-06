@@ -63,7 +63,7 @@ public class Kits {
 	}
 
 	public void sendKits(CommandSender sender) {
-		sender.sendMessage(colors.color(main.getMessages().getString("kits-title")));
+		sender.sendMessage(colors.color1(main.getMessages().getString("kits-title")));
 		if (sender instanceof Player) {
 			Player p = (Player) sender;
 			List<String> kits = new ArrayList<String>();
@@ -71,19 +71,19 @@ public class Kits {
 				kits.add(f.getName().replaceAll(".yml", ""));
 			}
 			if (main.getConfig().getBoolean("kits.show-only-available")) {
-				String s = colors.color(main.getMessages().getString("available-kit-format"));
+				String s = colors.color(p, main.getMessages().getString("available-kit-format"));
 				for (String string : kits) {
 					p.sendMessage(s.replaceAll("%kit%", string));
 				}
 			} else {
 				if (main.getConfig().getBoolean("kits.show-limits")) {
-					String s = colors.color(main.getMessages().getString("limit-kit-format"));
+					String s = colors.color(p, main.getMessages().getString("limit-kit-format"));
 					for (String string : kits) {
 						p.sendMessage(s.replaceAll("%kit%", string).replaceAll("%available%",
 								getAvailableKit(string, ((Player) sender).getUniqueId())));
 					}
 				} else {
-					String s = colors.color(main.getMessages().getString("default-kit-format"));
+					String s = colors.color(p, main.getMessages().getString("default-kit-format"));
 					for (String string : kits) {
 						p.sendMessage(s.replaceAll("%kit%", string));
 					}
@@ -100,18 +100,18 @@ public class Kits {
 	private String getAvailableKit(String st, UUID id) {
 		Player p = Bukkit.getPlayer(id);
 		if (p.hasPermission("skyblock.admin")) {
-			return colors.color(main.getMessages().getString("available"));
+			return colors.color(p, main.getMessages().getString("available"));
 		} else {
 			if (main.getConfig().getStringList("free-kits").contains(st)) {
-				return colors.color(main.getMessages().getString("available"));
+				return colors.color(p, main.getMessages().getString("available"));
 			} else {
 				FileConfiguration f = YamlConfiguration.loadConfiguration(new File(kitsFolder, st + ".yml"));
 				if (p.hasPermission(f.getString("permission"))) {
-					return colors.color(main.getMessages().getString("available"));
+					return colors.color(p, main.getMessages().getString("available"));
 				} else if (f.getString("owner").equalsIgnoreCase(id.toString())) {
-					return colors.color(main.getMessages().getString("available"));
+					return colors.color(p, main.getMessages().getString("available"));
 				} else {
-					return colors.color(main.getMessages().getString("unavailable"));
+					return colors.color(p, main.getMessages().getString("unavailable"));
 				}
 			}
 		}
@@ -151,7 +151,7 @@ public class Kits {
 			p.getInventory().addItem(i);
 		}
 		if (!b) {
-			p.sendMessage(colors.color(main.getMessages().getString("given-kit-received").replaceAll("%kit%", kit)));
+			p.sendMessage(colors.color(p, main.getMessages().getString("given-kit-received").replaceAll("%kit%", kit)));
 		}
 	}
 
