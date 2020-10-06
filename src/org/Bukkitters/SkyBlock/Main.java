@@ -69,11 +69,6 @@ public class Main extends JavaPlugin {
 				saveConfig();
 			}
 		}
-		if (!getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			send("&cPlaceholderAPI not hooked");
-		} else {
-			send("&aPlaceholderAPI found and hooked!");
-		}
 		new Selector(this);
 		new Manager(this);
 		new JoinEvent(this);
@@ -85,8 +80,13 @@ public class Main extends JavaPlugin {
 		new BlockLava(this);
 		new Builder(this);
 		new InventoryClick(this);
-		send("&aPlugin enabled!");
 		getCommand("skyblock").setTabCompleter(new TabComplete(this));
+		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+			send("&aPlaceholderAPI found and hooked!");
+		} else {
+			send("&cPlaceholderAPI not hooked");
+		}
+		send("&aPlugin enabled!");
 	}
 
 	public void onDisable() {
