@@ -81,11 +81,6 @@ public class Main extends JavaPlugin {
 		new Builder(this);
 		new InventoryClick(this);
 		getCommand("skyblock").setTabCompleter(new TabComplete(this));
-		if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			send("&aPlaceholderAPI found and hooked!");
-		} else {
-			send("&cPlaceholderAPI not hooked");
-		}
 		send("&aPlugin enabled!");
 	}
 
