@@ -68,21 +68,26 @@ public class InventoryClick implements Listener {
 						String kit = e.getCurrentItem().getItemMeta().getDisplayName();
 						if (kits.isAvailable(kit, p.getUniqueId())) {
 							if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
-								kits.giveKit(p, kit, true);
-								p.sendMessage(cl.color(p, main.getMessages().getString("kit-received")).replace("%kit%",
-										kit));
-								e.setCancelled(true);
-								p.closeInventory();
-								p.removeMetadata("page", main);
-								if (main.getConfig().getBoolean("send-titles")) {
-									sendTitle(p, "kit-received-title", "kit-received-title-time", kit);
+								if (takeMoney(p, kit)) {
+									kits.giveKit(p, kit, true);
+									p.sendMessage(cl.color(p, main.getMessages().getString("kit-received"))
+											.replace("%kit%", kit));
+									e.setCancelled(true);
+									p.closeInventory();
+									p.removeMetadata("page", main);
+									if (main.getConfig().getBoolean("send-titles")) {
+										sendTitle(p, "kit-received-title", "kit-received-title-time", kit);
+									}
+								} else {
+									p.sendMessage(cl.color1(main.getMessages().getString("no-money")));
+									e.setCancelled(true);
 								}
 							} else {
-								p.sendMessage(cl.color(p, main.getMessages().getString("not-in-skyblock-world")));
+								p.sendMessage(cl.color1(main.getMessages().getString("not-in-skyblock-world")));
 								e.setCancelled(true);
 							}
 						} else {
-							p.sendMessage(cl.color(p, main.getMessages().getString("kit-unavailable")));
+							p.sendMessage(cl.color1(main.getMessages().getString("kit-unavailable")));
 							e.setCancelled(true);
 						}
 					} else {
@@ -91,6 +96,24 @@ public class InventoryClick implements Listener {
 				}
 			}
 		}
+	}
+
+	private boolean takeMoney(Player p, String s) {
+		if (main.getConfig().getBoolean("use-vault")) {
+			if (main.getEconomy() != null) {
+				if (main.getEconomy().getBalance(p) >= main.getConfig().getDouble("command-cost." + s)) {
+					main.getEconomy().withdrawPlayer(p, main.getConfig().getDouble("command-cost." + s));
+					return true;
+				} else if (p.hasPermission("skyblock.admin")) {
+					return true;
+				} else if (kits.isFree(s)) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	private void sendTitle(Player p, String string, String string2, String kit) {
@@ -110,7 +133,7 @@ public class InventoryClick implements Listener {
 		} catch (ArrayIndexOutOfBoundsException e) {
 			p.sendMessage(cl.color(p, main.getMessages().getString("check-console")));
 			main.send(main.getMessages().getString("missing-separator") + " &7(" + string + " or " + string2 + ")");
-			p.sendTitle(cl.color(p, "&e[!]"), cl.color(p, main.getMessages().getString(string)), 15, 30, 10);
+			p.sendTitle(cl.color1("&e[!]"), cl.color(p, main.getMessages().getString(string)), 15, 30, 10);
 		}
 	}
 

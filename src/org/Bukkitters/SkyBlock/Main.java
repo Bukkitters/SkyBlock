@@ -9,8 +9,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.World.Environment;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import com.google.common.base.Charsets;
+
+import net.milkbowl.vault.economy.Economy;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +52,8 @@ public class Main extends JavaPlugin {
 	private HashMap<UUID, UUID> invites = new HashMap<UUID, UUID>();
 	private static Main instance;
 	private HashMap<UUID, Integer> cooldowns = new HashMap<UUID, Integer>();
+	private static Economy econ = null;
+	private int i = 0;
 
 	public void onEnable() {
 		instance = this;
@@ -81,6 +89,28 @@ public class Main extends JavaPlugin {
 		new Builder(this);
 		new InventoryClick(this);
 		getCommand("skyblock").setTabCompleter(new TabComplete(this));
+		if (getConfig().getBoolean("use-vault")) {
+			if (getServer().getPluginManager().isPluginEnabled("Vault")) {
+				setupEconomy();
+			} else {
+				BukkitRunnable r = new BukkitRunnable() {
+					@Override
+					public void run() {
+						if (i < 60) {
+							if (getServer().getPluginManager().isPluginEnabled("Vault")) {
+								setupEconomy();
+							}
+						} else {
+							this.cancel();
+							send("&fVault &cnot found! Disabling plugin.");
+							getServer().getPluginManager().disablePlugin(instance);
+						}
+						i++;
+					}
+				};
+				r.runTaskTimer(this, 20L, 20L);
+			}
+		}
 		send("&aPlugin enabled!");
 	}
 
@@ -91,6 +121,18 @@ public class Main extends JavaPlugin {
 		reloadMessages();
 		reloadConfig();
 		send("&cPlugin disabled!");
+	}
+
+	private boolean setupEconomy() {
+		if (getServer().getPluginManager().getPlugin("Vault") == null) {
+			return false;
+		}
+		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+		if (rsp == null) {
+			return false;
+		}
+		econ = rsp.getProvider();
+		return econ != null;
 	}
 
 	private void saveProfiles() {
@@ -163,7 +205,7 @@ public class Main extends JavaPlugin {
 			new File(getServer().getWorldContainer() + "/skyblock", "playerdata").mkdir();
 		}
 	}
-	
+
 	public void generateNetherWorld() {
 		if (getServer().getWorld("skyblock_nether") == null) {
 			WorldCreator wc = new WorldCreator("skyblock_nether");
@@ -175,6 +217,7 @@ public class Main extends JavaPlugin {
 			new File(getServer().getWorldContainer() + "/skyblock_nether", "playerdata").mkdir();
 		}
 	}
+
 	public List<UUID> getTranslators() {
 		return translators;
 	}
@@ -189,6 +232,10 @@ public class Main extends JavaPlugin {
 
 	public HashMap<UUID, Integer> getCooldowns() {
 		return cooldowns;
+	}
+
+	public Economy getEconomy() {
+		return econ;
 	}
 
 }

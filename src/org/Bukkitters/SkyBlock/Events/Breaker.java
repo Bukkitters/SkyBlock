@@ -27,7 +27,7 @@ public class Breaker implements Listener {
 			if (!main.getConfig().getBoolean("allow-build-on-other-skyblock")) {
 				if (sb.hasSkyBlock(p)) {
 					if (!sb.distanceKept(p.getUniqueId(), sb.getSkyblockLocation(p.getUniqueId()))) {
-						e.getPlayer().sendMessage(cl.color(p, main.getMessages().getString("not-allowed-break")));
+						e.getPlayer().sendMessage(cl.color1(main.getMessages().getString("not-allowed-break")));
 						e.setCancelled(true);
 						if (main.getConfig().getBoolean("send-titles")) {
 							try {
@@ -47,14 +47,14 @@ public class Breaker implements Listener {
 								e.getPlayer().sendMessage(cl.color(p, (main.getMessages().getString("check-console"))));
 								main.send(main.getMessages().getString("missing-separator")
 										+ " &7(not-allowed-break-title or not-allowed-break-title-time)");
-								e.getPlayer().sendTitle(cl.color(p, "&e[!]"),
+								e.getPlayer().sendTitle(cl.color1("&e[!]"),
 										cl.color(p, main.getMessages().getString("not-allowed-break-title")), 15, 30,
 										10);
 							}
 						}
 					}
 				} else {
-					e.getPlayer().sendMessage(cl.color(p, main.getMessages().getString("not-allowed-break")));
+					e.getPlayer().sendMessage(cl.color1(main.getMessages().getString("not-allowed-break")));
 					e.setCancelled(true);
 				}
 			}

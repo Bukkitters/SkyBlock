@@ -100,18 +100,18 @@ public class Kits {
 	private String getAvailableKit(String st, UUID id) {
 		Player p = Bukkit.getPlayer(id);
 		if (p.hasPermission("skyblock.admin")) {
-			return colors.color(p, main.getMessages().getString("available"));
+			return colors.color1(main.getMessages().getString("available"));
 		} else {
 			if (main.getConfig().getStringList("free-kits").contains(st)) {
-				return colors.color(p, main.getMessages().getString("available"));
+				return colors.color1(main.getMessages().getString("available"));
 			} else {
 				FileConfiguration f = YamlConfiguration.loadConfiguration(new File(kitsFolder, st + ".yml"));
 				if (p.hasPermission(f.getString("permission"))) {
-					return colors.color(p, main.getMessages().getString("available"));
+					return colors.color1(main.getMessages().getString("available"));
 				} else if (f.getString("owner").equalsIgnoreCase(id.toString())) {
-					return colors.color(p, main.getMessages().getString("available"));
+					return colors.color1(main.getMessages().getString("available"));
 				} else {
-					return colors.color(p, main.getMessages().getString("unavailable"));
+					return colors.color1(main.getMessages().getString("unavailable"));
 				}
 			}
 		}
@@ -207,6 +207,13 @@ public class Kits {
 				}
 			}
 		}
+	}
+
+	public boolean isFree(String s) {
+		if (main.getConfig().getStringList("free-kits").contains(s)) {
+			return true;
+		}
+		return false;
 	}
 
 }

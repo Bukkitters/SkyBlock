@@ -17,6 +17,16 @@ spawn-point: 'WORLD_SPAWNPOINT'
 give-default-kit: true
 #Default kit name
 default-kit: defaultKit
+#Use vault economy
+use-vault: false
+#Command cost
+command-cost:
+  create: 100.0
+  delete: 50.0
+  accept: 10.0
+  invite: 10.0
+  setspawn: 20.0
+  kit: 10.0
 #Materials(types) of gui items
 #BACK item
 back-gui-item: 'REDSTONE'

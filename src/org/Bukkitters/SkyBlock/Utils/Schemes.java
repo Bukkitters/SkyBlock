@@ -138,18 +138,18 @@ public class Schemes {
 	private String getAvailableScheme(String st, UUID id) {
 		Player p = Bukkit.getPlayer(id);
 		if (p.hasPermission("advancedskyblock.admin")) {
-			return colors.color(p, main.getMessages().getString("available"));
+			return colors.color1(main.getMessages().getString("available"));
 		} else {
 			if (main.getConfig().getStringList("free-schemes").contains(st)) {
-				return colors.color(p, main.getMessages().getString("available"));
+				return colors.color1(main.getMessages().getString("available"));
 			} else {
 				FileConfiguration f = YamlConfiguration.loadConfiguration(new File(schemesFolder, st + ".yml"));
 				if (p.hasPermission(f.getString("permission"))) {
-					return colors.color(p, main.getMessages().getString("available"));
+					return colors.color1(main.getMessages().getString("available"));
 				} else if (f.getString("owner").equalsIgnoreCase(id.toString())) {
-					return colors.color(p, main.getMessages().getString("available"));
+					return colors.color1(main.getMessages().getString("available"));
 				} else {
-					return colors.color(p, main.getMessages().getString("unavailable"));
+					return colors.color1(main.getMessages().getString("unavailable"));
 				}
 			}
 		}
