@@ -10,6 +10,7 @@ import org.Bukkitters.SkyBlock.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -104,8 +105,8 @@ public class SkyBlocks {
 		return location;
 	}
 
-	public boolean hasSkyBlock(Player player) {
-		if (new File(skyBlocksFolder, player.getUniqueId().toString() + ".yml").exists()) {
+	public boolean hasSkyBlock(OfflinePlayer offlinePlayer) {
+		if (new File(skyBlocksFolder, offlinePlayer.getUniqueId().toString() + ".yml").exists()) {
 			return true;
 		}
 		return false;

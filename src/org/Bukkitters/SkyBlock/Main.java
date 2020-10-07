@@ -39,6 +39,7 @@ import org.Bukkitters.SkyBlock.Events.QuitEvent;
 import org.Bukkitters.SkyBlock.Events.Selector;
 import org.Bukkitters.SkyBlock.Utils.IChunkGenerator;
 import org.Bukkitters.SkyBlock.Utils.PlayerDataClass;
+import org.Bukkitters.SkyBlock.Utils.SkyBlocks;
 import org.Bukkitters.SkyBlock.Utils.TabComplete;
 
 public class Main extends JavaPlugin {
@@ -54,6 +55,7 @@ public class Main extends JavaPlugin {
 	private HashMap<UUID, Integer> cooldowns = new HashMap<UUID, Integer>();
 	private static Economy econ = null;
 	private int i = 0;
+	private SkyBlocks sb = new SkyBlocks();
 
 	public void onEnable() {
 		instance = this;
@@ -236,6 +238,15 @@ public class Main extends JavaPlugin {
 
 	public Economy getEconomy() {
 		return econ;
+	}
+	
+	//API
+	public int getSkyBlocks() {
+		return new File(getDataFolder(), "skyblocks").listFiles().length;
+	}
+	
+	public boolean hasSkyBlock(UUID id) {
+		return sb.hasSkyBlock(Bukkit.getOfflinePlayer(id));
 	}
 
 }
