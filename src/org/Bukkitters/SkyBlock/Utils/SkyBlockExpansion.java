@@ -3,9 +3,6 @@ package org.Bukkitters.SkyBlock.Utils;
 import org.Bukkitters.SkyBlock.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 public class SkyBlockExpansion extends PlaceholderExpansion {
@@ -14,10 +11,11 @@ public class SkyBlockExpansion extends PlaceholderExpansion {
 	
 	public SkyBlockExpansion(Main plugin){
         this.skyblock = plugin;
+        this.register();
     }
 
 	@Override
-	public @NotNull String getAuthor() {
+	public String getAuthor() {
 		return skyblock.getDescription().getAuthors().toString();
 	}
 
@@ -32,27 +30,26 @@ public class SkyBlockExpansion extends PlaceholderExpansion {
 	}
 
 	@Override
-	public @NotNull String getIdentifier() {
-		return "SkyBlock";
+	public String getIdentifier() {
+		return "skyblock";
 	}
 
 	@Override
-	public @NotNull String getVersion() {
+	public String getVersion() {
 		return skyblock.getDescription().getVersion();
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public String onRequest(OfflinePlayer offlinePlayer, String params) {
-		Player player = offlinePlayer.getPlayer();
-		switch (params) {
+	public String onRequest(OfflinePlayer offlinePlayer, String identifier) {
+		switch (identifier) {
 		case "skyblocks_count":
 			return String.valueOf(skyblock.getSkyBlocks());
 		case "has_skyblock":
-			return String.valueOf(skyblock.hasSkyBlock(player.getUniqueId()));
+			return String.valueOf(skyblock.hasSkyBlock(offlinePlayer.getUniqueId()));
 		default:
-			if (params.startsWith("has_skyblock_")) {
-				String who = params.split("_")[2];
+			if (identifier.startsWith("has_skyblock_")) {
+				String who = identifier.split("_")[2];
 				return String.valueOf(skyblock.hasSkyBlock(Bukkit.getOfflinePlayer(who).getUniqueId()));
 			}
 			return null;

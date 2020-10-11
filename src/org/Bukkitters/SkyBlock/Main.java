@@ -127,15 +127,15 @@ public class Main extends JavaPlugin {
 		}
 		if (getConfig().getBoolean("use-placeholderapi")) {
 			if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-				new SkyBlockExpansion(this).register();
+				new SkyBlockExpansion(this);
 				send("&fPlaceholderAPI &afound and hooked&f!");
 			} else {
 				BukkitRunnable r = new BukkitRunnable() {
 					@Override
 					public void run() {
-						if (ip  < 60) {
+						if (ip < 60) {
 							if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-								new SkyBlockExpansion(instance).register();
+								new SkyBlockExpansion(instance);
 								send("&fPlaceholderAPI &afound and hooked&f!");
 								this.cancel();
 							}
@@ -278,7 +278,15 @@ public class Main extends JavaPlugin {
 
 	// API
 	public int getSkyBlocks() {
-		return new File(getDataFolder(), "skyblocks").listFiles().length;
+		if (new File(getDataFolder(), "skyblocks").exists()) {
+			if (new File(getDataFolder(), "skyblocks").listFiles() != null) {
+				return new File(getDataFolder(), "skyblocks").listFiles().length;
+			} else {
+				return 0;
+			}
+		} else {
+			return 0;
+		}
 	}
 
 	public boolean hasSkyBlock(UUID id) {
