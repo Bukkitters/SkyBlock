@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -43,6 +44,7 @@ public class SkyBlocks {
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
 		sb.set("location", location);
 		sb.set("spawnpoint", location.getWorld().getHighestBlockAt(location).getLocation().clone().add(0, 1, 0));
+		sb.set("override-block", location.getWorld().getHighestBlockAt(location).getType().toString());
 		location.getWorld().getHighestBlockAt(location).setType(Material.BEDROCK);
 		sb.set("scheme", scheme);
 		sb.set("nether-scheme", netherScheme);
@@ -63,9 +65,10 @@ public class SkyBlocks {
 			for (Double a = loc.getX() - i; a < loc.getX() + i; a++) {
 				for (Double b = loc.getY() - i; b < loc.getY() + i; b++) {
 					for (Double c = loc.getZ() - i; c < loc.getZ() + i; c++) {
-						if (Bukkit.getWorld("skyblock").getBlockAt(new Location(Bukkit.getWorld("skyblock"), a, b, c))
+						if (Bukkit.getWorld("skyblock_nether")
+								.getBlockAt(new Location(Bukkit.getWorld("skyblock_nether"), a, b, c))
 								.getType() != Material.AIR) {
-							place(Bukkit.getWorld("skyblock"), a, b, c, Material.AIR);
+							place(Bukkit.getWorld("skyblock_nether"), a, b, c, Material.AIR);
 							empty = false;
 						}
 					}
@@ -122,6 +125,7 @@ public class SkyBlocks {
 		File skyblock = new File(skyBlocksFolder, p.getUniqueId().toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
 		demolish(sb.getLocation("location"));
+		demolish(sb.getLocation("nether-location"));
 		skyblock.delete();
 		if (p.isOnline()) {
 			if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
@@ -218,9 +222,12 @@ public class SkyBlocks {
 	public void setSpawn(UUID id, Location location) {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
-		sb.getLocation("spawnpoint").getBlock().setType(Material.AIR);
-		sb.set("spawnpoint", location.clone().subtract(0, 1, 0));
-		location.clone().subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
+		sb.getLocation("spawnpoint").clone().subtract(0, 1, 0).getBlock()
+				.setType(Material.valueOf(sb.getString("override-block")));
+		sb.set("spawnpoint", location);
+		Block b = location.clone().subtract(0, 1, 0).getBlock();
+		sb.set("override-block", b.getType().toString());
+		b.setType(Material.BEDROCK);
 		try {
 			sb.save(skyblock);
 		} catch (IOException e) {
@@ -258,11 +265,15 @@ public class SkyBlocks {
 				.getLocation("nether-location");
 	}
 
-	public void setNetherSkyBlockSpawn(UUID id) {
+	public void setNetherSkyBlockSpawn(UUID id, Location loc) {
 		File f = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration conf = YamlConfiguration.loadConfiguration(f);
-		conf.set("nether-spawnpoint", Bukkit.getWorld("skyblock_nether")
-				.getHighestBlockAt(conf.getLocation("nether-location")).getLocation().clone().add(0, 1, 0));
+		conf.getLocation("nether-spawnpoint").clone().subtract(0, 1, 0).getBlock()
+				.setType(Material.valueOf(conf.getString("nether-override-block")));
+		Block b = loc.clone().subtract(0, 1, 0).getBlock();
+		conf.set("nether-override-block", b.getType().toString());
+		b.setType(Material.BEDROCK);
+		conf.set("nether-spawnpoint", loc);
 		try {
 			conf.save(f);
 		} catch (IOException e) {
@@ -291,8 +302,19 @@ public class SkyBlocks {
 	}
 
 	public String getNetherScheme(UUID id) {
-		return YamlConfiguration
-				.loadConfiguration(new File(skyBlocksFolder, id.toString() + ".yml")).getString("nether-scheme");
+		return YamlConfiguration.loadConfiguration(new File(skyBlocksFolder, id.toString() + ".yml"))
+				.getString("nether-scheme");
+	}
+
+	public boolean distanceKeptNether(UUID id, Location location) {
+		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
+		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
+		double resX = sb.getLocation("nether-spawnpoint").getX() - location.getX();
+		double resZ = sb.getLocation("nether-spawnpoint").getZ() - location.getZ();
+		if (resX < 320 && resX > -320 && resZ < 320 && resZ > -320) {
+			return true;
+		}
+		return false;
 	}
 
 }

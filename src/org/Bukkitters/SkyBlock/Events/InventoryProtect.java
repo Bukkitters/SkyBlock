@@ -1,11 +1,14 @@
 package org.Bukkitters.SkyBlock.Events;
 
+import java.io.File;
 import java.util.UUID;
 
 import org.Bukkitters.SkyBlock.Main;
 import org.Bukkitters.SkyBlock.Utils.Files.PlayerDataClass;
 import org.Bukkitters.SkyBlock.Utils.Files.Schemes;
 import org.Bukkitters.SkyBlock.Utils.Files.SkyBlocks;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -54,15 +57,19 @@ public class InventoryProtect implements Listener {
 				if (sb.getNetherSkyBlockSpawn(e.getPlayer().getUniqueId()) != null) {
 					e.setTo(sb.getNetherSkyBlockSpawn(id));
 				} else {
-					e.setTo(sb.getNetherSkyBlockLocation(id));
+					e.setCancelled(true);
 					e.getPlayer().teleport(sb.getNetherSkyBlockLocation(id));
 					sb.buildNetherScheme(id);
-					sb.setNetherSkyBlockSpawn(id);
+					sb.setNetherSkyBlockSpawn(id,
+							Bukkit.getWorld("skyblock_nether")
+									.getHighestBlockAt(YamlConfiguration.loadConfiguration(
+											new File(main.getDataFolder() + "/skyblocks", id.toString() + ".yml"))
+											.getLocation("nether-location"))
+									.getLocation().clone().add(0, 1, 0));
 					e.getPlayer().teleport(sb.getNetherSkyBlockSpawn(id));
-					e.setTo(sb.getNetherSkyBlockSpawn(id));
 				}
 			} else {
-				//send cancel message
+				// send cancel message
 				e.setCancelled(true);
 			}
 			return;

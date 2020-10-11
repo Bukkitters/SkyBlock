@@ -96,11 +96,11 @@ public class Schemes {
 					}
 				}
 			}
-			if (schemes.size() > 0) {
+			if (schemes.size() > 1) {
 				int i = r.nextInt(schemes.size() - 1);
 				return schemes.get(i);
 			} else {
-				return null;
+				return schemes.get(0);
 			}
 		} else {
 			if (!schemesFolder.listFiles()[0].getName().startsWith("nether_")) {
@@ -240,11 +240,11 @@ public class Schemes {
 					}
 				}
 			}
-			if (schemes.size() > 0) {
+			if (schemes.size() > 1) {
 				int i = r.nextInt(schemes.size() - 1);
 				return schemes.get(i);
 			} else {
-				return null;
+				return schemes.get(0);
 			}
 		} else {
 			if (schemesFolder.listFiles()[0].getName().startsWith("nether_")) {

@@ -132,6 +132,20 @@ public class Manager implements CommandExecutor {
 									} else {
 										p.sendMessage(colors.color1(main.getMessages().getString("too-far")));
 									}
+								} else if (p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+									if (sb.distanceKeptNether(p.getUniqueId(), p.getLocation())) {
+										if (takeMoney(p, args[0])) {
+											sb.setNetherSkyBlockSpawn(p.getUniqueId(), p.getLocation());
+											p.sendMessage(colors.color(p, main.getMessages().getString("spawn-set")));
+											if (main.getConfig().getBoolean("send-titles")) {
+												sendTitle(p, "spawn-set-title", "spawn-set-title-time");
+											}
+										} else {
+											p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
+										}
+									} else {
+										p.sendMessage(colors.color1(main.getMessages().getString("too-far")));
+									}
 								} else {
 									p.sendMessage(colors.color1(main.getMessages().getString("not-in-skyblock-world")));
 								}
@@ -172,16 +186,19 @@ public class Manager implements CommandExecutor {
 						if (isPermitted(p, "skyblock.spawn")) {
 							if (sb.hasSkyBlock(p)) {
 								main.getTranslators().add(p.getUniqueId());
-								if (!p.getWorld().getName().equalsIgnoreCase("skyblock")) {
+								if (!p.getWorld().getName().equalsIgnoreCase("skyblock")
+										&& !p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
 									data.setWorldInventory(p.getUniqueId(), p.getInventory());
 									p.teleport(Bukkit.getWorld("skyblock")
 											.getHighestBlockAt(sb.getSkyBlockSpawn(p.getUniqueId())).getLocation()
 											.clone().add(0, 1, 0));
 									data.swapInventory(p);
 								} else {
-									p.teleport(Bukkit.getWorld("skyblock")
-											.getHighestBlockAt(sb.getSkyBlockSpawn(p.getUniqueId())).getLocation()
-											.clone().add(0, 1, 0));
+									if (p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+										p.teleport(sb.getNetherSkyBlockSpawn(p.getUniqueId()).clone().add(0, 1, 0));
+									} else {
+										p.teleport(sb.getSkyBlockSpawn(p.getUniqueId()).clone().add(0, 1, 0));
+									}
 								}
 								main.getTranslators().remove(p.getUniqueId());
 								p.sendMessage(colors.color(p, main.getMessages().getString("spawned")));
@@ -197,7 +214,8 @@ public class Manager implements CommandExecutor {
 						break;
 					case "leave":
 						if (isPermitted(p, "skyblock.leave")) {
-							if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
+							if (p.getWorld().getName().equalsIgnoreCase("skyblock")
+									|| p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
 								main.getTranslators().add(p.getUniqueId());
 								data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
 								p.teleport(sb.getBackLocation());
@@ -306,7 +324,8 @@ public class Manager implements CommandExecutor {
 											p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
 										}
 									} else {
-										p.sendMessage(colors.color1(main.getMessages().getString("no-nether-scheme-available")));
+										p.sendMessage(colors
+												.color1(main.getMessages().getString("no-nether-scheme-available")));
 									}
 								} else {
 									p.sendMessage(colors.color1(main.getMessages().getString("scheme-unavailable")));

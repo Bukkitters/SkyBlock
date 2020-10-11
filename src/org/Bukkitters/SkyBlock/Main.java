@@ -190,12 +190,16 @@ public class Main extends JavaPlugin {
 			File dk = new File(this.getDataFolder() + "/kits", "defaultKit.yml");
 			File f = new File(this.getDataFolder() + "/kits", "farmer.yml");
 			File ds = new File(this.getDataFolder() + "/schemes", "defaultScheme.yml");
+			File nds = new File(this.getDataFolder() + "/schemes", "nether_defaultScheme.yml");
 			if (!dk.exists())
 				saveResource("kits/defaultKit.yml", false);
 			if (!f.exists())
 				saveResource("kits/farmer.yml", false);
 			if (!ds.exists())
 				saveResource("schemes/defaultScheme.yml", false);
+			if  (!nds.exists()) {
+				saveResource("schemes/nether_defaultScheme.yml", false);
+			}
 		}
 	}
 

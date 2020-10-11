@@ -47,6 +47,17 @@ public class Selector implements Listener {
 						e.setCancelled(true);
 					}
 				}
+			} else if (e.getItem().getType().equals(Material.FLINT_AND_STEEL)) {
+				if (e.getHand().equals(EquipmentSlot.HAND)) {
+					if (e.getClickedBlock().getType().equals(Material.OBSIDIAN)) {
+						if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+							if (e.getPlayer().getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+								e.getClickedBlock().getLocation().clone().add(0, 1, 0).getBlock()
+										.setType(Material.NETHER_PORTAL);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
