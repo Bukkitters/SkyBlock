@@ -157,7 +157,24 @@ public class SkyBlocks {
 	}
 
 	private void sendTitle(Player p, String string, String string2) {
-		// TODO
+		try {
+			String[] s = main.getMessages().getString(string).split(";", 2);
+			String[] i = main.getMessages().getString(string2).split(";", 3);
+			Integer fadeIn = Integer.valueOf(i[0]);
+			Integer stay = Integer.valueOf(i[1]);
+			Integer fadeOut = Integer.valueOf(i[2]);
+			p.sendTitle(colors.color(p, s[0]), colors.color(p, s[1]), fadeIn,
+					stay, fadeOut);
+		} catch (NumberFormatException e) {
+			String[] s = main.getMessages().getString(string).split(";", 2);
+			p.sendMessage(colors.color(p, main.getMessages().getString("check-console")));
+			main.send(main.getMessages().getString("number-format-exception").replace("%line%", string));
+			p.sendTitle(colors.color(p, s[0]), colors.color(p, s[1]), 15, 30, 10);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			p.sendMessage(colors.color(p, main.getMessages().getString("check-console")));
+			main.send(main.getMessages().getString("missing-separator") + " &7(" + string + " or " + string2 + ")");
+			p.sendTitle(colors.color1("&e[!]"), colors.color(p, main.getMessages().getString(string)), 15, 30, 10);
+		}
 	}
 
 	public Location getSkyblockLocation(UUID id) {

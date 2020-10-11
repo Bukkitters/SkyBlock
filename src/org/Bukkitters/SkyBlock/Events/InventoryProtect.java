@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.UUID;
 
 import org.Bukkitters.SkyBlock.Main;
+import org.Bukkitters.SkyBlock.Utils.ChatColors;
 import org.Bukkitters.SkyBlock.Utils.Files.PlayerDataClass;
 import org.Bukkitters.SkyBlock.Utils.Files.Schemes;
 import org.Bukkitters.SkyBlock.Utils.Files.SkyBlocks;
@@ -23,6 +24,7 @@ public class InventoryProtect implements Listener {
 	private SkyBlocks sb = new SkyBlocks();
 	private Main main;
 	private Schemes sc = new Schemes();
+	private ChatColors cl = new ChatColors();
 
 	public InventoryProtect(Main main) {
 		main.getServer().getPluginManager().registerEvents(this, main);
@@ -68,15 +70,15 @@ public class InventoryProtect implements Listener {
 									.getLocation().clone().add(0, 1, 0));
 					e.getPlayer().teleport(sb.getNetherSkyBlockSpawn(id).add(0.5, 0, 0.5));
 				}
-				// send nether tp message
+				e.getPlayer().sendMessage(cl.color1(main.getMessages().getString("nether-teleport")));
 			} else {
-				// send cancel message
+				e.getPlayer().sendMessage(cl.color1(main.getMessages().getString("scheme-cannot-be-built")));
 				e.setCancelled(true);
 			}
 			return;
 		} else if (from.equalsIgnoreCase("skyblock_nether") && e.getCause().equals(TeleportCause.NETHER_PORTAL)) {
 			e.setTo(sb.getSkyBlockSpawn(id));
-			// send skyblock tp message
+			e.getPlayer().sendMessage(cl.color1(main.getMessages().getString("skyblock-teleport")));
 			return;
 		} else {
 			if (!main.getTranslators().contains(e.getPlayer().getUniqueId())) {

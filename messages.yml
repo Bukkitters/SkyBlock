@@ -100,6 +100,9 @@ not-allowed-break-title: '&e[!];&cYou are not allowed to break blocks here!'
 not-allowed-break-title-time: '15;30;10'
 not-allowed-build-title: '&e[!];&cYou are not allowed to build here!'
 not-allowed-build-title-time: '15;30;10'
+nether-teleport: '&aTeleported to nether skyblock.'
+skyblock-teleport: '&aTeleported to normal skyblock.'
+scheme-cannot-be-built: '&cYour nether skyblock scheme is deleted so it can not be built. Call server administrator!'
 
 #Exceptions
 check-console: '&4WARNING! &cAn error has occurred! Check your console!'
