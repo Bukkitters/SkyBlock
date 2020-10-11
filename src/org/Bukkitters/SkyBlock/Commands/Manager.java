@@ -43,6 +43,7 @@ public class Manager implements CommandExecutor {
 						if (isPermitted(p, "skyblock.reload")) {
 							main.reloadConfig();
 							main.reloadMessages();
+							main.registerDepends();
 							p.sendMessage(colors.color1(main.getMessages().getString("reloaded")));
 							if (main.getConfig().getBoolean("send-titles")) {
 								sendTitle(p, "reloaded-title", "reloaded-title-time");
@@ -484,6 +485,7 @@ public class Manager implements CommandExecutor {
 				case "reload":
 					main.reloadConfig();
 					main.reloadMessages();
+					main.registerDepends();
 					main.send(main.getMessages().getString("reloaded"));
 					break;
 				default:

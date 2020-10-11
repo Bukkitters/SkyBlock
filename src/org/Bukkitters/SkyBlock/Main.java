@@ -57,6 +57,7 @@ public class Main extends JavaPlugin {
 	private static Economy econ = null;
 	private int i = 0;
 	private SkyBlocks sb;
+	private int ip = 0;
 
 	public void onEnable() {
 		instance = this;
@@ -98,10 +99,11 @@ public class Main extends JavaPlugin {
 		send("&aPlugin enabled!");
 	}
 
-	private void registerDepends() {
+	public void registerDepends() {
 		if (getConfig().getBoolean("use-vault")) {
 			if (getServer().getPluginManager().isPluginEnabled("Vault")) {
 				setupEconomy();
+				send("&fVault &afound and hooked&f!");
 			} else {
 				BukkitRunnable r = new BukkitRunnable() {
 					@Override
@@ -126,11 +128,12 @@ public class Main extends JavaPlugin {
 		if (getConfig().getBoolean("use-placeholderapi")) {
 			if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 				new SkyBlockExpansion(this).register();
+				send("&fPlaceholderAPI &afound and hooked&f!");
 			} else {
 				BukkitRunnable r = new BukkitRunnable() {
 					@Override
 					public void run() {
-						if (i < 60) {
+						if (ip  < 60) {
 							if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 								new SkyBlockExpansion(instance).register();
 								send("&fPlaceholderAPI &afound and hooked&f!");
@@ -141,7 +144,7 @@ public class Main extends JavaPlugin {
 							send("&fVault &cnot found! Disabling plugin.");
 							getServer().getPluginManager().disablePlugin(instance);
 						}
-						i++;
+						ip++;
 					}
 				};
 				r.runTaskTimer(this, 20L, 20L);
