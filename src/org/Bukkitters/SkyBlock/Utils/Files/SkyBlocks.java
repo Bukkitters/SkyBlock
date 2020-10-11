@@ -133,9 +133,9 @@ public class SkyBlocks {
 			if (p.getWorld().getName().equalsIgnoreCase("skyblock")
 					|| p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
 				main.getTranslators().add(p.getUniqueId());
+				p.getInventory().clear();
 				data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
 				p.teleport(getBackLocation().add(0.5, 0, 0.5));
-				p.getInventory().clear();
 				for (ItemStack i : data.getWorldInventory(p.getUniqueId())) {
 					p.getInventory().addItem(i);
 				}
