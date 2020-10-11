@@ -48,7 +48,7 @@ public class Manager implements CommandExecutor {
 							if (main.getConfig().getBoolean("send-titles")) {
 								sendTitle(p, "reloaded-title", "reloaded-title-time");
 							}
-							p.teleport(new Location(Bukkit.getWorld("skyblock_nether"), 0, 70, 0));
+							p.teleport(new Location(Bukkit.getWorld("skyblock_nether"), 0.5, 70, 0.5));
 							p.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.COBBLESTONE);
 						} else {
 							p.sendMessage(colors.color1(main.getMessages().getString("no-permission")));
@@ -59,19 +59,21 @@ public class Manager implements CommandExecutor {
 							if (sb.canBuild(p.getUniqueId())) {
 								if (!sb.hasSkyBlock(p)) {
 									if (takeMoney(p, args[0])) {
+										main.getTranslators().add(p.getUniqueId());
 										Location location = sb.findLocation();
 										data.setWorldInventory(p.getUniqueId(), p.getInventory());
-										p.teleport(location);
+										p.teleport(location.add(0.5, 0, 0.5));
 										data.swapInventory(p);
 										sb.buildScheme(p.getUniqueId(), location, sc.randomScheme(p.getUniqueId()),
 												sc.randomNetherScheme(p.getUniqueId()));
 										p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation()
-												.clone().add(0.0, 1.0, 0.0));
+												.clone().add(0.5, 1.0, 0.5));
 										p.sendMessage(colors.color(p, main.getMessages().getString("created")));
 										kits.addDefaultKit(p);
 										if (main.getConfig().getBoolean("send-titles")) {
 											sendTitle(p, "created-title", "created-title-time");
 										}
+										main.getTranslators().remove(p.getUniqueId());
 									} else {
 										p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
 									}
@@ -191,13 +193,13 @@ public class Manager implements CommandExecutor {
 									data.setWorldInventory(p.getUniqueId(), p.getInventory());
 									p.teleport(Bukkit.getWorld("skyblock")
 											.getHighestBlockAt(sb.getSkyBlockSpawn(p.getUniqueId())).getLocation()
-											.clone().add(0, 1, 0));
+											.clone().add(0.5, 1, 0.5));
 									data.swapInventory(p);
 								} else {
 									if (p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
-										p.teleport(sb.getNetherSkyBlockSpawn(p.getUniqueId()).clone().add(0, 1, 0));
+										p.teleport(sb.getNetherSkyBlockSpawn(p.getUniqueId()).clone().add(0.5, 1, 0.5));
 									} else {
-										p.teleport(sb.getSkyBlockSpawn(p.getUniqueId()).clone().add(0, 1, 0));
+										p.teleport(sb.getSkyBlockSpawn(p.getUniqueId()).clone().add(0.5, 1, 0.5));
 									}
 								}
 								main.getTranslators().remove(p.getUniqueId());
@@ -218,7 +220,7 @@ public class Manager implements CommandExecutor {
 									|| p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
 								main.getTranslators().add(p.getUniqueId());
 								data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
-								p.teleport(sb.getBackLocation());
+								p.teleport(sb.getBackLocation().add(0.5, 0, 0.5));
 								data.swapInventory(p);
 								main.getTranslators().remove(p.getUniqueId());
 								p.sendMessage(colors.color(p, main.getMessages().getString("left")));
@@ -307,9 +309,10 @@ public class Manager implements CommandExecutor {
 								if (sc.isAvailable(p.getUniqueId(), args[1])) {
 									if (sb.canBuild(p.getUniqueId())) {
 										if (takeMoney(p, args[0])) {
+											main.getTranslators().add(p.getUniqueId());
 											Location location = sb.findLocation();
 											data.setWorldInventory(p.getUniqueId(), p.getInventory());
-											p.teleport(location);
+											p.teleport(location.add(0.5, 0, 0.5));
 											data.swapInventory(p);
 											sb.buildScheme(p.getUniqueId(), location, args[1],
 													sc.randomNetherScheme(p.getUniqueId()));
@@ -320,6 +323,7 @@ public class Manager implements CommandExecutor {
 											if (main.getConfig().getBoolean("send-titles")) {
 												sendTitle(p, "created-title", "created-title-time");
 											}
+											main.getTranslators().remove(p.getUniqueId());
 										} else {
 											p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
 										}
@@ -492,18 +496,20 @@ public class Manager implements CommandExecutor {
 									s2 = sc.randomNetherScheme(p.getUniqueId());
 								}
 								if (takeMoney(p, args[0])) {
+									main.getTranslators().add(p.getUniqueId());
 									Location location = sb.findLocation();
 									data.setWorldInventory(p.getUniqueId(), p.getInventory());
-									p.teleport(location);
+									p.teleport(location.add(0.5, 0, 0.5));
 									data.swapInventory(p);
 									sb.buildScheme(p.getUniqueId(), location, s1, s2);
 									p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation()
-											.clone().add(0.0, 1.0, 0.0));
+											.clone().add(0.5, 1.0, 0.5));
 									p.sendMessage(colors.color(p, main.getMessages().getString("created")));
 									kits.addDefaultKit(p);
 									if (main.getConfig().getBoolean("send-titles")) {
 										sendTitle(p, "created-title", "created-title-time");
 									}
+									main.getTranslators().remove(p.getUniqueId());
 								} else {
 									p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
 								}
@@ -738,7 +744,7 @@ public class Manager implements CommandExecutor {
 	}
 
 	private void accept(Player p, UUID uuid) {
-		p.teleport(sb.getSkyBlockSpawn(uuid));
+		p.teleport(sb.getSkyBlockSpawn(uuid).add(0.5, 0, 0.5));
 		Bukkit.getPlayer(uuid).sendMessage(colors.color(p, main.getMessages().getString("player-accepted")));
 		main.getInvites().remove(p.getUniqueId());
 		if (main.getConfig().getBoolean("send-titles")) {

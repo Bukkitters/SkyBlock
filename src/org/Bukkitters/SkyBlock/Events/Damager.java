@@ -36,7 +36,7 @@ public class Damager implements Listener {
 						Player p = (Player) e.getEntity();
 						if (sb.hasSkyBlock(p)) {
 							p.setInvulnerable(true);
-							p.teleport(sb.getSkyBlockSpawn(p.getUniqueId()));
+							p.teleport(sb.getSkyBlockSpawn(p.getUniqueId()).add(0.5, 0, 0.5));
 							BukkitRunnable r = new BukkitRunnable() {
 								@Override
 								public void run() {
@@ -48,7 +48,7 @@ public class Damager implements Listener {
 							};
 							r.runTaskTimerAsynchronously(main, 3l, 1l);
 						} else {
-							p.teleport(sb.getBackLocation());
+							p.teleport(sb.getBackLocation().add(0.5, 0, 0.5));
 						}
 						e.setCancelled(true);
 					}

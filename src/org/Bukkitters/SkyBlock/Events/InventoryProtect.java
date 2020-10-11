@@ -58,7 +58,7 @@ public class InventoryProtect implements Listener {
 					e.setTo(sb.getNetherSkyBlockSpawn(id));
 				} else {
 					e.setCancelled(true);
-					e.getPlayer().teleport(sb.getNetherSkyBlockLocation(id));
+					e.getPlayer().teleport(sb.getNetherSkyBlockLocation(id).add(0.5, 0, 0.5));
 					sb.buildNetherScheme(id);
 					sb.setNetherSkyBlockSpawn(id,
 							Bukkit.getWorld("skyblock_nether")
@@ -66,7 +66,7 @@ public class InventoryProtect implements Listener {
 											new File(main.getDataFolder() + "/skyblocks", id.toString() + ".yml"))
 											.getLocation("nether-location"))
 									.getLocation().clone().add(0, 1, 0));
-					e.getPlayer().teleport(sb.getNetherSkyBlockSpawn(id));
+					e.getPlayer().teleport(sb.getNetherSkyBlockSpawn(id).add(0.5, 0, 0.5));
 				}
 			} else {
 				// send cancel message

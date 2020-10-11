@@ -128,8 +128,8 @@ public class SkyBlocks {
 		demolish(sb.getLocation("nether-location"));
 		skyblock.delete();
 		if (p.isOnline()) {
-			if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
-				p.teleport(getBackLocation());
+			if (p.getWorld().getName().equalsIgnoreCase("skyblock") || p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+				p.teleport(getBackLocation().add(0.5, 0, 0.5));
 			}
 			if (b) {
 				p.sendMessage(colors.color(p, main.getMessages().getString("deleted")));
@@ -222,8 +222,10 @@ public class SkyBlocks {
 	public void setSpawn(UUID id, Location location) {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
-		sb.getLocation("spawnpoint").clone().subtract(0, 1, 0).getBlock()
-				.setType(Material.valueOf(sb.getString("override-block")));
+		if (sb.contains("nether-spawnpoint")) {
+			sb.getLocation("spawnpoint").clone().subtract(0, 1, 0).getBlock()
+					.setType(Material.valueOf(sb.getString("override-block")));
+		}
 		sb.set("spawnpoint", location);
 		Block b = location.clone().subtract(0, 1, 0).getBlock();
 		sb.set("override-block", b.getType().toString());
@@ -268,8 +270,10 @@ public class SkyBlocks {
 	public void setNetherSkyBlockSpawn(UUID id, Location loc) {
 		File f = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration conf = YamlConfiguration.loadConfiguration(f);
-		conf.getLocation("nether-spawnpoint").clone().subtract(0, 1, 0).getBlock()
-				.setType(Material.valueOf(conf.getString("nether-override-block")));
+		if (conf.contains("nether-spawnpoint")) {
+			conf.getLocation("nether-spawnpoint").clone().subtract(0, 1, 0).getBlock()
+					.setType(Material.valueOf(conf.getString("nether-override-block")));
+		}
 		Block b = loc.clone().subtract(0, 1, 0).getBlock();
 		conf.set("nether-override-block", b.getType().toString());
 		b.setType(Material.BEDROCK);

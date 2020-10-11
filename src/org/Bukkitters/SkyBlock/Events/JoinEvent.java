@@ -33,11 +33,11 @@ public class JoinEvent implements Listener {
 				data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
 				if (p.getLocation().clone().subtract(0, 1, 0).getBlock().getType() == Material.AIR
 						|| p.getLocation().clone().subtract(0, 1, 0).getBlock().getType() == Material.CAVE_AIR) {
-					p.teleport(sb.getBackLocation());
+					p.teleport(sb.getBackLocation().add(0.5, 0, 0.5));
 					p.sendMessage(colors.color(p, main.getMessages().getString("unsafe-spawn")));
 				}
 			} else {
-				p.teleport(sb.getBackLocation());
+				p.teleport(sb.getBackLocation().add(0.5, 0, 0.5));
 				p.sendMessage(colors.color(p, main.getMessages().getString("no-death-protection")));
 			}
 		} else {
