@@ -1,7 +1,7 @@
 package org.Bukkitters.SkyBlock.Events;
 
 import org.Bukkitters.SkyBlock.Main;
-import org.Bukkitters.SkyBlock.Utils.SkyBlocks;
+import org.Bukkitters.SkyBlock.Utils.Files.SkyBlocks;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

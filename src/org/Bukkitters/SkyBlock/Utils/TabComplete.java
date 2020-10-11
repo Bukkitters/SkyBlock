@@ -3,6 +3,8 @@ package org.Bukkitters.SkyBlock.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import org.Bukkitters.SkyBlock.Main;
+import org.Bukkitters.SkyBlock.Utils.Files.Kits;
+import org.Bukkitters.SkyBlock.Utils.Files.Schemes;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

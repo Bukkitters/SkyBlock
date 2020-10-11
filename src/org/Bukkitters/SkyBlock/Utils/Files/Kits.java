@@ -1,4 +1,4 @@
-package org.Bukkitters.SkyBlock.Utils;
+package org.Bukkitters.SkyBlock.Utils.Files;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import org.Bukkitters.SkyBlock.Main;
 import org.Bukkitters.SkyBlock.GUI.KitsGUI;
+import org.Bukkitters.SkyBlock.Utils.ChatColors;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;

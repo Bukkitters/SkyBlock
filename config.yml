@@ -19,6 +19,8 @@ give-default-kit: true
 default-kit: defaultKit
 #Use vault economy
 use-vault: false
+#Use placeholders from papi(and own for papi)
+use-placeholderapi: true
 #Command cost
 command-cost:
   create: 100.0

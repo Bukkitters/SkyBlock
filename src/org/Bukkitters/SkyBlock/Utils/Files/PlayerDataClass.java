@@ -1,4 +1,4 @@
-package org.Bukkitters.SkyBlock.Utils;
+package org.Bukkitters.SkyBlock.Utils.Files;
 
 import java.io.File;
 import java.io.IOException;

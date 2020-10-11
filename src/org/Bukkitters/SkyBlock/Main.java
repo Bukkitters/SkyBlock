@@ -38,14 +38,15 @@ import org.Bukkitters.SkyBlock.Events.LeavesControl;
 import org.Bukkitters.SkyBlock.Events.QuitEvent;
 import org.Bukkitters.SkyBlock.Events.Selector;
 import org.Bukkitters.SkyBlock.Utils.IChunkGenerator;
-import org.Bukkitters.SkyBlock.Utils.PlayerDataClass;
-import org.Bukkitters.SkyBlock.Utils.SkyBlocks;
+import org.Bukkitters.SkyBlock.Utils.SkyBlockExpansion;
 import org.Bukkitters.SkyBlock.Utils.TabComplete;
+import org.Bukkitters.SkyBlock.Utils.Files.PlayerDataClass;
+import org.Bukkitters.SkyBlock.Utils.Files.SkyBlocks;
 
 public class Main extends JavaPlugin {
 
 	private IChunkGenerator cg = new IChunkGenerator();
-	private PlayerDataClass data = new PlayerDataClass();
+	private PlayerDataClass data;
 	private File msgf = new File(getDataFolder(), "messages.yml");
 	private FileConfiguration msg;
 	private List<UUID> translators = new ArrayList<UUID>();
@@ -55,10 +56,12 @@ public class Main extends JavaPlugin {
 	private HashMap<UUID, Integer> cooldowns = new HashMap<UUID, Integer>();
 	private static Economy econ = null;
 	private int i = 0;
-	private SkyBlocks sb = new SkyBlocks();
+	private SkyBlocks sb;
 
 	public void onEnable() {
 		instance = this;
+		sb = new SkyBlocks();
+		data = new PlayerDataClass();
 		saveDefaultConfig();
 		saveDefaultMessages();
 		msg = YamlConfiguration.loadConfiguration(msgf);
@@ -91,6 +94,11 @@ public class Main extends JavaPlugin {
 		new Builder(this);
 		new InventoryClick(this);
 		getCommand("skyblock").setTabCompleter(new TabComplete(this));
+		registerDepends();
+		send("&aPlugin enabled!");
+	}
+
+	private void registerDepends() {
 		if (getConfig().getBoolean("use-vault")) {
 			if (getServer().getPluginManager().isPluginEnabled("Vault")) {
 				setupEconomy();
@@ -101,6 +109,8 @@ public class Main extends JavaPlugin {
 						if (i < 60) {
 							if (getServer().getPluginManager().isPluginEnabled("Vault")) {
 								setupEconomy();
+								send("&fVault &afound and hooked&f!");
+								this.cancel();
 							}
 						} else {
 							this.cancel();
@@ -113,7 +123,30 @@ public class Main extends JavaPlugin {
 				r.runTaskTimer(this, 20L, 20L);
 			}
 		}
-		send("&aPlugin enabled!");
+		if (getConfig().getBoolean("use-placeholderapi")) {
+			if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+				new SkyBlockExpansion(this).register();
+			} else {
+				BukkitRunnable r = new BukkitRunnable() {
+					@Override
+					public void run() {
+						if (i < 60) {
+							if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+								new SkyBlockExpansion(instance).register();
+								send("&fPlaceholderAPI &afound and hooked&f!");
+								this.cancel();
+							}
+						} else {
+							this.cancel();
+							send("&fVault &cnot found! Disabling plugin.");
+							getServer().getPluginManager().disablePlugin(instance);
+						}
+						i++;
+					}
+				};
+				r.runTaskTimer(this, 20L, 20L);
+			}
+		}
 	}
 
 	public void onDisable() {
@@ -239,12 +272,12 @@ public class Main extends JavaPlugin {
 	public Economy getEconomy() {
 		return econ;
 	}
-	
-	//API
+
+	// API
 	public int getSkyBlocks() {
 		return new File(getDataFolder(), "skyblocks").listFiles().length;
 	}
-	
+
 	public boolean hasSkyBlock(UUID id) {
 		return sb.hasSkyBlock(Bukkit.getOfflinePlayer(id));
 	}
