@@ -67,10 +67,9 @@ public class SkyBlocks {
 			for (Double a = loc.getX() - i; a < loc.getX() + i; a++) {
 				for (Double b = loc.getY() - i; b < loc.getY() + i; b++) {
 					for (Double c = loc.getZ() - i; c < loc.getZ() + i; c++) {
-						if (Bukkit.getWorld("skyblock_nether")
-								.getBlockAt(new Location(Bukkit.getWorld("skyblock_nether"), a, b, c))
+						if (loc.getWorld().getBlockAt(new Location(loc.getWorld(), a, b, c))
 								.getType() != Material.AIR) {
-							place(Bukkit.getWorld("skyblock_nether"), a, b, c, Material.AIR);
+							place(loc.getWorld(), a, b, c, Material.AIR);
 							empty = false;
 						}
 					}
@@ -163,8 +162,7 @@ public class SkyBlocks {
 			Integer fadeIn = Integer.valueOf(i[0]);
 			Integer stay = Integer.valueOf(i[1]);
 			Integer fadeOut = Integer.valueOf(i[2]);
-			p.sendTitle(colors.color(p, s[0]), colors.color(p, s[1]), fadeIn,
-					stay, fadeOut);
+			p.sendTitle(colors.color(p, s[0]), colors.color(p, s[1]), fadeIn, stay, fadeOut);
 		} catch (NumberFormatException e) {
 			String[] s = main.getMessages().getString(string).split(";", 2);
 			p.sendMessage(colors.color(p, main.getMessages().getString("check-console")));
@@ -249,17 +247,20 @@ public class SkyBlocks {
 	public void setSpawn(UUID id, Location location) {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
-		if (sb.contains("nether-spawnpoint")) {
-			sb.getLocation("spawnpoint").clone().subtract(0, 1, 0).getBlock()
-					.setType(Material.valueOf(sb.getString("override-block")));
-		}
-		sb.set("spawnpoint", location);
-		Block b = location.clone().subtract(0, 1, 0).getBlock();
-		sb.set("override-block", b.getType().toString());
-		b.setType(Material.BEDROCK);
-		try {
-			sb.save(skyblock);
-		} catch (IOException e) {
+		if (!sb.getLocation("spawnpoint").clone().subtract(0, 1, 0).getBlock()
+				.equals(location.clone().subtract(0, 1, 0).getBlock())) {
+			if (sb.contains("spawnpoint")) {
+				sb.getLocation("spawnpoint").clone().subtract(0, 1, 0).getBlock()
+						.setType(Material.valueOf(sb.getString("override-block")));
+			}
+			sb.set("spawnpoint", location);
+			Block b = location.clone().subtract(0, 1, 0).getBlock();
+			sb.set("override-block", b.getType().toString());
+			b.setType(Material.BEDROCK);
+			try {
+				sb.save(skyblock);
+			} catch (IOException e) {
+			}
 		}
 	}
 
@@ -297,17 +298,20 @@ public class SkyBlocks {
 	public void setNetherSkyBlockSpawn(UUID id, Location loc) {
 		File f = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration conf = YamlConfiguration.loadConfiguration(f);
-		if (conf.contains("nether-spawnpoint")) {
-			conf.getLocation("nether-spawnpoint").clone().subtract(0, 1, 0).getBlock()
-					.setType(Material.valueOf(conf.getString("nether-override-block")));
-		}
-		Block b = loc.clone().subtract(0, 1, 0).getBlock();
-		conf.set("nether-override-block", b.getType().toString());
-		b.setType(Material.BEDROCK);
-		conf.set("nether-spawnpoint", loc);
-		try {
-			conf.save(f);
-		} catch (IOException e) {
+		if (!conf.getLocation("nether-spawnpoint").clone().subtract(0, 1, 0).getBlock()
+				.equals(loc.clone().subtract(0, 1, 0).getBlock())) {
+			if (conf.contains("nether-spawnpoint")) {
+				conf.getLocation("nether-spawnpoint").clone().subtract(0, 1, 0).getBlock()
+						.setType(Material.valueOf(conf.getString("nether-override-block")));
+			}
+			Block b = loc.clone().subtract(0, 1, 0).getBlock();
+			conf.set("nether-override-block", b.getType().toString());
+			b.setType(Material.BEDROCK);
+			conf.set("nether-spawnpoint", loc);
+			try {
+				conf.save(f);
+			} catch (IOException e) {
+			}
 		}
 	}
 

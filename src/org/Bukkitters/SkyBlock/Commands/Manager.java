@@ -10,6 +10,8 @@ import org.Bukkitters.SkyBlock.Utils.Files.SkyBlocks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.block.Container;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -48,8 +50,6 @@ public class Manager implements CommandExecutor {
 							if (main.getConfig().getBoolean("send-titles")) {
 								sendTitle(p, "reloaded-title", "reloaded-title-time");
 							}
-							p.teleport(new Location(Bukkit.getWorld("skyblock_nether"), 0.5, 70, 0.5));
-							p.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.COBBLESTONE);
 						} else {
 							p.sendMessage(colors.color1(main.getMessages().getString("no-permission")));
 						}
@@ -122,28 +122,42 @@ public class Manager implements CommandExecutor {
 							if (sb.hasSkyBlock(p)) {
 								if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
 									if (sb.distanceKept(p.getUniqueId(), p.getLocation())) {
-										if (takeMoney(p, args[0])) {
-											sb.setSpawn(p.getUniqueId(), p.getLocation());
-											p.sendMessage(colors.color(p, main.getMessages().getString("spawn-set")));
-											if (main.getConfig().getBoolean("send-titles")) {
-												sendTitle(p, "spawn-set-title", "spawn-set-title-time");
+										if (!(p.getLocation().clone().subtract(0, 1, 0).getBlock() instanceof Container)
+												&& isNotUnavailable(p.getLocation().clone().subtract(0, 1, 0).getBlock()
+														.getType())) {
+											if (takeMoney(p, args[0])) {
+												sb.setSpawn(p.getUniqueId(), p.getLocation());
+												p.sendMessage(
+														colors.color(p, main.getMessages().getString("spawn-set")));
+												if (main.getConfig().getBoolean("send-titles")) {
+													sendTitle(p, "spawn-set-title", "spawn-set-title-time");
+												}
+											} else {
+												p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
 											}
 										} else {
-											p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
+											p.sendMessage(colors.color1(main.getMessages().getString("wrong-block")));
 										}
 									} else {
 										p.sendMessage(colors.color1(main.getMessages().getString("too-far")));
 									}
 								} else if (p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
 									if (sb.distanceKeptNether(p.getUniqueId(), p.getLocation())) {
-										if (takeMoney(p, args[0])) {
-											sb.setNetherSkyBlockSpawn(p.getUniqueId(), p.getLocation());
-											p.sendMessage(colors.color(p, main.getMessages().getString("spawn-set")));
-											if (main.getConfig().getBoolean("send-titles")) {
-												sendTitle(p, "spawn-set-title", "spawn-set-title-time");
+										if (!(p.getLocation().clone().subtract(0, 1, 0).getBlock() instanceof Container)
+												&& isNotUnavailable(p.getLocation().clone().subtract(0, 1, 0).getBlock()
+														.getType())) {
+											if (takeMoney(p, args[0])) {
+												sb.setNetherSkyBlockSpawn(p.getUniqueId(), p.getLocation());
+												p.sendMessage(
+														colors.color(p, main.getMessages().getString("spawn-set")));
+												if (main.getConfig().getBoolean("send-titles")) {
+													sendTitle(p, "spawn-set-title", "spawn-set-title-time");
+												}
+											} else {
+												p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
 											}
 										} else {
-											p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
+											p.sendMessage(colors.color1(main.getMessages().getString("wrong-block")));
 										}
 									} else {
 										p.sendMessage(colors.color1(main.getMessages().getString("too-far")));
@@ -649,6 +663,17 @@ public class Manager implements CommandExecutor {
 				main.send(main.getMessages().getString("wrong-command"));
 				break;
 			}
+		}
+		return true;
+	}
+
+	private boolean isNotUnavailable(Material type) {
+		if (Tag.BANNERS.isTagged(type) || Tag.BEDS.isTagged(type) || Tag.BUTTONS.isTagged(type)
+				|| Tag.CLIMBABLE.isTagged(type) || Tag.DOORS.isTagged(type) || Tag.CROPS.isTagged(type)
+				|| Tag.FENCE_GATES.isTagged(type) || Tag.FLOWERS.isTagged(type) || Tag.RAILS.isTagged(type)
+				|| Tag.SAPLINGS.isTagged(type) || Tag.SHULKER_BOXES.isTagged(type) || Tag.SIGNS.isTagged(type)
+				|| Tag.STANDING_SIGNS.isTagged(type) || Tag.STAIRS.isTagged(type) || Tag.TRAPDOORS.isTagged(type)) {
+			return false;
 		}
 		return true;
 	}

@@ -12,11 +12,8 @@ import org.bukkit.World.Environment;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import com.google.common.base.Charsets;
-
 import net.milkbowl.vault.economy.Economy;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
 import org.Bukkitters.SkyBlock.Commands.Manager;
 import org.Bukkitters.SkyBlock.Events.BlockLava;
 import org.Bukkitters.SkyBlock.Events.Breaker;
@@ -94,7 +90,9 @@ public class Main extends JavaPlugin {
 		new BlockLava(this);
 		new Builder(this);
 		new InventoryClick(this);
-		getCommand("skyblock").setTabCompleter(new TabComplete(this));
+		if (getConfig().getBoolean("use-tabcomplete")) {
+			getCommand("skyblock").setTabCompleter(new TabComplete(this));
+		}
 		registerDepends();
 		send("&aPlugin enabled!");
 	}
@@ -131,6 +129,7 @@ public class Main extends JavaPlugin {
 				send("&fPlaceholderAPI &afound and hooked&f!");
 			} else {
 				BukkitRunnable r = new BukkitRunnable() {
+
 					@Override
 					public void run() {
 						if (ip < 60) {
@@ -141,11 +140,12 @@ public class Main extends JavaPlugin {
 							}
 						} else {
 							this.cancel();
-							send("&fVault &cnot found! Disabling plugin.");
+							send("&fPlaceholderAPI &cnot found! Disabling plugin.");
 							getServer().getPluginManager().disablePlugin(instance);
 						}
 						ip++;
 					}
+
 				};
 				r.runTaskTimer(this, 20L, 20L);
 			}
@@ -197,7 +197,7 @@ public class Main extends JavaPlugin {
 				saveResource("kits/farmer.yml", false);
 			if (!ds.exists())
 				saveResource("schemes/defaultScheme.yml", false);
-			if  (!nds.exists()) {
+			if (!nds.exists()) {
 				saveResource("schemes/nether_defaultScheme.yml", false);
 			}
 		}
@@ -294,7 +294,7 @@ public class Main extends JavaPlugin {
 	public boolean hasSkyBlock(UUID id) {
 		return sb.hasSkyBlock(Bukkit.getOfflinePlayer(id));
 	}
-	
+
 	public boolean hasNetherSkyBlock(UUID id) {
 		if (sb.hasSkyBlock(Bukkit.getOfflinePlayer(id))) {
 			return sb.hasNetherSkyBlock(id);

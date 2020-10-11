@@ -17,10 +17,12 @@ spawn-point: 'WORLD_SPAWNPOINT'
 give-default-kit: true
 #Default kit name
 default-kit: defaultKit
+#Allow tab complete?
+use-tabcomplete: false
 #Use vault economy
 use-vault: false
 #Use placeholders from papi(and own for papi)
-use-placeholderapi: true
+use-placeholderapi: false
 #Command cost
 command-cost:
   create: 100.0
