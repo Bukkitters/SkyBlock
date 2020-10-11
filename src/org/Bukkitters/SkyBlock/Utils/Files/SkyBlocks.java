@@ -18,6 +18,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class SkyBlocks {
 
@@ -25,6 +26,7 @@ public class SkyBlocks {
 	private File skyBlocksFolder = new File(main.getDataFolder(), "skyblocks");
 	private File schemesFolder = new File(main.getDataFolder(), "schemes");
 	private ChatColors colors = new ChatColors();
+	private PlayerDataClass data = new PlayerDataClass();
 
 	public void buildScheme(UUID id, Location location, String scheme, String netherScheme) {
 		FileConfiguration sc = YamlConfiguration
@@ -128,8 +130,16 @@ public class SkyBlocks {
 		demolish(sb.getLocation("nether-location"));
 		skyblock.delete();
 		if (p.isOnline()) {
-			if (p.getWorld().getName().equalsIgnoreCase("skyblock") || p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+			if (p.getWorld().getName().equalsIgnoreCase("skyblock")
+					|| p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+				main.getTranslators().add(p.getUniqueId());
+				data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
 				p.teleport(getBackLocation().add(0.5, 0, 0.5));
+				p.getInventory().clear();
+				for (ItemStack i : data.getWorldInventory(p.getUniqueId())) {
+					p.getInventory().addItem(i);
+				}
+				main.getTranslators().remove(p.getUniqueId());
 			}
 			if (b) {
 				p.sendMessage(colors.color(p, main.getMessages().getString("deleted")));
@@ -147,7 +157,7 @@ public class SkyBlocks {
 	}
 
 	private void sendTitle(Player p, String string, String string2) {
-		// todo
+		// TODO
 	}
 
 	public Location getSkyblockLocation(UUID id) {

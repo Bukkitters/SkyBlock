@@ -28,70 +28,73 @@ public class InventoryClick implements Listener {
 
 	@EventHandler
 	public void onClick(InventoryClickEvent e) {
-		if (e.getInventory().getHolder() instanceof MultiPagedInventory) {
-			if (e.getCurrentItem() != null) {
-				Player p = (Player) e.getWhoClicked();
-				MultiPagedInventory inv = null;
-				if (e.getInventory().getHolder() instanceof KitsGUI) {
-					inv = new KitsGUI(kits.getAvailableKits(p), "kits", p.getUniqueId(),
-							p.getMetadata("page").get(0).asByte());
-				} else {
-					inv = new SchemesGUI(sc.getAvailableSchemes(p), "schemes", p.getUniqueId(),
-							p.getMetadata("page").get(0).asByte());
-				}
-				if (e.getCurrentItem().getType()
-						.equals(Material.valueOf(Main.getInstance().getConfig().getString("next-gui-item")))
-						&& e.getCurrentItem().getItemMeta().getDisplayName()
-								.equalsIgnoreCase(cl.color(p, main.getConfig().getString("next-gui-item-name")))) {
-					e.setCancelled(true);
-					if (inv.getPage() < inv.getMaxpages()) {
-						byte toset = p.getMetadata("page").get(0).asByte();
-						toset++;
-						p.removeMetadata("page", main);
-						p.setMetadata("page", new FixedMetadataValue(main, toset));
-						inv.nextPage();
+		if (e.getClickedInventory() != null) {
+			if (e.getInventory().getHolder() instanceof MultiPagedInventory) {
+				if (e.getCurrentItem() != null) {
+					Player p = (Player) e.getWhoClicked();
+					MultiPagedInventory inv = null;
+					if (e.getInventory().getHolder() instanceof KitsGUI) {
+						inv = new KitsGUI(kits.getAvailableKits(p), "kits", p.getUniqueId(),
+								p.getMetadata("page").get(0).asByte());
+					} else {
+						inv = new SchemesGUI(sc.getAvailableSchemes(p), "schemes", p.getUniqueId(),
+								p.getMetadata("page").get(0).asByte());
 					}
-				} else if (e.getCurrentItem().getType()
-						.equals(Material.valueOf(Main.getInstance().getConfig().getString("back-gui-item")))
-						&& e.getCurrentItem().getItemMeta().getDisplayName()
-								.equalsIgnoreCase(cl.color(p, main.getConfig().getString("back-gui-item-name")))) {
-					e.setCancelled(true);
-					if (inv.getPage() > 1) {
-						byte toset = p.getMetadata("page").get(0).asByte();
-						toset--;
-						p.removeMetadata("page", main);
-						p.setMetadata("page", new FixedMetadataValue(main, toset));
-						inv.prevPage();
-					}
-				} else {
-					if (inv.getType().equalsIgnoreCase("kits")) {
-						String kit = e.getCurrentItem().getItemMeta().getDisplayName();
-						if (kits.isAvailable(kit, p.getUniqueId())) {
-							if (p.getWorld().getName().equalsIgnoreCase("skyblock")) {
-								if (takeMoney(p, kit)) {
-									kits.giveKit(p, kit, true);
-									p.sendMessage(cl.color(p, main.getMessages().getString("kit-received"))
-											.replace("%kit%", kit));
-									e.setCancelled(true);
-									p.closeInventory();
-									p.removeMetadata("page", main);
-									if (main.getConfig().getBoolean("send-titles")) {
-										sendTitle(p, "kit-received-title", "kit-received-title-time", kit);
+					if (e.getCurrentItem().getType()
+							.equals(Material.valueOf(Main.getInstance().getConfig().getString("next-gui-item")))
+							&& e.getCurrentItem().getItemMeta().getDisplayName()
+									.equalsIgnoreCase(cl.color(p, main.getConfig().getString("next-gui-item-name")))) {
+						e.setCancelled(true);
+						if (inv.getPage() < inv.getMaxpages()) {
+							byte toset = p.getMetadata("page").get(0).asByte();
+							toset++;
+							p.removeMetadata("page", main);
+							p.setMetadata("page", new FixedMetadataValue(main, toset));
+							inv.nextPage();
+						}
+					} else if (e.getCurrentItem().getType()
+							.equals(Material.valueOf(Main.getInstance().getConfig().getString("back-gui-item")))
+							&& e.getCurrentItem().getItemMeta().getDisplayName()
+									.equalsIgnoreCase(cl.color(p, main.getConfig().getString("back-gui-item-name")))) {
+						e.setCancelled(true);
+						if (inv.getPage() > 1) {
+							byte toset = p.getMetadata("page").get(0).asByte();
+							toset--;
+							p.removeMetadata("page", main);
+							p.setMetadata("page", new FixedMetadataValue(main, toset));
+							inv.prevPage();
+						}
+					} else {
+						if (inv.getType().equalsIgnoreCase("kits")) {
+							String kit = e.getCurrentItem().getItemMeta().getDisplayName();
+							if (kits.isAvailable(kit, p.getUniqueId())) {
+								if (p.getWorld().getName().equalsIgnoreCase("skyblock")
+										|| p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+									if (takeMoney(p, kit)) {
+										kits.giveKit(p, kit, true);
+										p.sendMessage(cl.color(p, main.getMessages().getString("kit-received"))
+												.replace("%kit%", kit));
+										e.setCancelled(true);
+										p.closeInventory();
+										p.removeMetadata("page", main);
+										if (main.getConfig().getBoolean("send-titles")) {
+											sendTitle(p, "kit-received-title", "kit-received-title-time", kit);
+										}
+									} else {
+										p.sendMessage(cl.color1(main.getMessages().getString("no-money")));
+										e.setCancelled(true);
 									}
 								} else {
-									p.sendMessage(cl.color1(main.getMessages().getString("no-money")));
+									p.sendMessage(cl.color1(main.getMessages().getString("not-in-skyblock-world")));
 									e.setCancelled(true);
 								}
 							} else {
-								p.sendMessage(cl.color1(main.getMessages().getString("not-in-skyblock-world")));
+								p.sendMessage(cl.color1(main.getMessages().getString("kit-unavailable")));
 								e.setCancelled(true);
 							}
 						} else {
-							p.sendMessage(cl.color1(main.getMessages().getString("kit-unavailable")));
 							e.setCancelled(true);
 						}
-					} else {
-						e.setCancelled(true);
 					}
 				}
 			}

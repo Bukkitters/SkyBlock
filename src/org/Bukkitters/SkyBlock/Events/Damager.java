@@ -23,7 +23,7 @@ public class Damager implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
 		if (e.getEntity().getType().equals(EntityType.PLAYER)) {
-			if (e.getEntity().getWorld().getName().equals("skyblock")) {
+			if (e.getEntity().getWorld().getName().equals("skyblock") && e.getEntity().getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
 				if (!e.getCause().equals(DamageCause.VOID)) {
 					Player p = (Player) e.getEntity();
 					if (p.getHealth() <= e.getDamage()) {

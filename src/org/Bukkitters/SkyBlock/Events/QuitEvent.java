@@ -41,6 +41,26 @@ public class QuitEvent implements Listener {
 					}
 				}
 			}
+		} else if (e.getPlayer().getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+			if (!main.getConfig().getBoolean("death-protection")) {
+				if (e.getPlayer().getLocation().getY() < Bukkit.getWorld("skyblock_nether")
+						.getHighestBlockYAt(e.getPlayer().getLocation())
+						|| Bukkit.getWorld("skyblock_nether").getHighestBlockYAt(e.getPlayer().getLocation()) == -1) {
+					double x = e.getPlayer().getLocation().getX(), z = e.getPlayer().getLocation().getZ();
+					for (double y = 0; y <= e.getPlayer().getLocation().getY(); y++) {
+						if (!Bukkit.getWorld("skyblock").getBlockAt((int) x, (int) y, (int) z).getType()
+								.equals(Material.AIR)) {
+							return;
+						}
+					}
+					if (!e.getPlayer().isFlying()) {
+						if (!e.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+							e.getPlayer().setHealth(0.0);
+							data.setSkyBlockInventory(e.getPlayer().getUniqueId(), null);
+						}
+					}
+				}
+			}
 		}
 	}
 

@@ -256,7 +256,6 @@ public class Main extends JavaPlugin {
 			wc.environment(Environment.NETHER);
 			wc.generator(cg);
 			getServer().createWorld(wc);
-			//new File(getServer().getWorldContainer() + "/skyblock_nether", "playerdata").mkdir();
 		}
 	}
 
@@ -280,7 +279,6 @@ public class Main extends JavaPlugin {
 		return econ;
 	}
 
-	// API
 	public int getSkyBlocks() {
 		if (new File(getDataFolder(), "skyblocks").exists()) {
 			if (new File(getDataFolder(), "skyblocks").listFiles() != null) {
