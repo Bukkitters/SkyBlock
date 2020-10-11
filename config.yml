@@ -61,3 +61,4 @@ free-kits:
 #Free schemes
 free-schemes:
 - defaultScheme
+- nether_defaultScheme

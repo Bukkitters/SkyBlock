@@ -63,7 +63,8 @@ public class Manager implements CommandExecutor {
 										data.setWorldInventory(p.getUniqueId(), p.getInventory());
 										p.teleport(location);
 										data.swapInventory(p);
-										sb.buildScheme(p.getUniqueId(), location, sc.randomScheme(p.getUniqueId()));
+										sb.buildScheme(p.getUniqueId(), location, sc.randomScheme(p.getUniqueId()),
+												sc.randomNetherScheme(p.getUniqueId()));
 										p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation()
 												.clone().add(0.0, 1.0, 0.0));
 										p.sendMessage(colors.color(p, main.getMessages().getString("created")));
@@ -286,21 +287,26 @@ public class Manager implements CommandExecutor {
 						if (isPermitted(p, "skyblock.create")) {
 							if (sc.exists(args[1])) {
 								if (sc.isAvailable(p.getUniqueId(), args[1])) {
-									if (takeMoney(p, args[0])) {
-										Location location = sb.findLocation();
-										data.setWorldInventory(p.getUniqueId(), p.getInventory());
-										p.teleport(location);
-										data.swapInventory(p);
-										sb.buildScheme(p.getUniqueId(), location, args[1]);
-										p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation()
-												.clone().add(0.0, 1.0, 0.0));
-										p.sendMessage(colors.color(p, main.getMessages().getString("created")));
-										kits.addDefaultKit(p);
-										if (main.getConfig().getBoolean("send-titles")) {
-											sendTitle(p, "created-title", "created-title-time");
+									if (sb.canBuild(p.getUniqueId())) {
+										if (takeMoney(p, args[0])) {
+											Location location = sb.findLocation();
+											data.setWorldInventory(p.getUniqueId(), p.getInventory());
+											p.teleport(location);
+											data.swapInventory(p);
+											sb.buildScheme(p.getUniqueId(), location, args[1],
+													sc.randomNetherScheme(p.getUniqueId()));
+											p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location)
+													.getLocation().clone().add(0.0, 1.0, 0.0));
+											p.sendMessage(colors.color(p, main.getMessages().getString("created")));
+											kits.addDefaultKit(p);
+											if (main.getConfig().getBoolean("send-titles")) {
+												sendTitle(p, "created-title", "created-title-time");
+											}
+										} else {
+											p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
 										}
 									} else {
-										p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
+										p.sendMessage(colors.color1(main.getMessages().getString("no-nether-scheme-available")));
 									}
 								} else {
 									p.sendMessage(colors.color1(main.getMessages().getString("scheme-unavailable")));
@@ -425,6 +431,65 @@ public class Manager implements CommandExecutor {
 								}
 							} else {
 								p.sendMessage(colors.color1(main.getMessages().getString("kit-not-exist")));
+							}
+						} else {
+							p.sendMessage(colors.color1(main.getMessages().getString("no-permission")));
+						}
+						break;
+					case "create":
+						if (isPermitted(p, "skyblock.create")) {
+							if (sb.canBuild(p.getUniqueId())) {
+								String s1, s2;
+								if (!args[1].equalsIgnoreCase("random")) {
+									if (sc.exists(args[1])) {
+										if (sc.isAvailable(p.getUniqueId(), args[1])) {
+											s1 = args[1];
+										} else {
+											p.sendMessage(
+													colors.color1(main.getMessages().getString("scheme-unavailable")));
+											return false;
+										}
+									} else {
+										p.sendMessage(colors.color1(main.getMessages().getString("scheme-not-exist")));
+										return false;
+									}
+								} else {
+									s1 = sc.randomScheme(p.getUniqueId());
+								}
+								if (!args[2].equalsIgnoreCase("random")) {
+									if (sc.exists(args[2])) {
+										if (sc.isAvailable(p.getUniqueId(), args[2])) {
+											s2 = args[2];
+										} else {
+											p.sendMessage(
+													colors.color1(main.getMessages().getString("scheme-unavailable")));
+											return false;
+										}
+									} else {
+										p.sendMessage(colors.color1(main.getMessages().getString("scheme-not-exist")));
+										return false;
+									}
+								} else {
+									s2 = sc.randomNetherScheme(p.getUniqueId());
+								}
+								if (takeMoney(p, args[0])) {
+									Location location = sb.findLocation();
+									data.setWorldInventory(p.getUniqueId(), p.getInventory());
+									p.teleport(location);
+									data.swapInventory(p);
+									sb.buildScheme(p.getUniqueId(), location, s1, s2);
+									p.teleport(Bukkit.getWorld("skyblock").getHighestBlockAt(location).getLocation()
+											.clone().add(0.0, 1.0, 0.0));
+									p.sendMessage(colors.color(p, main.getMessages().getString("created")));
+									kits.addDefaultKit(p);
+									if (main.getConfig().getBoolean("send-titles")) {
+										sendTitle(p, "created-title", "created-title-time");
+									}
+								} else {
+									p.sendMessage(colors.color1(main.getMessages().getString("no-money")));
+								}
+							} else {
+								p.sendMessage(colors.color1(main.getMessages().getString("no-scheme-available")));
 							}
 						} else {
 							p.sendMessage(colors.color1(main.getMessages().getString("no-permission")));

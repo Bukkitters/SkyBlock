@@ -25,7 +25,7 @@ public class SkyBlocks {
 	private File schemesFolder = new File(main.getDataFolder(), "schemes");
 	private ChatColors colors = new ChatColors();
 
-	public void buildScheme(UUID id, Location location, String scheme) {
+	public void buildScheme(UUID id, Location location, String scheme, String netherScheme) {
 		FileConfiguration sc = YamlConfiguration
 				.loadConfiguration(new File(main.getDataFolder() + "/schemes", scheme + ".yml"));
 		for (String s : sc.getStringList("locations")) {
@@ -42,9 +42,14 @@ public class SkyBlocks {
 		}
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
 		sb.set("location", location);
-		sb.set("spawnpoint", location.getWorld().getHighestBlockAt(location).getLocation());
+		sb.set("spawnpoint", location.getWorld().getHighestBlockAt(location).getLocation().clone().add(0, 1, 0));
 		location.getWorld().getHighestBlockAt(location).setType(Material.BEDROCK);
 		sb.set("scheme", scheme);
+		sb.set("nether-scheme", netherScheme);
+		sb.set("has-nether", true);
+		Location loc = location.clone();
+		loc.setWorld(Bukkit.getWorld("skyblock_nether"));
+		sb.set("nether-location", loc);
 		try {
 			sb.save(skyblock);
 		} catch (IOException e) {
@@ -138,7 +143,7 @@ public class SkyBlocks {
 	}
 
 	private void sendTitle(Player p, String string, String string2) {
-//todo
+		// todo
 	}
 
 	public Location getSkyblockLocation(UUID id) {
@@ -179,18 +184,31 @@ public class SkyBlocks {
 	}
 
 	public boolean canBuild(UUID id) {
+		Boolean b1 = false, b2 = false;
 		if (schemesFolder.exists()) {
 			if (schemesFolder.listFiles().length > 0) {
 				for (File f : schemesFolder.listFiles()) {
 					FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 					if (c.getString("owner").equalsIgnoreCase(id.toString())) {
-						return true;
+						if (f.getName().startsWith("nether_"))
+							b1 = true;
+						else
+							b2 = true;
 					} else if (Bukkit.getPlayer(id).hasPermission(c.getString("permission"))) {
-						return true;
+						if (f.getName().startsWith("nether_"))
+							b1 = true;
+						else
+							b2 = true;
 					} else if (main.getConfig().getStringList("free-schemes")
 							.contains(f.getName().replaceAll(".yml", ""))) {
-						return true;
+						if (f.getName().startsWith("nether_"))
+							b1 = true;
+						else
+							b2 = true;
 					}
+				}
+				if (b1 && b2) {
+					return true;
 				}
 			}
 		}
@@ -218,6 +236,63 @@ public class SkyBlocks {
 			return true;
 		}
 		return false;
+	}
+
+	public boolean hasNetherSkyBlock(UUID id) {
+		return YamlConfiguration.loadConfiguration(new File(skyBlocksFolder, id.toString() + ".yml"))
+				.getBoolean("has-nether");
+	}
+
+	public Location getNetherSkyBlockSpawn(UUID id) {
+		if (YamlConfiguration.loadConfiguration(new File(skyBlocksFolder, id.toString() + ".yml"))
+				.contains("nether-spawnpoint")) {
+			return YamlConfiguration.loadConfiguration(new File(skyBlocksFolder, id.toString() + ".yml"))
+					.getLocation("nether-spawnpoint");
+		} else {
+			return null;
+		}
+	}
+
+	public Location getNetherSkyBlockLocation(UUID id) {
+		return YamlConfiguration.loadConfiguration(new File(skyBlocksFolder, id.toString() + ".yml"))
+				.getLocation("nether-location");
+	}
+
+	public void setNetherSkyBlockSpawn(UUID id) {
+		File f = new File(skyBlocksFolder, id.toString() + ".yml");
+		FileConfiguration conf = YamlConfiguration.loadConfiguration(f);
+		conf.set("nether-spawnpoint", Bukkit.getWorld("skyblock_nether")
+				.getHighestBlockAt(conf.getLocation("nether-location")).getLocation().clone().add(0, 1, 0));
+		try {
+			conf.save(f);
+		} catch (IOException e) {
+		}
+	}
+
+	public void buildNetherScheme(UUID id) {
+		FileConfiguration sc = YamlConfiguration
+				.loadConfiguration(new File(main.getDataFolder() + "/schemes", getNetherScheme(id) + ".yml"));
+		for (String s : sc.getStringList("locations")) {
+			double x = Double.valueOf(s.split(";")[0]), y = Double.valueOf(s.split(";")[1]),
+					z = Double.valueOf(s.split(";")[2]);
+			Location loc = new Location(Bukkit.getWorld("skyblock_nether"), x, y, z);
+			Material m = Material.valueOf(s.split(";")[3]);
+			Location location = getSkyblockLocation(id);
+			location.setWorld(Bukkit.getWorld("skyblock_nether"));
+			location.clone().add(loc).getBlock().setType(m);
+		}
+		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
+		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
+		sb.set("has-nether", true);
+		try {
+			sb.save(skyblock);
+		} catch (IOException e) {
+		}
+	}
+
+	public String getNetherScheme(UUID id) {
+		return YamlConfiguration
+				.loadConfiguration(new File(skyBlocksFolder, id.toString() + ".yml")).getString("nether-scheme");
 	}
 
 }

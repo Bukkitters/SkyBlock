@@ -252,7 +252,7 @@ public class Main extends JavaPlugin {
 			wc.environment(Environment.NETHER);
 			wc.generator(cg);
 			getServer().createWorld(wc);
-			new File(getServer().getWorldContainer() + "/skyblock_nether", "playerdata").mkdir();
+			//new File(getServer().getWorldContainer() + "/skyblock_nether", "playerdata").mkdir();
 		}
 	}
 
@@ -291,6 +291,14 @@ public class Main extends JavaPlugin {
 
 	public boolean hasSkyBlock(UUID id) {
 		return sb.hasSkyBlock(Bukkit.getOfflinePlayer(id));
+	}
+	
+	public boolean hasNetherSkyBlock(UUID id) {
+		if (sb.hasSkyBlock(Bukkit.getOfflinePlayer(id))) {
+			return sb.hasNetherSkyBlock(id);
+		} else {
+			return false;
+		}
 	}
 
 }

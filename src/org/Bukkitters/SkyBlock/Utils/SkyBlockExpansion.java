@@ -47,10 +47,15 @@ public class SkyBlockExpansion extends PlaceholderExpansion {
 			return String.valueOf(skyblock.getSkyBlocks());
 		case "has_skyblock":
 			return String.valueOf(skyblock.hasSkyBlock(offlinePlayer.getUniqueId()));
+		case "has_nether_skyblock":
+			return String.valueOf(skyblock.hasNetherSkyBlock(offlinePlayer.getUniqueId()));
 		default:
 			if (identifier.startsWith("has_skyblock_")) {
 				String who = identifier.split("_")[2];
 				return String.valueOf(skyblock.hasSkyBlock(Bukkit.getOfflinePlayer(who).getUniqueId()));
+			} else if (identifier.startsWith("has_nether_skyblock_")) {
+				String who = identifier.split("_")[2];
+				return String.valueOf(skyblock.hasNetherSkyBlock(Bukkit.getOfflinePlayer(who).getUniqueId()));
 			}
 			return null;
 		}

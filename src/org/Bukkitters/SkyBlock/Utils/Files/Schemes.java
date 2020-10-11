@@ -84,20 +84,30 @@ public class Schemes {
 			Random r = new Random();
 			List<String> schemes = new ArrayList<String>();
 			for (File f : schemesFolder.listFiles()) {
-				FileConfiguration c = YamlConfiguration.loadConfiguration(f);
-				if (c.getString("owner").equalsIgnoreCase(id.toString())) {
-					schemes.add(f.getName().replaceAll(".yml", ""));
-				} else if (Bukkit.getPlayer(id).hasPermission(c.getString("permission"))) {
-					schemes.add(f.getName().replaceAll(".yml", ""));
-				} else if (main.getConfig().getStringList("free-schemes")
-						.contains(f.getName().replaceAll(".yml", ""))) {
-					schemes.add(f.getName().replaceAll(".yml", ""));
+				if (!f.getName().startsWith("nether_")) {
+					FileConfiguration c = YamlConfiguration.loadConfiguration(f);
+					if (c.getString("owner").equalsIgnoreCase(id.toString())) {
+						schemes.add(f.getName().replaceAll(".yml", ""));
+					} else if (Bukkit.getPlayer(id).hasPermission(c.getString("permission"))) {
+						schemes.add(f.getName().replaceAll(".yml", ""));
+					} else if (main.getConfig().getStringList("free-schemes")
+							.contains(f.getName().replaceAll(".yml", ""))) {
+						schemes.add(f.getName().replaceAll(".yml", ""));
+					}
 				}
 			}
-			int i = r.nextInt(schemes.size() - 1);
-			return schemes.get(i);
+			if (schemes.size() > 0) {
+				int i = r.nextInt(schemes.size() - 1);
+				return schemes.get(i);
+			} else {
+				return null;
+			}
 		} else {
-			return schemesFolder.listFiles()[0].getName().replaceAll(".yml", "");
+			if (!schemesFolder.listFiles()[0].getName().startsWith("nether_")) {
+				return schemesFolder.listFiles()[0].getName().replaceAll(".yml", "");
+			} else {
+				return null;
+			}
 		}
 	}
 
@@ -200,17 +210,49 @@ public class Schemes {
 	}
 
 	public List<String> getSchemes() {
-		List<String> kits = new ArrayList<String>();
+		List<String> schemes = new ArrayList<String>();
 		for (File f : schemesFolder.listFiles()) {
-			kits.add(f.getName().replaceAll(".yml", ""));
+			schemes.add(f.getName().replaceAll(".yml", ""));
 		}
-		return kits;
+		return schemes;
 	}
 
 	public void sendGUISchemes(Player p) {
 		SchemesGUI gui = new SchemesGUI(getAvailableSchemes(p), "schemes", p.getUniqueId(), (byte) 1);
 		gui.openInventory((byte) 1);
 		p.setMetadata("page", new FixedMetadataValue(main, 1));
+	}
+
+	public String randomNetherScheme(UUID id) {
+		if (schemesFolder.listFiles().length != 1) {
+			Random r = new Random();
+			List<String> schemes = new ArrayList<String>();
+			for (File f : schemesFolder.listFiles()) {
+				if (f.getName().startsWith("nether_")) {
+					FileConfiguration c = YamlConfiguration.loadConfiguration(f);
+					if (c.getString("owner").equalsIgnoreCase(id.toString())) {
+						schemes.add(f.getName().replaceAll(".yml", ""));
+					} else if (Bukkit.getPlayer(id).hasPermission(c.getString("permission"))) {
+						schemes.add(f.getName().replaceAll(".yml", ""));
+					} else if (main.getConfig().getStringList("free-schemes")
+							.contains(f.getName().replaceAll(".yml", ""))) {
+						schemes.add(f.getName().replaceAll(".yml", ""));
+					}
+				}
+			}
+			if (schemes.size() > 0) {
+				int i = r.nextInt(schemes.size() - 1);
+				return schemes.get(i);
+			} else {
+				return null;
+			}
+		} else {
+			if (schemesFolder.listFiles()[0].getName().startsWith("nether_")) {
+				return schemesFolder.listFiles()[0].getName().replaceAll(".yml", "");
+			} else {
+				return null;
+			}
+		}
 	}
 
 }
