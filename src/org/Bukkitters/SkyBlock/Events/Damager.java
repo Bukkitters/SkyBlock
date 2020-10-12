@@ -23,7 +23,8 @@ public class Damager implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
 		if (e.getEntity().getType().equals(EntityType.PLAYER)) {
-			if (e.getEntity().getWorld().getName().equals("skyblock") && e.getEntity().getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+			if (e.getEntity().getWorld().getName().equals("skyblock")
+					&& e.getEntity().getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
 				if (!e.getCause().equals(DamageCause.VOID)) {
 					Player p = (Player) e.getEntity();
 					if (p.getHealth() <= e.getDamage()) {
@@ -40,7 +41,8 @@ public class Damager implements Listener {
 							BukkitRunnable r = new BukkitRunnable() {
 								@Override
 								public void run() {
-									if ((int) p.getLocation().clone().subtract(0, 1, 0).getY() == (int) p.getWorld().getHighestBlockYAt(p.getLocation())) {
+									if ((int) p.getLocation().clone().subtract(0, 1, 0).getY() == (int) p.getWorld()
+											.getHighestBlockYAt(p.getLocation())) {
 										p.setInvulnerable(false);
 										this.cancel();
 									}

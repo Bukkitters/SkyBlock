@@ -61,6 +61,7 @@ not-allowed-build: '&cYou are not allowed to build here!'
 cooldown: '&cYou can not use skyblock commands yet. Wait &d%time% &cseconds.'
 no-money: '&cYou do not have enough money!'
 wrong-block: '&cYou can not set spawn on chests, doors etc.'
+spawn-not-changed: '&cYou can not set spawnpoint on previous spawnpoint location.'
 #titles
 #Use ';' to separate title from subtitle (Without quotes).
 #Example: '&eTitle;&aSubtitle'

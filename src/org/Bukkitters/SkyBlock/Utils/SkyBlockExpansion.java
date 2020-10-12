@@ -8,11 +8,11 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 public class SkyBlockExpansion extends PlaceholderExpansion {
 
 	private Main skyblock;
-	
-	public SkyBlockExpansion(Main plugin){
-        this.skyblock = plugin;
-        this.register();
-    }
+
+	public SkyBlockExpansion(Main plugin) {
+		this.skyblock = plugin;
+		this.register();
+	}
 
 	@Override
 	public String getAuthor() {

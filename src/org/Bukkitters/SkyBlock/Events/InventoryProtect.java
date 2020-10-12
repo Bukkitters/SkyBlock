@@ -34,7 +34,8 @@ public class InventoryProtect implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
 		main.getTranslators().add(e.getEntity().getUniqueId());
-		if (!e.getEntity().getWorld().getName().equalsIgnoreCase("skyblock") && e.getEntity().getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+		if (!e.getEntity().getWorld().getName().equalsIgnoreCase("skyblock")
+				&& e.getEntity().getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
 			data.setWorldInventory(e.getEntity().getUniqueId(), null);
 		} else {
 			data.setSkyBlockInventory(e.getEntity().getUniqueId(), null);

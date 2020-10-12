@@ -28,7 +28,8 @@ public class JoinEvent implements Listener {
 		if (!data.hasData(p.getUniqueId())) {
 			data.createData(p.getUniqueId());
 		}
-		if (p.getWorld().getName().equalsIgnoreCase("skyblock") || p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
+		if (p.getWorld().getName().equalsIgnoreCase("skyblock")
+				|| p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
 			if (!p.isDead()) {
 				data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
 				if (p.getLocation().clone().subtract(0, 1, 0).getBlock().getType() == Material.AIR

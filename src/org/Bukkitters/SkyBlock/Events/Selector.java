@@ -52,8 +52,18 @@ public class Selector implements Listener {
 					if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 						if (e.getClickedBlock().getType().equals(Material.OBSIDIAN)) {
 							if (e.getPlayer().getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
-								e.getClickedBlock().getLocation().clone().add(0, 1, 0).getBlock()
+								if (e.getClickedBlock().getLocation().clone().add(0, 1, 0).getBlock().getType()
+										.equals(Material.AIR)) {
+									if (e.getClickedBlock().getLocation().clone().add(0, 4, 0).getBlock().getType()
+											.equals(Material.OBSIDIAN)) {
+										e.getClickedBlock().getLocation().clone().add(0, 1, 0).getBlock()
+												.setType(Material.NETHER_PORTAL);
+										e.getClickedBlock().getLocation().clone().add(0, 2, 0).getBlock()
 										.setType(Material.NETHER_PORTAL);
+										e.getClickedBlock().getLocation().clone().add(0, 3, 0).getBlock()
+										.setType(Material.NETHER_PORTAL);
+									}
+								}
 							}
 						}
 					}

@@ -12,13 +12,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class SkyBlocks {
 
@@ -45,9 +48,30 @@ public class SkyBlocks {
 		}
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
 		sb.set("location", location);
-		sb.set("spawnpoint", location.getWorld().getHighestBlockAt(location).getLocation().clone().add(0, 1, 0));
-		sb.set("override-block", location.getWorld().getHighestBlockAt(location).getType().toString());
-		location.getWorld().getHighestBlockAt(location).setType(Material.BEDROCK);
+		Location l = location.getWorld().getHighestBlockAt(location).getLocation().clone().add(0, 1, 0);
+		boolean b = false;
+		for (double y = l.getY(); y > 1; y--) {
+			l.setY(y);
+			if (l.getBlock().getType().equals(Material.AIR)) {
+				if (l.clone().subtract(0, 1, 0).getBlock().getType().equals(Material.AIR)) {
+					if (!l.clone().subtract(0, 2, 0).getBlock().getType().equals(Material.AIR)) {
+						if (!(l.clone().subtract(0, 2, 0).getBlock().getState() instanceof Container)
+								&& isNotUnavailable(l.clone().subtract(0, 2, 0).getBlock().getType())) {
+							l.setY(l.getY() - 1);
+							b = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (!b) {
+			l.setY(location.getWorld().getHighestBlockAt(location).getLocation().getY() + 1);
+		}
+		sb.set("spawnpoint", l);
+		Bukkit.getPlayer(id).teleport(sb.getLocation("spawnpoint").clone().add(0.5, 0, 0.5));
+		sb.set("override-block", l.clone().subtract(0, 1, 0).getBlock().getType().toString());
+		l.clone().subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
 		sb.set("scheme", scheme);
 		sb.set("nether-scheme", netherScheme);
 		sb.set("has-nether", true);
@@ -133,7 +157,6 @@ public class SkyBlocks {
 					|| p.getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
 				main.getTranslators().add(p.getUniqueId());
 				p.getInventory().clear();
-				data.setSkyBlockInventory(p.getUniqueId(), p.getInventory());
 				p.teleport(getBackLocation().add(0.5, 0, 0.5));
 				for (ItemStack i : data.getWorldInventory(p.getUniqueId())) {
 					p.getInventory().addItem(i);
@@ -153,6 +176,7 @@ public class SkyBlocks {
 				}
 			}
 		}
+		data.setSkyBlockInventory(p.getUniqueId(), Bukkit.createInventory(null, 54));
 	}
 
 	private void sendTitle(Player p, String string, String string2) {
@@ -185,7 +209,7 @@ public class SkyBlocks {
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
 		Location loc = sb.getLocation("spawnpoint");
-		return Bukkit.getWorld("skyblock").getHighestBlockAt(loc).getLocation().clone().add(0, 1, 0);
+		return loc;
 	}
 
 	public Location getBackLocation() {
@@ -261,6 +285,13 @@ public class SkyBlocks {
 				sb.save(skyblock);
 			} catch (IOException e) {
 			}
+			Bukkit.getPlayer(id)
+					.sendMessage(colors.color(Bukkit.getPlayer(id), main.getMessages().getString("spawn-set")));
+			if (main.getConfig().getBoolean("send-titles")) {
+				sendTitle(Bukkit.getPlayer(id), "spawn-set-title", "spawn-set-title-time");
+			}
+		} else {
+			Bukkit.getPlayer(id).sendMessage(colors.color1(main.getMessages().getString("spawn-not-changed")));
 		}
 	}
 
@@ -295,15 +326,13 @@ public class SkyBlocks {
 				.getLocation("nether-location");
 	}
 
-	public void setNetherSkyBlockSpawn(UUID id, Location loc) {
+	public void setNetherSpawn(UUID id, Location loc) {
 		File f = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration conf = YamlConfiguration.loadConfiguration(f);
 		if (!conf.getLocation("nether-spawnpoint").clone().subtract(0, 1, 0).getBlock()
 				.equals(loc.clone().subtract(0, 1, 0).getBlock())) {
-			if (conf.contains("nether-spawnpoint")) {
-				conf.getLocation("nether-spawnpoint").clone().subtract(0, 1, 0).getBlock()
-						.setType(Material.valueOf(conf.getString("nether-override-block")));
-			}
+			conf.getLocation("nether-spawnpoint").clone().subtract(0, 1, 0).getBlock()
+					.setType(Material.valueOf(conf.getString("nether-override-block")));
 			Block b = loc.clone().subtract(0, 1, 0).getBlock();
 			conf.set("nether-override-block", b.getType().toString());
 			b.setType(Material.BEDROCK);
@@ -312,20 +341,32 @@ public class SkyBlocks {
 				conf.save(f);
 			} catch (IOException e) {
 			}
+			Bukkit.getPlayer(id)
+					.sendMessage(colors.color(Bukkit.getPlayer(id), main.getMessages().getString("spawn-set")));
+			if (main.getConfig().getBoolean("send-titles")) {
+				sendTitle(Bukkit.getPlayer(id), "spawn-set-title", "spawn-set-title-time");
+			}
+		} else {
+			Bukkit.getPlayer(id).sendMessage(colors.color1(main.getMessages().getString("spawn-not-changed")));
 		}
 	}
 
 	public void buildNetherScheme(UUID id) {
 		FileConfiguration sc = YamlConfiguration
 				.loadConfiguration(new File(main.getDataFolder() + "/schemes", getNetherScheme(id) + ".yml"));
+		List<String> blocks = new ArrayList<String>();
 		for (String s : sc.getStringList("locations")) {
-			double x = Double.valueOf(s.split(";")[0]), y = Double.valueOf(s.split(";")[1]),
-					z = Double.valueOf(s.split(";")[2]);
-			Location loc = new Location(Bukkit.getWorld("skyblock_nether"), x, y, z);
-			Material m = Material.valueOf(s.split(";")[3]);
-			Location location = getSkyblockLocation(id);
-			location.setWorld(Bukkit.getWorld("skyblock_nether"));
-			location.clone().add(loc).getBlock().setType(m);
+			if (!s.split(";")[3].equalsIgnoreCase("NETHER_PORTAL")) {
+				double x = Double.valueOf(s.split(";")[0]), y = Double.valueOf(s.split(";")[1]),
+						z = Double.valueOf(s.split(";")[2]);
+				Location loc = new Location(Bukkit.getWorld("skyblock_nether"), x, y, z);
+				Material m = Material.valueOf(s.split(";")[3]);
+				Location location = getSkyblockLocation(id);
+				location.setWorld(Bukkit.getWorld("skyblock_nether"));
+				location.clone().add(loc).getBlock().setType(m);
+			} else {
+				blocks.add(s);
+			}
 		}
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		FileConfiguration sb = YamlConfiguration.loadConfiguration(skyblock);
@@ -334,6 +375,19 @@ public class SkyBlocks {
 			sb.save(skyblock);
 		} catch (IOException e) {
 		}
+		new BukkitRunnable() {
+			public void run() {
+		for (String s : blocks) {
+			double x = Double.valueOf(s.split(";")[0]), y = Double.valueOf(s.split(";")[1]),
+					z = Double.valueOf(s.split(";")[2]);
+			Location loc = new Location(Bukkit.getWorld("skyblock_nether"), x, y, z);
+			Material m = Material.valueOf(s.split(";")[3]);
+			Location location = getSkyblockLocation(id);
+			location.setWorld(Bukkit.getWorld("skyblock_nether"));
+			location.clone().add(loc).getBlock().setType(m);
+		}
+			}
+		}.runTaskLater(main, 20L);
 	}
 
 	public String getNetherScheme(UUID id) {
@@ -350,6 +404,49 @@ public class SkyBlocks {
 			return true;
 		}
 		return false;
+	}
+
+	public boolean isNotUnavailable(Material type) {
+		if (Tag.BANNERS.isTagged(type) || Tag.BEDS.isTagged(type) || Tag.BUTTONS.isTagged(type)
+				|| Tag.CLIMBABLE.isTagged(type) || Tag.DOORS.isTagged(type) || Tag.CROPS.isTagged(type)
+				|| Tag.FENCE_GATES.isTagged(type) || Tag.FLOWERS.isTagged(type) || Tag.RAILS.isTagged(type)
+				|| Tag.SAPLINGS.isTagged(type) || Tag.SHULKER_BOXES.isTagged(type) || Tag.SIGNS.isTagged(type)
+				|| Tag.STANDING_SIGNS.isTagged(type) || Tag.STAIRS.isTagged(type) || Tag.TRAPDOORS.isTagged(type)) {
+			return false;
+		}
+		return true;
+	}
+
+	public void setNetherSkyBlockSpawn(UUID id, Location loc) {
+		File f = new File(skyBlocksFolder, id.toString() + ".yml");
+		FileConfiguration conf = YamlConfiguration.loadConfiguration(f);
+		boolean b = false;
+		for (double y = loc.getY(); y > 1; y--) {
+			loc.setY(y);
+			if (loc.getBlock().getType().equals(Material.AIR)) {
+				if (loc.clone().subtract(0, 1, 0).getBlock().getType().equals(Material.AIR)) {
+					if (!loc.clone().subtract(0, 2, 0).getBlock().getType().equals(Material.AIR)) {
+						if (!(loc.clone().subtract(0, 2, 0).getBlock().getState() instanceof Container)
+								&& isNotUnavailable(loc.clone().subtract(0, 2, 0).getBlock().getType())) {
+							loc.setY(loc.getY() - 1);
+							b = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (!b) {
+			loc.setY(loc.getWorld().getHighestBlockAt(loc).getLocation().getY() + 1);
+		}
+		Block bl = loc.clone().subtract(0, 1, 0).getBlock();
+		conf.set("nether-override-block", bl.getType().toString());
+		bl.setType(Material.BEDROCK);
+		conf.set("nether-spawnpoint", loc);
+		try {
+			conf.save(f);
+		} catch (IOException e) {
+		}
 	}
 
 }
