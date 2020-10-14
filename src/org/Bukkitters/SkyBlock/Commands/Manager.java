@@ -371,10 +371,13 @@ public class Manager implements CommandExecutor {
 									if (main.getLRhands().get(p.getUniqueId())[0] != null
 											&& main.getLRhands().get(p.getUniqueId())[1] != null) {
 										if (!sc.exists(args[2])) {
-											sc.createScheme(args[2], main.getLRhands().get(p.getUniqueId()),
-													p.getUniqueId(), p.getWorld());
+											if (sc.createScheme(args[2], main.getLRhands().get(p.getUniqueId()),
+													p.getUniqueId(), p.getWorld())) {
 											p.sendMessage(
 													colors.color(p, main.getMessages().getString("scheme-created")));
+											} else {
+												p.sendMessage(colors.color1(main.getMessages().getString("scheme-error")));
+											}
 										} else {
 											p.sendMessage(colors.color1(main.getMessages().getString("scheme-exists")));
 										}

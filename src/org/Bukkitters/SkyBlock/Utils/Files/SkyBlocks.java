@@ -34,12 +34,28 @@ public class SkyBlocks {
 	public void buildScheme(UUID id, Location location, String scheme, String netherScheme) {
 		FileConfiguration sc = YamlConfiguration
 				.loadConfiguration(new File(main.getDataFolder() + "/schemes", scheme + ".yml"));
+		Random r = new Random();
+		int dirt = 0;
+		for (String s : sc.getStringList("locations")) {
+			if (s.split(";")[3].equalsIgnoreCase("DIRT")) {
+				dirt++;
+			}
+		}
+		int num = r.nextInt(dirt) + 1;
+		if (num > dirt) num--;
+		dirt = 0;
 		for (String s : sc.getStringList("locations")) {
 			double x = Double.valueOf(s.split(";")[0]), y = Double.valueOf(s.split(";")[1]),
 					z = Double.valueOf(s.split(";")[2]);
 			Location loc = new Location(Bukkit.getWorld("skyblock"), x, y, z);
 			Material m = Material.valueOf(s.split(";")[3]);
 			location.clone().add(loc).getBlock().setType(m);
+			if (s.split(";")[3].equalsIgnoreCase("DIRT")) {
+				dirt++;
+				if (dirt == num) {
+					location.clone().add(loc).getBlock().setType(Material.IRON_ORE);
+				}
+			}
 		}
 		File skyblock = new File(skyBlocksFolder, id.toString() + ".yml");
 		try {
@@ -354,6 +370,16 @@ public class SkyBlocks {
 	public void buildNetherScheme(UUID id) {
 		FileConfiguration sc = YamlConfiguration
 				.loadConfiguration(new File(main.getDataFolder() + "/schemes", getNetherScheme(id) + ".yml"));
+		Random r = new Random();
+		int dirt = 0;
+		for (String s : sc.getStringList("locations")) {
+			if (s.split(";")[3].equalsIgnoreCase("NETHERRACK")) {
+				dirt++;
+			}
+		}
+		int num = r.nextInt(dirt) + 1;
+		if (num > dirt) num--;
+		dirt = 0;
 		List<String> blocks = new ArrayList<String>();
 		for (String s : sc.getStringList("locations")) {
 			if (!s.split(";")[3].equalsIgnoreCase("NETHER_PORTAL")) {
@@ -364,6 +390,12 @@ public class SkyBlocks {
 				Location location = getSkyblockLocation(id);
 				location.setWorld(Bukkit.getWorld("skyblock_nether"));
 				location.clone().add(loc).getBlock().setType(m);
+				if (s.split(";")[3].equalsIgnoreCase("NETHERRACK")) {
+					dirt++;
+					if (dirt == num) {
+						location.clone().add(loc).getBlock().setType(Material.NETHER_QUARTZ_ORE);
+					}
+				}
 			} else {
 				blocks.add(s);
 			}

@@ -3,6 +3,7 @@ package org.Bukkitters.SkyBlock.Events;
 import org.Bukkitters.SkyBlock.Main;
 import org.Bukkitters.SkyBlock.Utils.ChatColors;
 import org.Bukkitters.SkyBlock.Utils.Files.SkyBlocks;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,10 +52,20 @@ public class Builder implements Listener {
 										10);
 							}
 						}
+					} else {
+						if (isOre(e.getBlockPlaced().getType())) {
+							e.setCancelled(true);
+							e.getPlayer().sendMessage(cl.color1(main.getMessages().getString("ores-not-available")));
+						}
 					}
 				} else {
 					e.getPlayer().sendMessage(cl.color(p, main.getMessages().getString("not-allowed-build")));
 					e.setCancelled(true);
+				}
+			} else {
+				if (isOre(e.getBlockPlaced().getType())) {
+					e.setCancelled(true);
+					e.getPlayer().sendMessage(cl.color1(main.getMessages().getString("ores-not-available")));
 				}
 			}
 		} else if (e.getBlock().getWorld().getName().equalsIgnoreCase("skyblock_nether")) {
@@ -87,13 +98,40 @@ public class Builder implements Listener {
 										10);
 							}
 						}
+					} else {
+						if (isOre(e.getBlockPlaced().getType())) {
+							e.setCancelled(true);
+							e.getPlayer().sendMessage(cl.color1(main.getMessages().getString("ores-not-available")));
+						}
 					}
 				} else {
 					e.getPlayer().sendMessage(cl.color(p, main.getMessages().getString("not-allowed-build")));
 					e.setCancelled(true);
 				}
+			} else {
+				if (isOre(e.getBlockPlaced().getType())) {
+					e.setCancelled(true);
+					e.getPlayer().sendMessage(cl.color1(main.getMessages().getString("ores-not-available")));
+				}
 			}
 		}
+	}
+	
+	private boolean isOre(Material type) {
+		switch (type.toString()) {
+		case "COAL_ORE":
+		case "LAPIS_ORE":
+		case "REDSTONE_ORE":
+		case "IRON_ORE":
+		case "GOLD_ORE":
+		case "DIAMOND_ORE":
+		case "EMERALD_ORE":
+		case "NETHER_QUARTZ_ORE":
+		case "NETHER_GOLD_ORE":
+		case "GLOWSTONE":
+		return true;
+		}
+		return false;
 	}
 
 }

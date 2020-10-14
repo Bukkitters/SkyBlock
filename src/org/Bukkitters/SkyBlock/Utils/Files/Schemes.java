@@ -26,21 +26,7 @@ public class Schemes {
 	private File schemesFolder = new File(main.getDataFolder(), "schemes");
 	private ChatColors colors = new ChatColors();
 
-	public void createScheme(String name, Location[] locations, UUID id, World w) {
-		File f = new File(main.getDataFolder() + "/schemes", name + ".yml");
-		try {
-			f.createNewFile();
-		} catch (IOException e) {
-		}
-		FileConfiguration conf = YamlConfiguration.loadConfiguration(f);
-		conf.set("permission", "skyblock.scheme." + name);
-		conf.set("owner", id.toString());
-		if (Bukkit.getPlayer(id).getInventory().getItemInMainHand() != null
-				&& !Bukkit.getPlayer(id).getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
-			conf.set("gui-item", new ItemStack(Bukkit.getPlayer(id).getInventory().getItemInMainHand().getType(), 1));
-		} else {
-			conf.set("gui-item", new ItemStack(Material.COBBLESTONE, 1));
-		}
+	public boolean createScheme(String name, Location[] locations, UUID id, World w) {
 		Location loc1 = locations[0];
 		Location loc2 = locations[1];
 		double xmin = loc1.getX() < loc2.getX() ? loc1.getX() : loc2.getX(),
@@ -50,21 +36,64 @@ public class Schemes {
 				ymax = loc1.getY() > loc2.getY() ? loc1.getY() : loc2.getY(),
 				zmax = loc1.getZ() > loc2.getZ() ? loc1.getZ() : loc2.getZ();
 		List<String> locs = new ArrayList<String>();
-		for (double x = xmin; x <= xmax; x++) {
-			for (double y = ymin; y <= ymax; y++) {
-				for (double z = zmin; z <= zmax; z++) {
-					Material m = new Location(w, x, y, z).getBlock().getType();
-					if (m != Material.AIR && m != Material.CAVE_AIR)
-						locs.add((x - xmin - (int) ((xmax - xmin) / 2)) + ";" + (y - ymin - (int) ((ymax - ymin) / 2))
-								+ ";" + (z - zmin - (int) ((zmax - zmin) / 2)) + ";" + m.toString());
+		boolean b = false;
+		if (!name.startsWith("nether_")) {
+			for (double x = xmin; x <= xmax; x++) {
+				for (double y = ymin; y <= ymax; y++) {
+					for (double z = zmin; z <= zmax; z++) {
+						Material m = new Location(w, x, y, z).getBlock().getType();
+						if (m.equals(Material.DIRT))
+							b = true;
+						if (m != Material.AIR && m != Material.CAVE_AIR)
+							locs.add((x - xmin - (int) ((xmax - xmin) / 2)) + ";"
+									+ (y - ymin - (int) ((ymax - ymin) / 2)) + ";"
+									+ (z - zmin - (int) ((zmax - zmin) / 2)) + ";" + m.toString());
+					}
+				}
+			}
+		} else {
+			for (double x = xmin; x <= xmax; x++) {
+				for (double y = ymin; y <= ymax; y++) {
+					for (double z = zmin; z <= zmax; z++) {
+						Material m = new Location(w, x, y, z).getBlock().getType();
+						if (m.equals(Material.NETHERRACK))
+							b = true;
+						if (m != Material.AIR && m != Material.CAVE_AIR)
+							locs.add((x - xmin - (int) ((xmax - xmin) / 2)) + ";"
+									+ (y - ymin - (int) ((ymax - ymin) / 2)) + ";"
+									+ (z - zmin - (int) ((zmax - zmin) / 2)) + ";" + m.toString());
+					}
 				}
 			}
 		}
-		conf.set("locations", locs);
-		try {
-			conf.save(f);
-		} catch (IOException e) {
+		if (!b)
+			return false;
+		else {
+			File f = new File(main.getDataFolder() + "/schemes", name + ".yml");
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				return false;
+			}
+			FileConfiguration conf = YamlConfiguration.loadConfiguration(f);
+			conf.set("permission", "skyblock.scheme." + name);
+			conf.set("owner", id.toString());
+			if (Bukkit.getPlayer(id).getInventory().getItemInMainHand() != null
+					&& !Bukkit.getPlayer(id).getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
+				conf.set("gui-item",
+						new ItemStack(Bukkit.getPlayer(id).getInventory().getItemInMainHand().getType(), 1));
+			} else {
+				conf.set("gui-item", new ItemStack(Material.COBBLESTONE, 1));
+			}
+			conf.set("locations", locs);
+			try {
+				conf.save(f);
+			} catch (IOException e) {
+				return false;
+			}
+			return true;
 		}
+
 	}
 
 	public boolean exists(String string) {

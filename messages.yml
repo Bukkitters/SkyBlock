@@ -62,6 +62,10 @@ cooldown: '&cYou can not use skyblock commands yet. Wait &d%time% &cseconds.'
 no-money: '&cYou do not have enough money!'
 wrong-block: '&cYou can not set spawn on chests, doors etc.'
 spawn-not-changed: '&cYou can not set spawnpoint on previous spawnpoint location.'
+ores-not-available: '&cOres not available on SkyBlock!'
+nether-teleport: '&aTeleported to nether skyblock.'
+skyblock-teleport: '&aTeleported to normal skyblock.'
+scheme-cannot-be-built: '&cYour nether skyblock scheme is deleted so it can not be built. Call server administrator!'
 #titles
 #Use ';' to separate title from subtitle (Without quotes).
 #Example: '&eTitle;&aSubtitle'
@@ -101,11 +105,8 @@ not-allowed-break-title: '&e[!];&cYou are not allowed to break blocks here!'
 not-allowed-break-title-time: '15;30;10'
 not-allowed-build-title: '&e[!];&cYou are not allowed to build here!'
 not-allowed-build-title-time: '15;30;10'
-nether-teleport: '&aTeleported to nether skyblock.'
-skyblock-teleport: '&aTeleported to normal skyblock.'
-scheme-cannot-be-built: '&cYour nether skyblock scheme is deleted so it can not be built. Call server administrator!'
-
 #Exceptions
 check-console: '&4WARNING! &cAn error has occurred! Check your console!'
 number-format-exception: '&4WARNING! &cThere is an error in the line "&4%line%&c": &4Format exception'
 missing-separator: '&4WARNING! &cThere is an error: &4Missing separator'
+scheme-error: '&cERROR! Can not create scheme!'
